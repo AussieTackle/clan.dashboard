@@ -436,7 +436,6 @@ body {
         </button>
       </div>
     </div>
-
     <div class="row g-3 justify-content-center">
       <div class="col-12 col-lg-10">
         <div class="table-container">
@@ -549,9 +548,7 @@ body {
     <div class="modal-content">
       <div class="modal-header d-flex align-items-center justify-content-between">
         <div class="d-flex align-items-center gap-3">
-          <div class="modal-player-avatar">
-            <i class="fa-solid fa-user"></i>
-          </div>
+          <div class="modal-player-avatar"><i class="fa-solid fa-user"></i></div>
           <div>
             <h4 class="modal-title fw-bold text-white mb-1" id="modal-player-name">Player Name</h4>
             <div class="d-flex gap-2" id="modal-player-badges"></div>
@@ -618,7 +615,10 @@ body {
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+// GANTI URL DI BAWAH INI DENGAN URL WEB APP GOOGLE APPS SCRIPT KAMU
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyjvC7I9l2OA9fcgBjUrz3qAIFenCFRsr5QVab7tZOtIU7QQ_3lH71fl_3K6ot73yAS/exec';
 const SYNC_INTERVAL = 20000;
+
 let cachedClanData = null;
 let currentOverviewFilter = 'alltime';
 let tableFilters = { wood: 'both', monster: 'both', battle: 'both' };
@@ -649,10 +649,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  renderWood();
-  renderMonster();
-  renderBattle();
-
   fetchData();
   startPolling();
 
@@ -678,15 +674,16 @@ function stopPolling() {
 
 function fetchData() {
   if (requestPending) return;
-
-  // GANTI URL DI BAWAH INI DENGAN URL WEB APP GOOGLE APPS SCRIPT KAMU
-  const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyjvC7I9l2OA9fcgBjUrz3qAIFenCFRsr5QVab7tZOtIU7QQ_3lH71fl_3K6ot73yAS/exec';
+  if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.includes('https://script.google.com/macros/s/AKfycbyjvC7I9l2OA9fcgBjUrz3qAIFenCFRsr5QVab7tZOtIU7QQ_3lH71fl_3K6ot73yAS/exec')) {
+    document.getElementById('sync-status').innerText = 'URL Web App belum diatur';
+    return;
+  }
 
   requestPending = true;
-  document.getElementById('sync-status').innerText = 'Menghubungkan...';
+  document.getElementById('sync-status').innerText = 'Menyinkronkan...';
 
-  fetch(WEB_APP_URL)
-    .then(response => response.json())
+  fetch(APPS_SCRIPT_URL)
+    .then(res => res.json())
     .then(data => {
       requestPending = false;
       renderDashboard(data);
@@ -751,7 +748,10 @@ function playerCell(name, idx, score) {
     else if (idx === 1) crown = '<i class="fa-solid fa-crown" style="color: #c0c0c0;"></i>';
     else if (idx === 2) crown = '<i class="fa-solid fa-crown" style="color: #cd7f32;"></i>';
   }
-  return `<div class="player-cell-wrapper"><span class="crown-slot">${crown}</span><span class="player-name-text">${esc(name)}</span></div>`;
+  return `<div class="player-cell-wrapper">
+    <span class="crown-slot">${crown}</span>
+    <span class="player-name-text">${esc(name)}</span>
+  </div>`;
 }
 
 function sortByScore(arr, prop) {
@@ -766,6 +766,7 @@ function renderDashboard(data) {
   }
 
   cachedClanData = data;
+
   document.getElementById('sync-status').innerText = 'Real-time Sync Active';
   document.getElementById('sync-dot').style.backgroundColor = 'var(--accent-green)';
   document.getElementById('sync-dot').style.boxShadow = '0 0 8px var(--accent-green)';
@@ -823,7 +824,10 @@ function openPlayerModal(playerName) {
   const battleData = (cachedClanData.battle || []).find(b => String(b.name).trim().toLowerCase() === nameClean) || {};
 
   document.getElementById('modal-player-name').innerText = memberData.name || playerName;
-  document.getElementById('modal-player-badges').innerHTML = `${roleBadge(memberData.role || 'Member')} ${statusBadge(memberData.status || 'Active')}`;
+  document.getElementById('modal-player-badges').innerHTML = `
+    ${roleBadge(memberData.role || 'Member')}
+    ${statusBadge(memberData.status || 'Active')}
+  `;
 
   document.getElementById('modal-join-date').innerText = memberData.joinDate || '-';
   document.getElementById('modal-tenure').innerText = woodData.tenure || memberData.tenure || '-';
@@ -993,14 +997,10 @@ function renderLatestBattle(infos) {
     const text = String(info);
     const low = text.toLowerCase();
     let icon = 'fa-circle-info';
-
     if (low.includes('opp')) icon = 'fa-shield-halved';
     else if (low.includes('map')) icon = 'fa-map-location-dot';
-    else if (low.includes('result') || low.includes('hasil')) {
-      icon = isLose ? 'fa-shield-halved' : 'fa-trophy';
-    } else if (low.includes('rate') || low.includes('win')) {
-      icon = 'fa-chart-line';
-    }
+    else if (low.includes('result') || low.includes('hasil')) icon = isLose ? 'fa-shield-halved' : 'fa-trophy';
+    else if (low.includes('rate') || low.includes('win')) icon = 'fa-chart-line';
 
     const color = isLose ? '#ff5252' : 'var(--accent-green)';
     return `<div class="battle-info-pill"><i class="fa-solid ${icon} me-1" style="color:${color}"></i>${esc(text)}</div>`;
@@ -1031,7 +1031,9 @@ function renderOverview() {
     </div>`).join('') : '<div class="text-muted text-center py-3">Tidak ada data</div>';
 
   const monsterRows = (cachedClanData.monster || []).map(m => ({
-    name: m.name, text: season ? m.currentSeasonText : m.allTimeText, score: season ? m.currentSeasonScore : m.allTimeScore
+    name: m.name,
+    text: season ? m.currentSeasonText : m.allTimeText,
+    score: season ? m.currentSeasonScore : m.allTimeScore
   })).filter(m => Number(m.score) > 0).sort((a,b) => b.score-a.score).slice(0,3);
 
   document.getElementById('overview-top-monster').innerHTML = monsterRows.length ? monsterRows.map((m,i) => `
@@ -1043,7 +1045,9 @@ function renderOverview() {
     </div>`).join('') : '<div class="text-muted text-center py-3">Tidak ada data</div>';
 
   const battleRows = (cachedClanData.battle || []).map(b => ({
-    name: b.name, text: season ? b.currentSeasonText : b.allTimeText, score: season ? b.currentSeasonScore : b.allTimeScore
+    name: b.name,
+    text: season ? b.currentSeasonText : b.allTimeText,
+    score: season ? b.currentSeasonScore : b.allTimeScore
   })).filter(b => Number(b.score) > 0).sort((a,b) => b.score-a.score).slice(0,3);
 
   document.getElementById('overview-top-battle').innerHTML = battleRows.length ? battleRows.map((b,i) => `

@@ -4,722 +4,753 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Aussie Tackle Clan Dashboard</title>
-  
-  <!-- Font & Icons -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous"></script>
-  
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Plus Jakarta Sans', 'sans-serif'],
-          },
-          colors: {
-            themeDefault: '#0d1b1e',
-            cardDefault: '#142427',
-            borderDefault: '#1f363b',
-          }
-        }
-      }
-    }
-  </script>
-
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    /* Base Dynamic Theme Styling */
+    :root {
+      --bg-dark: #0d1b1e;
+      --card-bg: #142427;
+      --card-border: #1f363a;
+      --text-main: #ffffff;
+      --text-muted: #8b9bb4;
+      --accent-gold: #f59e0b;
+      --accent-orange: #f97316;
+      --accent-red: #ef4444;
+      --accent-green: #10b981;
+      --accent-blue: #3b82f6;
+      --accent-bronze: #d97706;
+    }
+
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      transition: background-color 0.4s ease, color 0.4s ease;
-      background-color: #0d1b1e;
-      color: #e2e8f0;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      margin: 0;
+      padding: 0;
       min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background-color 0.5s ease;
     }
 
-    /* Clan Specific Color Variables */
-    body[data-clan="AT1"] {
-      background-color: #1a0f08;
-      --accent-color: #f97316;
-      --card-bg: #26160c;
-      --border-color: #3d2313;
-      --badge-bg: rgba(249, 115, 22, 0.15);
-    }
-    body[data-clan="AT2"] {
-      background-color: #1a090b;
-      --accent-color: #ef4444;
-      --card-bg: #270f13;
-      --border-color: #3e181e;
-      --badge-bg: rgba(239, 68, 68, 0.15);
-    }
-    body[data-clan="AT3"] {
-      background-color: #081a0e;
-      --accent-color: #22c55e;
-      --card-bg: #0f2716;
-      --border-color: #183e23;
-      --badge-bg: rgba(34, 197, 94, 0.15);
-    }
-    body[data-clan="AT4"] {
-      background-color: #08121f;
-      --accent-color: #3b82f6;
-      --card-bg: #0f1c30;
-      --border-color: #172c4c;
-      --badge-bg: rgba(59, 130, 246, 0.15);
-    }
-    body[data-clan="AT5"] {
-      background-color: #1c140d;
-      --accent-color: #d97706;
-      --card-bg: #281e14;
-      --border-color: #3d2d1e;
-      --badge-bg: rgba(217, 119, 6, 0.15);
+    /* Dynamic Theme Backgrounds per Clan */
+    body.theme-home { background-color: #0d1b1e; }
+    body.theme-AT1 { background-color: #1c130b; } /* 🟠 Oranye Nuansa */
+    body.theme-AT2 { background-color: #1f0f0f; } /* 🔴 Merah Nuansa */
+    body.theme-AT3 { background-color: #0b1f14; } /* 🟢 Hijau Nuansa */
+    body.theme-AT4 { background-color: #0b131f; } /* 🔵 Biru Nuansa */
+    body.theme-AT5 { background-color: #1a1512; } /* 🟤 Cokelat/Bronze Nuansa */
+
+    header {
+      background: rgba(13, 27, 30, 0.9);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
 
-    .themed-card {
-      background-color: var(--card-bg, #142427);
-      border: 1px solid var(--border-color, #1f363b);
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
     }
 
-    .themed-border {
-      border-color: var(--border-color, #1f363b);
+    .header-logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      object-fit: cover;
+      background: var(--accent-green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 20px;
     }
 
-    .themed-accent-text {
-      color: var(--accent-color, #10b981);
+    .header-title h1 {
+      font-size: 18px;
+      margin: 0;
+      font-weight: 700;
+      letter-spacing: 0.5px;
     }
 
-    .themed-accent-bg {
-      background-color: var(--accent-color, #10b981);
+    .header-title p {
+      font-size: 12px;
+      margin: 2px 0 0 0;
+      color: var(--text-muted);
     }
 
-    .themed-badge {
-      background-color: var(--badge-bg, rgba(16, 185, 129, 0.15));
-      color: var(--accent-color, #10b981);
-      border: 1px solid var(--border-color, rgba(16, 185, 129, 0.3));
+    .back-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--card-border);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
     }
 
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #0d1b1e;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #1f363b;
-      border-radius: 4px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #2e4e55;
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
     }
 
-    /* Glowing animations */
-    .glow-effect {
-      box-shadow: 0 0 25px -5px var(--accent-color, rgba(16, 185, 129, 0.3));
+    .main-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 30px 20px;
+      flex: 1;
+      width: 100%;
+      box-sizing: border-box;
     }
-    
-    .clan-card-hover {
+
+    /* Landing Page View */
+    #home-view {
+      text-align: center;
+      padding: 40px 0;
+    }
+
+    .landing-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      color: var(--accent-green);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    #home-view h2 {
+      font-size: 36px;
+      font-weight: 800;
+      margin: 0 0 16px 0;
+    }
+
+    #home-view p {
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto 40px auto;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .clan-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .clan-card-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 24px;
+      color: white;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     }
-    .clan-card-hover:hover {
-      transform: translateY(-5px);
+
+    .clan-card-btn i {
+      font-size: 28px;
+    }
+
+    .clan-card-btn.at1:hover { border-color: var(--accent-orange); background: rgba(249, 115, 22, 0.08); transform: translateY(-3px); }
+    .clan-card-btn.at2:hover { border-color: var(--accent-red); background: rgba(239, 68, 68, 0.08); transform: translateY(-3px); }
+    .clan-card-btn.at3:hover { border-color: var(--accent-green); background: rgba(16, 185, 129, 0.08); transform: translateY(-3px); }
+    .clan-card-btn.at4:hover { border-color: var(--accent-blue); background: rgba(59, 130, 246, 0.08); transform: translateY(-3px); }
+    .clan-card-btn.at5:hover { border-color: var(--accent-gold); background: rgba(245, 158, 11, 0.08); transform: translateY(-3px); }
+
+    /* Dashboard View */
+    #dashboard-view {
+      display: none;
+    }
+
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .clan-title-badge {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .clan-title-badge h2 {
+      margin: 0;
+      font-size: 26px;
+      font-weight: 800;
+    }
+
+    /* Summary Cards */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .summary-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .summary-info span {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .summary-info h3 {
+      font-size: 24px;
+      margin: 6px 0 0 0;
+      font-weight: 700;
+    }
+
+    .summary-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    /* Match Info Banner */
+    .match-banner {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .match-banner-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      color: var(--accent-gold);
+    }
+
+    .match-details {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .match-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .match-item .label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .match-item .value {
+      font-size: 14px;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    /* Leaderboards & Tables Grid */
+    .sections-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .section-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 20px;
+    }
+
+    .section-card h3 {
+      font-size: 16px;
+      margin: 0 0 16px 0;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    th {
+      background: rgba(0, 0, 0, 0.2);
+      padding: 10px 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    td {
+      padding: 12px;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Crown / Rank Badges Style */
+    .rank-cell {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+    }
+
+    .crown-gold { color: #f59e0b; font-size: 16px; }
+    .crown-silver { color: #94a3b8; font-size: 16px; }
+    .crown-bronze { color: #d97706; font-size: 16px; }
+
+    /* Loader */
+    .loader-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(13, 27, 30, 0.8);
+      backdrop-filter: blur(5px);
+      z-index: 999;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .spinner {
+      width: 45px;
+      height: 45px;
+      border: 4px solid rgba(255, 255, 255, 0.1);
+      border-left-color: var(--accent-green);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .error-msg {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid var(--accent-red);
+      color: var(--accent-red);
+      padding: 16px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      display: none;
     }
   </style>
 </head>
-<body class="antialiased text-slate-200">
+<body class="theme-home">
 
-  <!-- APP CONTAINER -->
-  <div id="app" class="min-h-screen flex flex-col">
+  <header>
+    <div class="header-brand" onclick="goHome()">
+      <img id="header-logo-img" src="https://lh3.googleusercontent.com/d/1k92AuoJ08vSdniVl6oHAjEOmz8it6Hek" class="header-logo" alt="Clan Logo" crossorigin="anonymous">
+      <div class="header-title">
+        <h1 id="header-main-title">AUSSIE TACKLE</h1>
+        <p>Creatures of the Deep Clan Network</p>
+      </div>
+    </div>
+    <button class="back-btn" id="backButton" onclick="goHome()">
+      <i class="fa-solid fa-arrow-left"></i> Menu Utama
+    </button>
+  </header>
 
-    <!-- TOP NAVIGATION BAR -->
-    <header class="border-b border-slate-800 bg-slate-950/60 backdrop-blur-md sticky top-0 z-40">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        
-        <!-- Logo & Title -->
-        <div class="flex items-center space-x-3 cursor-pointer" onclick="showLandingPage()">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-white shadow-lg shadow-emerald-900/30 font-extrabold text-xl">
-            <i class="fa-solid fa-fish-fins"></i>
-          </div>
-          <div>
-            <h1 class="font-extrabold text-lg tracking-tight text-white leading-tight">AUSSIE TACKLE</h1>
-            <p class="text-xs text-slate-400 font-medium">Creatures of the Deep Clan Network</p>
-          </div>
-        </div>
+  <div class="main-container">
+    <div id="errorAlert" class="error-msg"></div>
 
-        <!-- Navigation Controls -->
-        <div class="flex items-center space-x-3">
-          <button id="btnHome" onclick="showLandingPage()" class="hidden sm:flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-800 text-slate-300 text-xs font-semibold transition border border-slate-700">
-            <i class="fa-solid fa-house"></i>
-            <span>Main Menu</span>
-          </button>
-          
-          <button onclick="fetchData()" title="Sync Data" class="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-800 text-slate-300 text-sm transition border border-slate-700">
-            <i id="syncIcon" class="fa-solid fa-arrows-rotate"></i>
-          </button>
+    <!-- LANDING PAGE VIEW -->
+    <div id="home-view">
+      <div class="landing-badge">
+        <i class="fa-solid fa-shield-halved"></i> Official Clan Network Portal
+      </div>
+      <h2>Aussie Tackle Clan Dashboard</h2>
+      <p>Select an Aussie Tackle clan below to view member statistics, wood leaderboard, season monsters, and real-time Battle Scores.</p>
+      
+      <div class="clan-grid">
+        <button class="clan-card-btn at1" onclick="loadClan('AT1')">
+          <i class="fa-solid fa-fish-fins" style="color: var(--accent-orange);"></i>
+          <span>Aussie Tackle 1</span>
+        </button>
+        <button class="clan-card-btn at2" onclick="loadClan('AT2')">
+          <i class="fa-solid fa-fish-fins" style="color: var(--accent-red);"></i>
+          <span>Aussie Tackle 2</span>
+        </button>
+        <button class="clan-card-btn at3" onclick="loadClan('AT3')">
+          <i class="fa-solid fa-fish-fins" style="color: var(--accent-green);"></i>
+          <span>Aussie Tackle 3</span>
+        </button>
+        <button class="clan-card-btn at4" onclick="loadClan('AT4')">
+          <i class="fa-solid fa-fish-fins" style="color: var(--accent-blue);"></i>
+          <span>Aussie Tackle 4</span>
+        </button>
+        <button class="clan-card-btn at5" onclick="loadClan('AT5')">
+          <i class="fa-solid fa-fish-fins" style="color: var(--accent-gold);"></i>
+          <span>Aussie Tackle 5</span>
+        </button>
+      </div>
+    </div>
 
-          <span id="lastUpdatedTag" class="text-xs px-2.5 py-1 rounded-full bg-slate-800 text-slate-400 font-mono hidden sm:inline-block border border-slate-700/50">
-            Synced: --:--:--
-          </span>
+    <!-- DASHBOARD VIEW -->
+    <div id="dashboard-view">
+      <div class="dashboard-header">
+        <div class="clan-title-badge">
+          <h2 id="currentClanName">Aussie Tackle 5</h2>
         </div>
       </div>
-    </header>
 
-    <!-- MAIN CONTENT WRAPPER -->
-    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
-
-      <!-- ==================== LANDING PAGE ==================== -->
-      <section id="landingPage" class="py-8 sm:py-12 flex flex-col items-center justify-center">
-        
-        <!-- Header Hero -->
-        <div class="text-center max-w-2xl mx-auto mb-10">
-          <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-800/50 text-emerald-400 text-xs font-semibold mb-4">
-            <i class="fa-solid fa-shield-halved"></i>
-            <span>Official Clan Network Portal</span>
+      <!-- Summary Cards -->
+      <div class="summary-grid">
+        <div class="summary-card">
+          <div class="summary-info">
+            <span>Total Members</span>
+            <h3 id="totalMembers">-</h3>
           </div>
-          <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-3">
-            Aussie Tackle Clan Dashboard
-          </h2>
-          <p class="text-slate-400 text-sm sm:text-base leading-relaxed">
-            Pilih klan Aussie Tackle di bawah ini untuk melihat statistik anggota, leaderboard kayu, monster caught, serta perolehan Battle Score secara real-time.
-          </p>
-        </div>
-
-        <!-- Clan Selection Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 w-full max-w-5xl">
-          
-          <!-- AT1 Card -->
-          <div onclick="selectClan('AT1')" class="clan-card-hover bg-slate-900/80 rounded-2xl p-6 border border-amber-900/40 hover:border-orange-500/80 cursor-pointer relative overflow-hidden group shadow-xl">
-            <div class="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 rounded-full blur-2xl group-hover:bg-orange-500/20 transition"></div>
-            <div class="flex items-center justify-between mb-4">
-              <span class="text-2xl">🟠</span>
-              <span class="px-2.5 py-1 rounded-md bg-orange-950/80 border border-orange-800/60 text-orange-400 text-xs font-bold font-mono">AT1</span>
-            </div>
-            <h3 class="text-xl font-bold text-white mb-1 group-hover:text-orange-400 transition">Aussie Tackle 1</h3>
-            <p class="text-slate-400 text-xs mb-4">Main Division Clan</p>
-            <div class="flex items-center justify-between text-xs text-slate-400 pt-3 border-t border-slate-800">
-              <span>Status: Active</span>
-              <span class="text-orange-400 font-semibold group-hover:translate-x-1 transition flex items-center gap-1">
-                View Clan <i class="fa-solid fa-arrow-right text-[10px]"></i>
-              </span>
-            </div>
-          </div>
-
-          <!-- AT2 Card -->
-          <div onclick="selectClan('AT2')" class="clan-card-hover bg-slate-900/80 rounded-2xl p-6 border border-rose-900/40 hover:border-red-500/80 cursor-pointer relative overflow-hidden group shadow-xl">
-            <div class="absolute top-0 right-0 w-32 h-32 bg-red-500/10 rounded-full blur-2xl group-hover:bg-red-500/20 transition"></div>
-            <div class="flex items-center justify-between mb-4">
-              <span class="text-2xl">🔴</span>
-              <span class="px-2.5 py-1 rounded-md bg-red-950/80 border border-red-800/60 text-red-400 text-xs font-bold font-mono">AT2</span>
-            </div>
-            <h3 class="text-xl font-bold text-white mb-1 group-hover:text-red-400 transition">Aussie Tackle 2</h3>
-            <p class="text-slate-400 text-xs mb-4">Elite Division Clan</p>
-            <div class="flex items-center justify-between text-xs text-slate-400 pt-3 border-t border-slate-800">
-              <span>Status: Active</span>
-              <span class="text-red-400 font-semibold group-hover:translate-x-1 transition flex items-center gap-1">
-                View Clan <i class="fa-solid fa-arrow-right text-[10px]"></i>
-              </span>
-            </div>
-          </div>
-
-          <!-- AT3 Card -->
-          <div onclick="selectClan('AT3')" class="clan-card-hover bg-slate-900/80 rounded-2xl p-6 border border-emerald-900/40 hover:border-green-500/80 cursor-pointer relative overflow-hidden group shadow-xl">
-            <div class="absolute top-0 right-0 w-32 h-32 bg-green-500/10 rounded-full blur-2xl group-hover:bg-green-500/20 transition"></div>
-            <div class="flex items-center justify-between mb-4">
-              <span class="text-2xl">🟢</span>
-              <span class="px-2.5 py-1 rounded-md bg-green-950/80 border border-green-800/60 text-green-400 text-xs font-bold font-mono">AT3</span>
-            </div>
-            <h3 class="text-xl font-bold text-white mb-1 group-hover:text-green-400 transition">Aussie Tackle 3</h3>
-            <p class="text-slate-400 text-xs mb-4">Competitive Division</p>
-            <div class="flex items-center justify-between text-xs text-slate-400 pt-3 border-t border-slate-800">
-              <span>Status: Active</span>
-              <span class="text-green-400 font-semibold group-hover:translate-x-1 transition flex items-center gap-1">
-                View Clan <i class="fa-solid fa-arrow-right text-[10px]"></i>
-              </span>
-            </div>
-          </div>
-
-          <!-- AT4 Card -->
-          <div onclick="selectClan('AT4')" class="clan-card-hover bg-slate-900/80 rounded-2xl p-6 border border-blue-900/40 hover:border-blue-500/80 cursor-pointer relative overflow-hidden group shadow-xl">
-            <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl group-hover:bg-blue-500/20 transition"></div>
-            <div class="flex items-center justify-between mb-4">
-              <span class="text-2xl">🔵</span>
-              <span class="px-2.5 py-1 rounded-md bg-blue-950/80 border border-blue-800/60 text-blue-400 text-xs font-bold font-mono">AT4</span>
-            </div>
-            <h3 class="text-xl font-bold text-white mb-1 group-hover:text-blue-400 transition">Aussie Tackle 4</h3>
-            <p class="text-slate-400 text-xs mb-4">Academy Division</p>
-            <div class="flex items-center justify-between text-xs text-slate-400 pt-3 border-t border-slate-800">
-              <span>Status: Active</span>
-              <span class="text-blue-400 font-semibold group-hover:translate-x-1 transition flex items-center gap-1">
-                View Clan <i class="fa-solid fa-arrow-right text-[10px]"></i>
-              </span>
-            </div>
-          </div>
-
-          <!-- AT5 Card -->
-          <div onclick="selectClan('AT5')" class="clan-card-hover bg-slate-900/80 rounded-2xl p-6 border border-amber-950/60 hover:border-amber-600/80 cursor-pointer relative overflow-hidden group shadow-xl sm:col-span-2 lg:col-span-1">
-            <div class="absolute top-0 right-0 w-32 h-32 bg-amber-600/10 rounded-full blur-2xl group-hover:bg-amber-600/20 transition"></div>
-            <div class="flex items-center justify-between mb-4">
-              <span class="text-2xl">🟤</span>
-              <span class="px-2.5 py-1 rounded-md bg-amber-950/80 border border-amber-800/60 text-amber-500 text-xs font-bold font-mono">AT5</span>
-            </div>
-            <h3 class="text-xl font-bold text-white mb-1 group-hover:text-amber-500 transition">Aussie Tackle 5</h3>
-            <p class="text-slate-400 text-xs mb-4">Vanguard Division Clan</p>
-            <div class="flex items-center justify-between text-xs text-slate-400 pt-3 border-t border-slate-800">
-              <span>Status: Active</span>
-              <span class="text-amber-500 font-semibold group-hover:translate-x-1 transition flex items-center gap-1">
-                View Clan <i class="fa-solid fa-arrow-right text-[10px]"></i>
-              </span>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-
-      <!-- ==================== CLAN DETAIL VIEW ==================== -->
-      <section id="clanDetailView" class="hidden space-y-6">
-        
-        <!-- Clan Header Banner -->
-        <div class="themed-card rounded-2xl p-6 shadow-xl relative overflow-hidden">
-          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
-            
-            <div class="flex items-center space-x-4">
-              <button onclick="showLandingPage()" class="p-2.5 rounded-xl bg-slate-900/60 hover:bg-slate-900 text-slate-300 border border-slate-700/50 transition">
-                <i class="fa-solid fa-chevron-left text-sm"></i>
-              </button>
-              <div>
-                <div class="flex items-center space-x-2">
-                  <span id="currentClanEmoji" class="text-2xl">🟢</span>
-                  <h2 id="currentClanTitle" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Aussie Tackle</h2>
-                  <span id="currentClanBadge" class="themed-badge px-2.5 py-0.5 rounded-md text-xs font-bold font-mono">AT</span>
-                </div>
-                <p class="text-xs sm:text-sm text-slate-400 mt-1">Real-time leaderboard & member stats overview</p>
-              </div>
-            </div>
-
-            <!-- Quick Stats Summary -->
-            <div class="grid grid-cols-3 gap-2 sm:gap-4 bg-slate-950/40 p-3 rounded-xl border border-slate-800/60">
-              <div class="text-center px-2">
-                <p class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Total Members</p>
-                <p id="statMemberCount" class="text-lg font-bold text-white">0</p>
-              </div>
-              <div class="text-center px-2 border-x border-slate-800/80">
-                <p class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Season Wood</p>
-                <p id="statSeasonWood" class="text-lg font-bold themed-accent-text">0</p>
-              </div>
-              <div class="text-center px-2">
-                <p class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Monster Caught</p>
-                <p id="statSeasonMonster" class="text-lg font-bold text-white">0</p>
-              </div>
-            </div>
-
+          <div class="summary-icon" style="background: rgba(59, 130, 246, 0.1); color: var(--accent-blue);">
+            <i class="fa-solid fa-users"></i>
           </div>
         </div>
-
-        <!-- Latest Match Info Banner (If Available) -->
-        <div id="matchInfoBanner" class="hidden bg-slate-900/90 border border-slate-800 rounded-xl p-4 shadow-lg">
-          <div class="flex items-center justify-between mb-2">
-            <div class="flex items-center space-x-2 text-xs font-bold text-amber-400 uppercase tracking-wider">
-              <i class="fa-solid fa-trophy"></i>
-              <span>Match Information</span>
-            </div>
-            <span class="text-[11px] text-slate-400">Current Battle Status</span>
+        <div class="summary-card">
+          <div class="summary-info">
+            <span>Season Wood</span>
+            <h3 id="totalWood">-</h3>
           </div>
-          <div id="matchInfoContent" class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-            <!-- Dynamically populated match info cards -->
+          <div class="summary-icon" style="background: rgba(249, 115, 22, 0.1); color: var(--accent-orange);">
+            <i class="fa-solid fa-tree"></i>
           </div>
         </div>
-
-        <!-- Navigation Tabs & Filter Bar -->
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          
-          <!-- Category Tabs -->
-          <div class="flex items-center overflow-x-auto space-x-1 p-1 bg-slate-950/60 rounded-xl border border-slate-800 text-xs">
-            <button onclick="switchTab('member')" id="tabMember" class="px-4 py-2 rounded-lg font-semibold transition text-slate-400 hover:text-white whitespace-nowrap">
-              <i class="fa-solid fa-users mr-1.5"></i>Members
-            </button>
-            <button onclick="switchTab('wood')" id="tabWood" class="px-4 py-2 rounded-lg font-semibold transition text-slate-400 hover:text-white whitespace-nowrap">
-              <i class="fa-solid fa-tree mr-1.5"></i>Wood Leaderboard
-            </button>
-            <button onclick="switchTab('monster')" id="tabMonster" class="px-4 py-2 rounded-lg font-semibold transition text-slate-400 hover:text-white whitespace-nowrap">
-              <i class="fa-solid fa-dragon mr-1.5"></i>Monster Caught
-            </button>
-            <button onclick="switchTab('battle')" id="tabBattle" class="px-4 py-2 rounded-lg font-semibold transition text-slate-400 hover:text-white whitespace-nowrap">
-              <i class="fa-solid fa-swords mr-1.5"></i>Battle Score
-            </button>
+        <div class="summary-card">
+          <div class="summary-info">
+            <span>Season Monsters</span>
+            <h3 id="totalMonsters">-</h3>
           </div>
-
-          <!-- Controls: Search & Sub-Filter -->
-          <div class="flex items-center space-x-2">
-            <div class="relative flex-1 sm:w-64">
-              <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-xs text-slate-500"></i>
-              <input type="text" id="searchInput" oninput="handleSearch()" placeholder="Search player name..." class="w-full bg-slate-950/80 border border-slate-800 rounded-xl pl-8 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-slate-600">
-            </div>
-
-            <select id="seasonFilter" onchange="renderActiveTab()" class="bg-slate-950/80 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-300 focus:outline-none">
-              <option value="season">Current Season</option>
-              <option value="alltime">All-Time</option>
-            </select>
+          <div class="summary-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--accent-green);">
+            <i class="fa-solid fa-fish"></i>
           </div>
-
         </div>
+      </div>
 
-        <!-- TABLE DATA DISPLAY CONTAINER -->
-        <div class="themed-card rounded-2xl overflow-hidden shadow-2xl">
-          <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse text-xs">
-              <thead id="tableHeader" class="bg-slate-950/80 border-b border-slate-800 text-slate-400 uppercase font-bold text-[11px] tracking-wider">
-                <!-- Header columns dynamically generated -->
+      <!-- Latest Match Information Banner -->
+      <div class="match-banner">
+        <div class="match-banner-title">
+          <i class="fa-solid fa-trophy" style="font-size: 20px;"></i>
+          <span>LATEST MATCH INFORMATION</span>
+        </div>
+        <div class="match-details">
+          <div class="match-item">
+            <span class="label">Opponent</span>
+            <span class="value" id="matchOpponent">-</span>
+          </div>
+          <div class="match-item">
+            <span class="label">Result</span>
+            <span class="value" id="matchResult">-</span>
+          </div>
+          <div class="match-item">
+            <span class="label">Score</span>
+            <span class="value" id="matchScore">-</span>
+          </div>
+          <div class="match-item">
+            <span class="label">Date</span>
+            <span class="value" id="matchDate">-</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tables / Leaderboards Grid -->
+      <div class="sections-grid">
+        <!-- Members List -->
+        <div class="section-card">
+          <h3><i class="fa-solid fa-id-card"></i> Member Directory</h3>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 50px;">No</th>
+                  <th>Player Name</th>
+                </tr>
               </thead>
-              <tbody id="tableBody" class="divide-y divide-slate-800/60 font-medium">
-                <!-- Data rows dynamically generated -->
+              <tbody id="memberTableBody">
+                <!-- Populated via JS -->
               </tbody>
             </table>
           </div>
+        </div>
 
-          <!-- Loading Indicator -->
-          <div id="loadingState" class="py-16 text-center space-y-3">
-            <i class="fa-solid fa-circle-notch fa-spin text-3xl themed-accent-text"></i>
-            <p class="text-xs text-slate-400 font-medium">Memuat data klan dari Google Sheets...</p>
-          </div>
-
-          <!-- Empty State -->
-          <div id="emptyState" class="hidden py-12 text-center text-slate-500 space-y-2">
-            <i class="fa-solid fa-folder-open text-3xl"></i>
-            <p class="text-xs font-medium">Tidak ada data pemain yang cocok.</p>
+        <!-- Wood Leaderboard -->
+        <div class="section-card">
+          <h3><i class="fa-solid fa-medal"></i> Season Wood Leaderboard</h3>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 90px;">Rank</th>
+                  <th>Player Name</th>
+                  <th style="text-align: right;">Wood</th>
+                </tr>
+              </thead>
+              <tbody id="woodTableBody">
+                <!-- Populated via JS -->
+              </tbody>
+            </table>
           </div>
         </div>
 
-      </section>
+        <!-- Season Monsters Leaderboard -->
+        <div class="section-card">
+          <h3><i class="fa-solid fa-otter"></i> Season Monsters Leaderboard</h3>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 90px;">Rank</th>
+                  <th>Player Name</th>
+                  <th style="text-align: right;">Monsters</th>
+                </tr>
+              </thead>
+              <tbody id="monstersTableBody">
+                <!-- Populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
 
-    </main>
-
-    <!-- FOOTER -->
-    <footer class="mt-auto border-t border-slate-900 bg-slate-950/80 py-4 text-center text-xs text-slate-500">
-      <p>&copy; 2026 Aussie Tackle Clan Network. Built for Creatures of the Deep Community.</p>
-    </footer>
-
+        <!-- Battle Score Leaderboard -->
+        <div class="section-card">
+          <h3><i class="fa-solid fa-fire"></i> Battle Score Leaderboard</h3>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 90px;">Rank</th>
+                  <th>Player Name</th>
+                  <th style="text-align: right;">Score</th>
+                </tr>
+              </thead>
+              <tbody id="battleTableBody">
+                <!-- Populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- APPLICATION SCRIPT LOGIC -->
+  <!-- Loader -->
+  <div class="loader-overlay" id="loaderOverlay">
+    <div class="spinner"></div>
+    <div style="font-weight: 600; font-size: 14px;" id="loaderText">Loading clan data...</div>
+  </div>
+
   <script>
-    // Configuration & State
-    const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyjvC7I9l2OA9fcgBjUrz3qAIFenCFRsr5QVab7tZOtIU7QQ_3lH71fl_3K6ot73yAS/exec';
-    
-    const CLAN_THEMES = {
-      'AT1': { name: 'Aussie Tackle 1', emoji: '🟠', code: 'AT1' },
-      'AT2': { name: 'Aussie Tackle 2', emoji: '🔴', code: 'AT2' },
-      'AT3': { name: 'Aussie Tackle 3', emoji: '🟢', code: 'AT3' },
-      'AT4': { name: 'Aussie Tackle 4', emoji: '🔵', code: 'AT4' },
-      'AT5': { name: 'Aussie Tackle 5', emoji: '🟤', code: 'AT5' }
-    };
+    function showLoader(text = "Loading clan data...") {
+      document.getElementById('loaderText').innerText = text;
+      document.getElementById('loaderOverlay').style.display = 'flex';
+    }
 
-    let globalData = {};
-    let activeClan = null;
-    let currentTab = 'member'; // 'member', 'wood', 'monster', 'battle'
-    let searchQuery = '';
+    function hideLoader() {
+      document.getElementById('loaderOverlay').style.display = 'none';
+    }
 
-    // Init Page
-    window.addEventListener('DOMContentLoaded', () => {
-      fetchData();
-    });
+    function showError(msg) {
+      const errEl = document.getElementById('errorAlert');
+      errEl.innerText = msg;
+      errEl.style.display = 'block';
+    }
 
-    // Fetch Data from Backend Google Apps Script
-    async function fetchData() {
-      const syncIcon = document.getElementById('syncIcon');
-      syncIcon.classList.add('fa-spin');
+    function clearError() {
+      const errEl = document.getElementById('errorAlert');
+      errEl.innerText = '';
+      errEl.style.display = 'none';
+    }
+
+    function goHome() {
+      document.getElementById('dashboard-view').style.display = 'none';
+      document.getElementById('home-view').style.display = 'block';
+      document.getElementById('backButton').style.display = 'none';
       
-      try {
-        const response = await fetch(GAS_WEB_APP_URL);
-        const json = await response.json();
+      // Reset theme
+      document.body.className = 'theme-home';
+      clearError();
+    }
 
-        if (json.error) {
-          console.error('GAS Error:', json.error);
-        } else {
-          globalData = json.clans || {};
-          document.getElementById('lastUpdatedTag').innerText = `Synced: ${json.lastUpdated || '--:--:--'}`;
-          
-          if (activeClan) {
-            renderClanView();
+    function loadClan(clanName) {
+      showLoader(`Loading ${clanName} data...`);
+      clearError();
+
+      google.script.run
+        .withSuccessHandler(function(data) {
+          hideLoader();
+          if (data.error) {
+            showError("Error: " + data.error);
+            return;
           }
-        }
-      } catch (err) {
-        console.error('Fetch Failed:', err);
-      } finally {
-        syncIcon.classList.remove('fa-spin');
+          renderDashboard(data);
+        })
+        .withFailureHandler(function(err) {
+          hideLoader();
+          showError("Failed to connect: " + err.message);
+        })
+        .getClanData(clanName);
+    }
+
+    // Helper untuk merender ikon mahkota/peringkat khusus rank 1, 2, 3
+    function formatRank(rank) {
+      let r = String(rank).trim();
+      if (r === '1') {
+        return `<div class="rank-cell"><i class="fa-solid fa-crown crown-gold"></i> 1</div>`;
+      } else if (r === '2') {
+        return `<div class="rank-cell"><i class="fa-solid fa-crown crown-silver"></i> 2</div>`;
+      } else if (r === '3') {
+        return `<div class="rank-cell"><i class="fa-solid fa-crown crown-bronze"></i> 3</div>`;
       }
+      return `<div class="rank-cell"><span style="padding-left: 4px;">${r}</span></div>`;
     }
 
-    // Switch View Functions
-    function showLandingPage() {
-      activeClan = null;
-      document.body.removeAttribute('data-clan');
-      document.getElementById('landingPage').classList.remove('hidden');
-      document.getElementById('clanDetailView').classList.add('hidden');
-      document.getElementById('btnHome').classList.add('hidden');
-    }
+    function renderDashboard(data) {
+      document.getElementById('home-view').style.display = 'none';
+      document.getElementById('dashboard-view').style.display = 'block';
+      document.getElementById('backButton').style.display = 'inline-flex';
 
-    function selectClan(clanCode) {
-      activeClan = clanCode;
-      document.body.setAttribute('data-clan', clanCode);
+      // Set Theme Body Class
+      document.body.className = `theme-${data.clan}`;
+
+      // Header Clan Title
+      document.getElementById('currentClanName').innerText = `Aussie Tackle ${data.clan.replace('AT', '')}`;
+
+      // Summary Values
+      document.getElementById('totalMembers').innerText = data.members.length;
       
-      document.getElementById('landingPage').classList.add('hidden');
-      document.getElementById('clanDetailView').classList.remove('hidden');
-      document.getElementById('btnHome').classList.remove('hidden');
+      // Hitung total wood / monster dari leaderboard jika ada
+      let totalW = data.woodLeaderboard.reduce((acc, curr) => acc + (parseFloat(curr.value) || 0), 0);
+      document.getElementById('totalWood').innerText = totalW.toLocaleString();
 
-      // Update Header Banner Info
-      const theme = CLAN_THEMES[clanCode] || { name: clanCode, emoji: '🛡️', code: clanCode };
-      document.getElementById('currentClanTitle').innerText = theme.name;
-      document.getElementById('currentClanEmoji').innerText = theme.emoji;
-      document.getElementById('currentClanBadge').innerText = theme.code;
+      let totalM = data.monstersLeaderboard.reduce((acc, curr) => acc + (parseFloat(curr.value) || 0), 0);
+      document.getElementById('totalMonsters').innerText = totalM.toLocaleString();
 
-      renderClanView();
-    }
+      // Match Info
+      document.getElementById('matchOpponent').innerText = data.matchInfo.opponent;
+      document.getElementById('matchResult').innerText = data.matchInfo.result;
+      document.getElementById('matchScore').innerText = data.matchInfo.score;
+      document.getElementById('matchDate').innerText = data.matchInfo.date;
 
-    function switchTab(tabName) {
-      currentTab = tabName;
-      
-      // Update Tab CSS
-      ['member', 'wood', 'monster', 'battle'].forEach(t => {
-        const btn = document.getElementById(`tab${t.charAt(0).toUpperCase() + t.slice(1)}`);
-        if (t === tabName) {
-          btn.className = 'px-4 py-2 rounded-lg font-semibold transition bg-slate-800 text-white shadow-sm border border-slate-700 whitespace-nowrap';
-        } else {
-          btn.className = 'px-4 py-2 rounded-lg font-semibold transition text-slate-400 hover:text-white whitespace-nowrap';
-        }
-      });
-
-      // Show/Hide Season Filter option depending on tab
-      const seasonFilter = document.getElementById('seasonFilter');
-      if (tabName === 'member') {
-        seasonFilter.classList.add('hidden');
+      // 1. Members Table
+      let memberHtml = '';
+      if (data.members.length === 0) {
+        memberHtml = `<tr><td colspan="2" style="text-align:center; color: var(--text-muted);">No members found</td></tr>`;
       } else {
-        seasonFilter.classList.remove('hidden');
+        data.members.forEach(m => {
+          memberHtml += `<tr><td>${m.no}</td><td style="font-weight: 600;">${m.name}</td></tr>`;
+        });
       }
+      document.getElementById('memberTableBody').innerHTML = memberHtml;
 
-      renderActiveTab();
-    }
-
-    function handleSearch() {
-      searchQuery = document.getElementById('searchInput').value.toLowerCase().trim();
-      renderActiveTab();
-    }
-
-    // Main Renderer
-    function renderClanView() {
-      if (!activeClan) return;
-
-      const clanInfo = globalData[activeClan];
-      const loadingState = document.getElementById('loadingState');
-
-      if (!clanInfo) {
-        loadingState.classList.remove('hidden');
-        return;
-      }
-
-      loadingState.classList.add('hidden');
-
-      // Update Top Card Quick Stats
-      const members = clanInfo.members || [];
-      const wood = clanInfo.wood || [];
-      const monster = clanInfo.monster || [];
-
-      document.getElementById('statMemberCount').innerText = members.length;
-      
-      const totalSeasonWood = wood.reduce((sum, item) => sum + (item.currentSeason || 0), 0);
-      document.getElementById('statSeasonWood').innerText = totalSeasonWood.toLocaleString();
-
-      const totalSeasonMonsters = monster.reduce((sum, item) => sum + (item.currentSeasonScore || 0), 0);
-      document.getElementById('statSeasonMonster').innerText = totalSeasonMonsters.toLocaleString();
-
-      // Render Match Info Banner if available
-      const matchBanner = document.getElementById('matchInfoBanner');
-      const matchContent = document.getElementById('matchInfoContent');
-      if (clanInfo.latestBattleInfo && clanInfo.latestBattleInfo.length > 0) {
-        matchBanner.classList.remove('hidden');
-        matchContent.innerHTML = clanInfo.latestBattleInfo.map(info => `
-          <div class="bg-slate-950/60 p-2.5 rounded-lg border border-slate-800">
-            <span class="text-slate-300 font-semibold">${escapeHtml(info)}</span>
-          </div>
-        `).join('');
+      // 2. Wood Leaderboard Table
+      let woodHtml = '';
+      if (data.woodLeaderboard.length === 0) {
+        woodHtml = `<tr><td colspan="3" style="text-align:center; color: var(--text-muted);">No data available</td></tr>`;
       } else {
-        matchBanner.classList.add('hidden');
+        data.woodLeaderboard.forEach(item => {
+          woodHtml += `<tr>
+            <td>${formatRank(item.rank)}</td>
+            <td style="font-weight: 600;">${item.name}</td>
+            <td style="text-align: right; font-weight: 700; color: var(--accent-orange);">${item.value}</td>
+          </tr>`;
+        });
       }
+      document.getElementById('woodTableBody').innerHTML = woodHtml;
 
-      switchTab(currentTab);
-    }
-
-    function renderActiveTab() {
-      if (!activeClan || !globalData[activeClan]) return;
-
-      const clanInfo = globalData[activeClan];
-      const seasonFilter = document.getElementById('seasonFilter').value; // 'season' or 'alltime'
-      const tableHeader = document.getElementById('tableHeader');
-      const tableBody = document.getElementById('tableBody');
-      const emptyState = document.getElementById('emptyState');
-
-      let htmlHeader = '';
-      let htmlRows = '';
-      let filterData = [];
-
-      if (currentTab === 'member') {
-        filterData = (clanInfo.members || []).filter(m => m.name.toLowerCase().includes(searchQuery));
-        
-        htmlHeader = `
-          <tr>
-            <th class="px-4 py-3">#</th>
-            <th class="px-4 py-3">Player Name</th>
-            <th class="px-4 py-3">Status</th>
-            <th class="px-4 py-3">Role</th>
-            <th class="px-4 py-3">Join Date</th>
-            <th class="px-4 py-3">Tenure</th>
-            <th class="px-4 py-3">Unlocked Maps</th>
-          </tr>
-        `;
-
-        htmlRows = filterData.map((m, idx) => `
-          <tr class="hover:bg-slate-800/40 transition border-b border-slate-800/40">
-            <td class="px-4 py-3 text-slate-500 font-mono">${idx + 1}</td>
-            <td class="px-4 py-3 font-bold text-white">${escapeHtml(m.name)}</td>
-            <td class="px-4 py-3">
-              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${m.status.toLowerCase() === 'active' ? 'bg-emerald-950 text-emerald-400 border border-emerald-800/50' : 'bg-amber-950 text-amber-400 border border-amber-800/50'}">
-                ${escapeHtml(m.status)}
-              </span>
-            </td>
-            <td class="px-4 py-3 text-slate-300">${escapeHtml(m.role)}</td>
-            <td class="px-4 py-3 text-slate-400">${escapeHtml(m.joinDate)}</td>
-            <td class="px-4 py-3 text-slate-400">${escapeHtml(m.tenure)}</td>
-            <td class="px-4 py-3 text-slate-300">${escapeHtml(m.unlockedMaps)}</td>
-          </tr>
-        `).join('');
-
-      } else if (currentTab === 'wood') {
-        filterData = (clanInfo.wood || []).filter(w => w.name.toLowerCase().includes(searchQuery));
-        filterData.sort((a, b) => seasonFilter === 'season' ? (b.currentSeason - a.currentSeason) : (b.allTime - a.allTime));
-
-        htmlHeader = `
-          <tr>
-            <th class="px-4 py-3">Rank</th>
-            <th class="px-4 py-3">Player Name</th>
-            <th class="px-4 py-3">Status</th>
-            <th class="px-4 py-3">Tenure</th>
-            <th class="px-4 py-3 text-right">${seasonFilter === 'season' ? 'Current Season Wood' : 'All-Time Wood'}</th>
-          </tr>
-        `;
-
-        htmlRows = filterData.map((w, idx) => `
-          <tr class="hover:bg-slate-800/40 transition border-b border-slate-800/40">
-            <td class="px-4 py-3 font-mono ${idx < 3 ? 'text-amber-400 font-bold' : 'text-slate-500'}">
-              ${idx === 0 ? '🥇 1' : idx === 1 ? '🥈 2' : idx === 2 ? '🥉 3' : idx + 1}
-            </td>
-            <td class="px-4 py-3 font-bold text-white">${escapeHtml(w.name)}</td>
-            <td class="px-4 py-3 text-slate-400">${escapeHtml(w.status)}</td>
-            <td class="px-4 py-3 text-slate-400">${escapeHtml(w.tenure)}</td>
-            <td class="px-4 py-3 text-right font-bold text-emerald-400 font-mono text-sm">
-              ${(seasonFilter === 'season' ? w.currentSeason : w.allTime).toLocaleString()}
-            </td>
-          </tr>
-        `).join('');
-
-      } else if (currentTab === 'monster') {
-        filterData = (clanInfo.monster || []).filter(m => m.name.toLowerCase().includes(searchQuery));
-        filterData.sort((a, b) => seasonFilter === 'season' ? (b.currentSeasonScore - a.currentSeasonScore) : (b.allTimeScore - a.allTimeScore));
-
-        htmlHeader = `
-          <tr>
-            <th class="px-3 py-3">Rank</th>
-            <th class="px-3 py-3">Player Name</th>
-            <th class="px-3 py-3 text-center">Total Caught</th>
-            <th class="px-2 py-3 text-center">Shredder</th>
-            <th class="px-2 py-3 text-center">Bessie</th>
-            <th class="px-2 py-3 text-center">Don Pedro</th>
-            <th class="px-2 py-3 text-center">Kraken</th>
-            <th class="px-2 py-3 text-center">Bunyip</th>
-            <th class="px-2 py-3 text-center">Nessie</th>
-            <th class="px-2 py-3 text-center">Naga</th>
-            <th class="px-2 py-3 text-center">Boiúna</th>
-          </tr>
-        `;
-
-        htmlRows = filterData.map((m, idx) => {
-          const total = seasonFilter === 'season' ? m.currentSeasonScore : m.allTimeScore;
-          const shredder = seasonFilter === 'season' ? m.shredderSeason : m.shredder;
-          const bessie = seasonFilter === 'season' ? m.bessieSeason : m.bessie;
-          const donPedro = seasonFilter === 'season' ? m.donPedroSeason : m.donPedro;
-          const kraken = seasonFilter === 'season' ? m.krakenSeason : m.kraken;
-          const bunyip = seasonFilter === 'season' ? m.bunyipSeason : m.bunyip;
-          const nessie = seasonFilter === 'season' ? m.nessieSeason : m.nessie;
-          const naga = seasonFilter === 'season' ? m.nagaSeason : m.naga;
-          const boiuna = seasonFilter === 'season' ? m.boiunaSeason : m.boiuna;
-
-          return `
-            <tr class="hover:bg-slate-800/40 transition border-b border-slate-800/40">
-              <td class="px-3 py-3 font-mono ${idx < 3 ? 'text-amber-400 font-bold' : 'text-slate-500'}">${idx + 1}</td>
-              <td class="px-3 py-3 font-bold text-white whitespace-nowrap">${escapeHtml(m.name)}</td>
-              <td class="px-3 py-3 text-center font-bold text-amber-400 font-mono text-sm bg-slate-900/40">${total}</td>
-              <td class="px-2 py-3 text-center text-slate-300 font-mono">${shredder || '-'}</td>
-              <td class="px-2 py-3 text-center text-slate-300 font-mono">${bessie || '-'}</td>
-              <td class="px-2 py-3 text-center text-slate-300 font-mono">${donPedro || '-'}</td>
-              <td class="px-2 py-3 text-center text-slate-300 font-mono">${kraken || '-'}</td>
-              <td class="px-2 py-3 text-center text-slate-300 font-mono">${bunyip || '-'}</td>
-              <td class="px-2 py-3 text-center text-slate-300 font-mono">${nessie || '-'}</td>
-              <td class="px-2 py-3 text-center text-slate-300 font-mono">${naga || '-'}</td>
-              <td class="px-2 py-3 text-center text-slate-300 font-mono">${boiuna || '-'}</td>
-            </tr>
-          `;
-        }).join('');
-
-      } else if (currentTab === 'battle') {
-        filterData = (clanInfo.battle || []).filter(b => b.name.toLowerCase().includes(searchQuery));
-        filterData.sort((a, b) => seasonFilter === 'season' ? (b.currentSeasonScore - a.currentSeasonScore) : (b.allTimeScore - a.allTimeScore));
-
-        htmlHeader = `
-          <tr>
-            <th class="px-4 py-3">Rank</th>
-            <th class="px-4 py-3">Player Name</th>
-            <th class="px-4 py-3">Tenure</th>
-            <th class="px-4 py-3 text-right">${seasonFilter === 'season' ? 'Current Season Score' : 'All-Time Score'}</th>
-            <th class="px-4 py-3 text-right">Current Battle Status</th>
-          </tr>
-        `;
-
-        htmlRows = filterData.map((b, idx) => `
-          <tr class="hover:bg-slate-800/40 transition border-b border-slate-800/40">
-            <td class="px-4 py-3 font-mono ${idx < 3 ? 'text-amber-400 font-bold' : 'text-slate-500'}">${idx + 1}</td>
-            <td class="px-4 py-3 font-bold text-white">${escapeHtml(b.name)}</td>
-            <td class="px-4 py-3 text-slate-400">${escapeHtml(b.tenure)}</td>
-            <td class="px-4 py-3 text-right font-bold text-sky-400 font-mono text-sm">
-              ${seasonFilter === 'season' ? escapeHtml(b.currentSeasonText) : escapeHtml(b.allTimeText)}
-            </td>
-            <td class="px-4 py-3 text-right font-bold text-amber-400 font-mono">
-              ${escapeHtml(b.currentBattle)}
-            </td>
-          </tr>
-        `).join('');
-      }
-
-      tableHeader.innerHTML = htmlHeader;
-      tableBody.innerHTML = htmlRows;
-
-      if (filterData.length === 0) {
-        emptyState.classList.remove('hidden');
+      // 3. Monsters Leaderboard Table
+      let monstersHtml = '';
+      if (data.monstersLeaderboard.length === 0) {
+        monstersHtml = `<tr><td colspan="3" style="text-align:center; color: var(--text-muted);">No data available</td></tr>`;
       } else {
-        emptyState.classList.add('hidden');
+        data.monstersLeaderboard.forEach(item => {
+          monstersHtml += `<tr>
+            <td>${formatRank(item.rank)}</td>
+            <td style="font-weight: 600;">${item.name}</td>
+            <td style="text-align: right; font-weight: 700; color: var(--accent-green);">${item.value}</td>
+          </tr>`;
+        });
       }
-    }
+      document.getElementById('monstersTableBody').innerHTML = monstersHtml;
 
-    function escapeHtml(str) {
-      if (!str) return '';
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
+      // 4. Battle Score Leaderboard Table
+      let battleHtml = '';
+      if (data.battleScoreLeaderboard.length === 0) {
+        battleHtml = `<tr><td colspan="3" style="text-align:center; color: var(--text-muted);">No data available</td></tr>`;
+      } else {
+        data.battleScoreLeaderboard.forEach(item => {
+          battleHtml += `<tr>
+            <td>${formatRank(item.rank)}</td>
+            <td style="font-weight: 600;">${item.name}</td>
+            <td style="text-align: right; font-weight: 700; color: var(--accent-gold);">${item.value}</td>
+          </tr>`;
+        });
+      }
+      document.getElementById('battleTableBody').innerHTML = battleHtml;
     }
   </script>
 </body>

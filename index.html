@@ -5,8 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Aussie Tackle Clan Dashboard</title>
 
+<!-- CSS & Icons -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
@@ -322,9 +324,13 @@ body[data-clan="AT5"] {
 }
 @keyframes pulse { 0%, 100% { opacity: .3; } 50% { opacity: 1; } }
 
-/* Landing Card Styling */
-.clan-card-hover { transition: all 0.3s ease; }
-.clan-card-hover:hover { transform: translateY(-5px); }
+/* Landing Card Hover Effect */
+.clan-card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.clan-card-hover:hover {
+  transform: translateY(-5px);
+}
 
 @media(max-width:575px) {
   .custom-nav-container { padding: 7px; gap: 7px; }
@@ -338,887 +344,927 @@ body[data-clan="AT5"] {
 </style>
 </head>
 
-<body>
-<div class="container-fluid px-2 px-md-4">
+<body class="antialiased text-slate-200">
 
-  <!-- TOP HEADER & NAVBAR CONTROLS -->
-  <header class="border-bottom border-secondary border-opacity-25 mb-4 py-3">
-    <div class="max-w-7xl mx-auto px-2 d-flex align-items-center justify-content-between">
-      <div class="d-flex align-items-center space-x-3 cursor-pointer" onclick="showLandingPage()" style="cursor:pointer;">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 d-flex align-items-center justify-content-center text-white fw-bold fs-5 px-3 py-1 bg-success bg-opacity-25 rounded me-2">
-          <i class="fa-solid fa-fish-fins"></i>
-        </div>
-        <div>
-          <h1 class="h5 fw-extrabold text-white mb-0">AUSSIE TACKLE</h1>
-          <p class="small text-muted mb-0">Creatures of the Deep Clan Network</p>
-        </div>
-      </div>
+  <!-- APP CONTAINER -->
+  <div id="app" class="min-vh-100 d-flex flex-column">
 
-      <div class="d-flex align-items-center gap-2">
-        <button id="btnHome" onclick="showLandingPage()" class="btn btn-outline-secondary btn-sm text-light d-none">
-          <i class="fa-solid fa-house me-1"></i> Main Menu
-        </button>
-        <button onclick="fetchData()" title="Sync Data" class="btn btn-outline-secondary btn-sm text-light">
-          <i id="syncIcon" class="fa-solid fa-arrows-rotate"></i>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- ==================== LANDING PAGE VIEW ==================== -->
-  <section id="landingPage" class="py-4">
-    <div class="text-center max-w-2xl mx-auto mb-5">
-      <div class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-50 px-3 py-1.5 rounded-pill mb-3">
-        <i class="fa-solid fa-shield-halved me-1"></i> Official Clan Network Portal
-      </div>
-      <h2 class="display-6 fw-bold text-white tracking-tight mb-2">Aussie Tackle Clan Dashboard</h2>
-      <p class="text-muted small sm:text-base">
-        Pilih salah satu klan Aussie Tackle di bawah untuk melihat statistik member, leaderboard wood, monster, dan update Battle Score secara live.
-      </p>
-    </div>
-
-    <!-- Clan Grid Cards -->
-    <div class="row g-4 justify-content-center max-w-5xl mx-auto">
-      <div class="col-12 col-sm-6 col-lg-4">
-        <div onclick="selectClan('AT1')" class="clan-card-hover card bg-dark border border-warning border-opacity-25 rounded-4 p-4 cursor-pointer position-relative overflow-hidden shadow-lg" style="cursor:pointer;">
-          <div class="d-flex align-items-center justify-content-between mb-3">
-            <span class="fs-3">🟠</span>
-            <span class="badge bg-warning bg-opacity-15 text-warning border border-warning border-opacity-50 font-monospace">AT1</span>
+    <!-- TOP NAVIGATION BAR -->
+    <header class="border-bottom border-slate-800 bg-slate-950/60 backdrop-blur-md sticky-top z-40" style="background-color: rgba(13, 27, 30, 0.9); backdrop-filter: blur(8px);">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 d-flex align-items-center justify-content-between" style="height: 64px;">
+        
+        <!-- Logo & Title -->
+        <div class="d-flex align-items-center space-x-3 cursor-pointer" onclick="showLandingPage()" style="cursor: pointer; gap: 12px;">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 d-flex align-items-center justify-content-center text-white shadow-lg shadow-emerald-900/30 fw-bold fs-5" style="width: 40px; height: 40px; border-radius: 12px; background: linear-gradient(135deg, #059669, #2dd4bf); display: flex; align-items: center; justify-content: center;">
+            <i class="fa-solid fa-fish-fins"></i>
           </div>
-          <h3 class="h5 fw-bold text-white mb-1">Aussie Tackle 1</h3>
-          <p class="text-muted small mb-4">Casual Gold Division</p>
-          <div class="d-flex align-items-center justify-content-between text-xs text-muted pt-3 border-top border-secondary border-opacity-25">
-            <span>Status: Active</span>
-            <span class="text-warning fw-semibold">View Clan <i class="fa-solid fa-arrow-right small"></i></span>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-12 col-sm-6 col-lg-4">
-        <div onclick="selectClan('AT2')" class="clan-card-hover card bg-dark border border-danger border-opacity-25 rounded-4 p-4 cursor-pointer position-relative overflow-hidden shadow-lg" style="cursor:pointer;">
-          <div class="d-flex align-items-center justify-content-between mb-3">
-            <span class="fs-3">🔴</span>
-            <span class="badge bg-danger bg-opacity-15 text-danger border border-danger border-opacity-50 font-monospace">AT2</span>
-          </div>
-          <h3 class="h5 fw-bold text-white mb-1">Aussie Tackle 2</h3>
-          <p class="text-muted small mb-4">Casual Gold Division</p>
-          <div class="d-flex align-items-center justify-content-between text-xs text-muted pt-3 border-top border-secondary border-opacity-25">
-            <span>Status: Active</span>
-            <span class="text-danger fw-semibold">View Clan <i class="fa-solid fa-arrow-right small"></i></span>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-12 col-sm-6 col-lg-4">
-        <div onclick="selectClan('AT3')" class="clan-card-hover card bg-dark border border-success border-opacity-25 rounded-4 p-4 cursor-pointer position-relative overflow-hidden shadow-lg" style="cursor:pointer;">
-          <div class="d-flex align-items-center justify-content-between mb-3">
-            <span class="fs-3">🟢</span>
-            <span class="badge bg-success bg-opacity-15 text-success border border-success border-opacity-50 font-monospace">AT3</span>
-          </div>
-          <h3 class="h5 fw-bold text-white mb-1">Aussie Tackle 3</h3>
-          <p class="text-muted small mb-4">Semi-Competitive Division</p>
-          <div class="d-flex align-items-center justify-content-between text-xs text-muted pt-3 border-top border-secondary border-opacity-25">
-            <span>Status: Active</span>
-            <span class="text-success fw-semibold">View Clan <i class="fa-solid fa-arrow-right small"></i></span>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-12 col-sm-6 col-lg-4">
-        <div onclick="selectClan('AT4')" class="clan-card-hover card bg-dark border border-primary border-opacity-25 rounded-4 p-4 cursor-pointer position-relative overflow-hidden shadow-lg" style="cursor:pointer;">
-          <div class="d-flex align-items-center justify-content-between mb-3">
-            <span class="fs-3">🔵</span>
-            <span class="badge bg-primary bg-opacity-15 text-primary border border-primary border-opacity-50 font-monospace">AT4</span>
-          </div>
-          <h3 class="h5 fw-bold text-white mb-1">Aussie Tackle 4</h3>
-          <p class="text-muted small mb-4">Hardcore Division</p>
-          <div class="d-flex align-items-center justify-content-between text-xs text-muted pt-3 border-top border-secondary border-opacity-25">
-            <span>Status: Active</span>
-            <span class="text-primary fw-semibold">View Clan <i class="fa-solid fa-arrow-right small"></i></span>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-12 col-sm-6 col-lg-4">
-        <div onclick="selectClan('AT5')" class="clan-card-hover card bg-dark border border-warning border-opacity-50 rounded-4 p-4 cursor-pointer position-relative overflow-hidden shadow-lg" style="cursor:pointer;">
-          <div class="d-flex align-items-center justify-content-between mb-3">
-            <span class="fs-3">🟤</span>
-            <span class="badge bg-warning bg-opacity-25 text-warning border border-warning border-opacity-50 font-monospace">AT5</span>
-          </div>
-          <h3 class="h5 fw-bold text-white mb-1">Aussie Tackle 5</h3>
-          <p class="text-muted small mb-4">Training & Development Clan</p>
-          <div class="d-flex align-items-center justify-content-between text-xs text-muted pt-3 border-top border-secondary border-opacity-25">
-            <span>Status: Active</span>
-            <span class="text-warning fw-semibold">View Clan <i class="fa-solid fa-arrow-right small"></i></span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ==================== CLAN DETAIL DASHBOARD VIEW ==================== -->
-  <section id="clanDetailView" class="d-none">
-
-    <!-- Header Banner Klan -->
-    <div class="header-banner rounded-4 mb-4 border border-secondary border-opacity-25">
-      <div class="header-logo-container">
-        <div class="clan-logo-img d-flex align-items-center justify-content-center bg-success bg-opacity-25 fs-3" id="currentClanEmoji">🟢</div>
-        <div class="text-start">
-          <h2 class="clan-title" id="currentClanTitle">AUSSIE TACKLE CLAN DASHBOARD</h2>
-          <div class="clan-subtitle">Creatures of the Deep Network</div>
-        </div>
-      </div>
-      <div class="sync-indicator">
-        <span class="pulse-dot" id="sync-dot"></span>
-        <span id="sync-status">Menghubungkan...</span> |
-        Updated: <span id="sync-time">Memuat...</span>
-      </div>
-    </div>
-
-    <!-- SUMMARY CARDS -->
-    <div class="row g-2 g-md-3 my-2">
-      <div class="col-6 col-md-3">
-        <div class="summary-card">
-          <i class="fa-solid fa-users d-block"></i>
-          <div class="summary-num" id="card-total-members">-</div>
-          <div class="summary-label">Total Members</div>
-        </div>
-      </div>
-      <div class="col-6 col-md-3">
-        <div class="summary-card">
-          <i class="fa-solid fa-user-check d-block"></i>
-          <div class="summary-num" id="card-active-members">-</div>
-          <div class="summary-label">Active Members</div>
-        </div>
-      </div>
-      <div class="col-6 col-md-3">
-        <div class="summary-card">
-          <i class="fa-solid fa-tree d-block"></i>
-          <div class="summary-num" id="card-total-wood">-</div>
-          <div class="summary-label">Total Wood</div>
-        </div>
-      </div>
-      <div class="col-6 col-md-3">
-        <div class="summary-card">
-          <i class="fa-solid fa-dragon d-block"></i>
-          <div class="summary-num" id="card-monsters-caught">-</div>
-          <div class="summary-label">Monsters Caught</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- NAVIGATION TABS -->
-    <div class="nav-tabs-wrapper">
-      <div class="custom-nav-container">
-        <ul class="custom-nav-row">
-          <li class="nav-item">
-            <button class="nav-link active" data-pane="overview-pane">
-              <i class="fa-solid fa-chart-pie"></i> Overview
-            </button>
-          </li>
-          <li class="nav-item">
-            <button class="nav-link" data-pane="member-pane">
-              <i class="fa-solid fa-id-card"></i> Member
-            </button>
-          </li>
-        </ul>
-        <ul class="custom-nav-row">
-          <li class="nav-item">
-            <button class="nav-link" data-pane="wood-pane">
-              <i class="fa-solid fa-tree"></i> Wood Score
-            </button>
-          </li>
-          <li class="nav-item">
-            <button class="nav-link" data-pane="monster-pane">
-              <i class="fa-solid fa-ghost"></i> Monster Score
-            </button>
-          </li>
-          <li class="nav-item">
-            <button class="nav-link" data-pane="battle-pane">
-              <i class="fa-solid fa-fish-fins"></i> Battle Score
-            </button>
-          </li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- OVERVIEW PANE -->
-    <div id="overview-pane" class="tab-pane">
-      <div class="filter-pills-wrapper">
-        <div class="filter-pills" id="overview-filters">
-          <button class="btn-filter active" data-mode="alltime" onclick="setOverviewFilter('alltime')">
-            <i class="fa-solid fa-infinity me-1"></i> All-Time
-          </button>
-          <button class="btn-filter" data-mode="season" onclick="setOverviewFilter('season')">
-            <i class="fa-regular fa-calendar me-1"></i> Current Season
-          </button>
-        </div>
-      </div>
-      <div class="row g-3 justify-content-center">
-        <div class="col-12 col-lg-10">
-          <div class="table-container">
-            <h5 class="text-warning mb-3"><i class="fa-solid fa-trophy me-2"></i>Top 3 Wood Donators</h5>
-            <div id="overview-top-wood">Memuat data...</div>
-          </div>
-        </div>
-        <div class="col-12 col-lg-10">
-          <div class="table-container">
-            <h5 class="text-info mb-3"><i class="fa-solid fa-skull me-2"></i>Top 3 Monster Hunters</h5>
-            <div id="overview-top-monster">Memuat data...</div>
-          </div>
-        </div>
-        <div class="col-12 col-lg-10">
-          <div class="table-container">
-            <h5 class="text-success mb-3"><i class="fa-solid fa-crown me-2"></i>Top 3 Battle Scorers</h5>
-            <div id="overview-top-battle">Memuat data...</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- MEMBER PANE -->
-    <div id="member-pane" class="tab-pane d-none">
-      <div class="table-container">
-        <div class="table-responsive">
-          <table class="table">
-            <thead>
-              <tr>
-                <th class="text-center">No</th>
-                <th>Player Name</th>
-                <th class="text-center">Status</th>
-                <th class="text-center">Role</th>
-                <th class="text-center">Join Date</th>
-                <th>Unlocked Maps</th>
-              </tr>
-            </thead>
-            <tbody id="table-member-body"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- WOOD SCORE PANE -->
-    <div id="wood-pane" class="tab-pane d-none">
-      <div class="filter-pills-wrapper">
-        <div class="filter-pills" id="wood-filters">
-          <button class="btn-filter" data-mode="alltime" onclick="setTableFilter('wood','alltime')">All-Time</button>
-          <button class="btn-filter" data-mode="season" onclick="setTableFilter('wood','season')">Current Season</button>
-          <button class="btn-filter active" data-mode="both" onclick="setTableFilter('wood','both')">Both</button>
-        </div>
-      </div>
-      <div class="table-container">
-        <div class="table-responsive">
-          <table class="table">
-            <thead id="wood-head"></thead>
-            <tbody id="table-wood-body"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- MONSTER SCORE PANE -->
-    <div id="monster-pane" class="tab-pane d-none">
-      <div class="filter-pills-wrapper">
-        <div class="filter-pills" id="monster-filters">
-          <button class="btn-filter" data-mode="alltime" onclick="setTableFilter('monster','alltime')">All-Time</button>
-          <button class="btn-filter" data-mode="season" onclick="setTableFilter('monster','season')">Current Season</button>
-          <button class="btn-filter active" data-mode="both" onclick="setTableFilter('monster','both')">Both</button>
-        </div>
-      </div>
-      <div class="table-container">
-        <div class="table-responsive">
-          <table class="table text-nowrap">
-            <thead id="monster-head"></thead>
-            <tbody id="table-monster-body"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- BATTLE SCORE PANE -->
-    <div id="battle-pane" class="tab-pane d-none">
-      <div class="filter-pills-wrapper">
-        <div class="filter-pills" id="battle-filters">
-          <button class="btn-filter" data-mode="alltime" onclick="setTableFilter('battle','alltime')">All-Time</button>
-          <button class="btn-filter" data-mode="season" onclick="setTableFilter('battle','season')">Current Season</button>
-          <button class="btn-filter active" data-mode="both" onclick="setTableFilter('battle','both')">Both</button>
-        </div>
-      </div>
-      <div class="table-container">
-        <div class="latest-battle-card">
-          <div class="latest-battle-title"><i class="fa-solid fa-trophy me-2"></i>Latest Battle Info</div>
-          <div class="battle-info-pills" id="latest-battle-info-container">Memuat data...</div>
-        </div>
-        <div class="table-responsive">
-          <table class="table">
-            <thead id="battle-head"></thead>
-            <tbody id="table-battle-body"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-  </section>
-
-</div>
-
-<!-- MODAL POPUP PLAYER STATS -->
-<div class="modal fade" id="playerDetailModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-large">
-    <div class="modal-content">
-      <div class="modal-header d-flex align-items-center justify-content-between">
-        <div class="d-flex align-items-center gap-3">
-          <div class="modal-player-avatar"><i class="fa-solid fa-user"></i></div>
           <div>
-            <h4 class="modal-title fw-bold text-white mb-1" id="modal-player-name">Player Name</h4>
-            <div class="d-flex gap-2" id="modal-player-badges"></div>
+            <h1 class="fw-extrabold text-lg tracking-tight text-white m-0 lh-sm" style="font-size: 1rem; font-weight: 800;">AUSSIE TACKLE</h1>
+            <p class="text-xs text-slate-400 m-0" style="font-size: 0.75rem; color: #94a3b8;">Creatures of the Deep Clan Network</p>
           </div>
         </div>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+
+        <!-- Navigation Controls -->
+        <div class="d-flex align-items-center gap-2">
+          <button id="btnHome" onclick="showLandingPage()" class="btn btn-sm btn-dark d-none align-items-center gap-2 px-3 py-1.5 rounded-lg border border-secondary border-opacity-50 text-light text-xs fw-semibold">
+            <i class="fa-solid fa-house"></i>
+            <span>Main Menu</span>
+          </button>
+          
+          <button onclick="fetchData()" title="Sync Data" class="btn btn-sm btn-dark p-2 rounded-lg border border-secondary border-opacity-50 text-light">
+            <i id="syncIcon" class="fa-solid fa-arrows-rotate"></i>
+          </button>
+
+          <span id="lastUpdatedTag" class="text-xs px-2.5 py-1 rounded-pill bg-dark text-muted font-monospace d-none d-sm-inline-block border border-secondary border-opacity-25" style="font-size: 0.75rem;">
+            Synced: --:--:--
+          </span>
+        </div>
       </div>
-      <div class="modal-body">
-        <div class="row g-3 mb-3">
-          <div class="col-6 col-md-4">
-            <div class="stat-box">
-              <div class="stat-box-title"><i class="fa-regular fa-calendar-check text-info"></i> Join Date</div>
-              <div class="stat-box-val" id="modal-join-date">-</div>
+    </header>
+
+    <!-- MAIN CONTENT WRAPPER -->
+    <main class="flex-grow-1 max-w-7xl w-100 mx-auto px-3 px-sm-4 px-lg-8 py-4">
+
+      <!-- ==================== LANDING PAGE ==================== -->
+      <section id="landingPage" class="py-4 py-sm-5 d-flex flex-column align-items-center justify-content-center">
+        
+        <!-- Header Hero -->
+        <div class="text-center max-w-2xl mx-auto mb-5">
+          <div class="inline-flex align-items-center gap-2 px-3.5 py-1.5 rounded-pill bg-emerald-950/80 border border-emerald-800/50 text-emerald-400 text-xs fw-semibold mb-3" style="display: inline-flex; background: rgba(6, 78, 59, 0.8); border: 1px solid rgba(5, 150, 105, 0.5); color: #34d399; padding: 6px 14px; border-radius: 9999px; font-size: 0.75rem;">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>Official Clan Network Portal</span>
+          </div>
+          <h2 class="text-3xl sm:text-4xl fw-extrabold text-white tracking-tight mb-3" style="font-size: 2.25rem; font-weight: 800;">
+            Aussie Tackle Clan Dashboard
+          </h2>
+          <p class="text-slate-400 text-sm sm:text-base leading-relaxed" style="color: #94a3b8; font-size: 0.95rem;">
+            Choose an Aussie Tackle clan below to check out member statistics, wood leaderboards, total monsters caught, and live Battle Score updates.
+          </p>
+        </div>
+
+        <!-- Clan Selection Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-100 max-w-5xl" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; width: 100%; max-width: 1000px;">
+          
+          <!-- AT1 Card -->
+          <div onclick="selectClan('AT1')" class="clan-card-hover bg-slate-900/80 rounded-2xl p-5 border border-amber-900/40 hover:border-orange-500/80 cursor-pointer position-relative overflow-hidden group shadow-xl" style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(120, 53, 15, 0.4); border-radius: 1rem; padding: 1.5rem; cursor: pointer; position: relative;">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <span class="fs-3">🟠</span>
+              <span class="px-2.5 py-1 rounded-md bg-orange-950/80 border border-orange-800/60 text-orange-400 text-xs fw-bold font-monospace" style="background: rgba(67, 20, 7, 0.8); border: 1px solid rgba(154, 52, 18, 0.6); color: #fb923c; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem;">AT1</span>
+            </div>
+            <h3 class="text-xl fw-bold text-white mb-1" style="font-size: 1.25rem; font-weight: 700; color: white;">Aussie Tackle 1</h3>
+            <p class="text-slate-400 text-xs mb-4" style="color: #94a3b8; font-size: 0.8rem;">Casual Gold Division</p>
+            <div class="d-flex align-items-center justify-content-between text-xs text-slate-400 pt-3 border-top border-slate-800" style="border-top: 1px solid #1e293b; font-size: 0.75rem; color: #94a3b8;">
+              <span>Status: Active</span>
+              <span class="text-orange-400 fw-semibold d-flex align-items-center gap-1" style="color: #fb923c;">
+                View Clan <i class="fa-solid fa-arrow-right text-[10px]"></i>
+              </span>
             </div>
           </div>
-          <div class="col-6 col-md-4">
-            <div class="stat-box">
-              <div class="stat-box-title"><i class="fa-solid fa-hourglass-half text-warning"></i> Tenure</div>
-              <div class="stat-box-val" id="modal-tenure">-</div>
+
+          <!-- AT2 Card -->
+          <div onclick="selectClan('AT2')" class="clan-card-hover bg-slate-900/80 rounded-2xl p-5 border border-rose-900/40 hover:border-red-500/80 cursor-pointer position-relative overflow-hidden group shadow-xl" style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(136, 19, 55, 0.4); border-radius: 1rem; padding: 1.5rem; cursor: pointer; position: relative;">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <span class="fs-3">🔴</span>
+              <span class="px-2.5 py-1 rounded-md bg-red-950/80 border border-red-800/60 text-red-400 text-xs fw-bold font-monospace" style="background: rgba(69, 10, 10, 0.8); border: 1px solid rgba(153, 27, 27, 0.6); color: #f87171; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem;">AT2</span>
+            </div>
+            <h3 class="text-xl fw-bold text-white mb-1" style="font-size: 1.25rem; font-weight: 700; color: white;">Aussie Tackle 2</h3>
+            <p class="text-slate-400 text-xs mb-4" style="color: #94a3b8; font-size: 0.8rem;">Casual Gold Division</p>
+            <div class="d-flex align-items-center justify-content-between text-xs text-slate-400 pt-3 border-top border-slate-800" style="border-top: 1px solid #1e293b; font-size: 0.75rem; color: #94a3b8;">
+              <span>Status: Active</span>
+              <span class="text-red-400 fw-semibold d-flex align-items-center gap-1" style="color: #f87171;">
+                View Clan <i class="fa-solid fa-arrow-right text-[10px]"></i>
+              </span>
             </div>
           </div>
-          <div class="col-12 col-md-4">
-            <div class="stat-box">
-              <div class="stat-box-title"><i class="fa-solid fa-map-location-dot text-success"></i> Unlocked Maps</div>
-              <div class="stat-box-val fs-6" id="modal-unlocked-maps">-</div>
+
+          <!-- AT3 Card -->
+          <div onclick="selectClan('AT3')" class="clan-card-hover bg-slate-900/80 rounded-2xl p-5 border border-emerald-900/40 hover:border-green-500/80 cursor-pointer position-relative overflow-hidden group shadow-xl" style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(6, 78, 59, 0.4); border-radius: 1rem; padding: 1.5rem; cursor: pointer; position: relative;">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <span class="fs-3">🟢</span>
+              <span class="px-2.5 py-1 rounded-md bg-green-950/80 border border-green-800/60 text-green-400 text-xs fw-bold font-monospace" style="background: rgba(5, 46, 22, 0.8); border: 1px solid rgba(22, 101, 52, 0.6); color: #4ade80; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem;">AT3</span>
+            </div>
+            <h3 class="text-xl fw-bold text-white mb-1" style="font-size: 1.25rem; font-weight: 700; color: white;">Aussie Tackle 3</h3>
+            <p class="text-slate-400 text-xs mb-4" style="color: #94a3b8; font-size: 0.8rem;">Semi-Competitive Division</p>
+            <div class="d-flex align-items-center justify-content-between text-xs text-slate-400 pt-3 border-top border-slate-800" style="border-top: 1px solid #1e293b; font-size: 0.75rem; color: #94a3b8;">
+              <span>Status: Active</span>
+              <span class="text-green-400 fw-semibold d-flex align-items-center gap-1" style="color: #4ade80;">
+                View Clan <i class="fa-solid fa-arrow-right text-[10px]"></i>
+              </span>
+            </div>
+          </div>
+
+          <!-- AT4 Card -->
+          <div onclick="selectClan('AT4')" class="clan-card-hover bg-slate-900/80 rounded-2xl p-5 border border-blue-900/40 hover:border-blue-500/80 cursor-pointer position-relative overflow-hidden group shadow-xl" style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(30, 58, 138, 0.4); border-radius: 1rem; padding: 1.5rem; cursor: pointer; position: relative;">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <span class="fs-3">🔵</span>
+              <span class="px-2.5 py-1 rounded-md bg-blue-950/80 border border-blue-800/60 text-blue-400 text-xs fw-bold font-monospace" style="background: rgba(23, 37, 84, 0.8); border: 1px solid rgba(30, 64, 175, 0.6); color: #60a5fa; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem;">AT4</span>
+            </div>
+            <h3 class="text-xl fw-bold text-white mb-1" style="font-size: 1.25rem; font-weight: 700; color: white;">Aussie Tackle 4</h3>
+            <p class="text-slate-400 text-xs mb-4" style="color: #94a3b8; font-size: 0.8rem;">Hardcore Division</p>
+            <div class="d-flex align-items-center justify-content-between text-xs text-slate-400 pt-3 border-top border-slate-800" style="border-top: 1px solid #1e293b; font-size: 0.75rem; color: #94a3b8;">
+              <span>Status: Active</span>
+              <span class="text-blue-400 fw-semibold d-flex align-items-center gap-1" style="color: #60a5fa;">
+                View Clan <i class="fa-solid fa-arrow-right text-[10px]"></i>
+              </span>
+            </div>
+          </div>
+
+          <!-- AT5 Card -->
+          <div onclick="selectClan('AT5')" class="clan-card-hover bg-slate-900/80 rounded-2xl p-5 border border-amber-950/60 hover:border-amber-600/80 cursor-pointer position-relative overflow-hidden group shadow-xl" style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(120, 53, 15, 0.5); border-radius: 1rem; padding: 1.5rem; cursor: pointer; position: relative;">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <span class="fs-3">🟤</span>
+              <span class="px-2.5 py-1 rounded-md bg-amber-950/80 border border-amber-800/60 text-amber-500 text-xs fw-bold font-monospace" style="background: rgba(69, 26, 3, 0.8); border: 1px solid rgba(180, 83, 9, 0.6); color: #f59e0b; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem;">AT5</span>
+            </div>
+            <h3 class="text-xl fw-bold text-white mb-1" style="font-size: 1.25rem; font-weight: 700; color: white;">Aussie Tackle 5</h3>
+            <p class="text-slate-400 text-xs mb-4" style="color: #94a3b8; font-size: 0.8rem;">Training & Development Clan</p>
+            <div class="d-flex align-items-center justify-content-between text-xs text-slate-400 pt-3 border-top border-slate-800" style="border-top: 1px solid #1e293b; font-size: 0.75rem; color: #94a3b8;">
+              <span>Status: Active</span>
+              <span class="text-amber-500 fw-semibold d-flex align-items-center gap-1" style="color: #f59e0b;">
+                View Clan <i class="fa-solid fa-arrow-right text-[10px]"></i>
+              </span>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ==================== CLAN DETAIL DASHBOARD VIEW ==================== -->
+      <section id="clanDetailView" class="d-none">
+
+        <!-- Header Banner Klan -->
+        <div class="header-banner rounded-4 mb-4 border border-secondary border-opacity-25">
+          <div class="header-logo-container">
+            <div class="clan-logo-img d-flex align-items-center justify-content-center bg-success bg-opacity-25 fs-3" id="currentClanEmoji">🟢</div>
+            <div class="text-start">
+              <h2 class="clan-title" id="currentClanTitle">AUSSIE TACKLE CLAN DASHBOARD</h2>
+              <div class="clan-subtitle">Creatures of the Deep Network</div>
+            </div>
+          </div>
+          <div class="sync-indicator">
+            <span class="pulse-dot" id="sync-dot"></span>
+            <span id="sync-status">Menghubungkan...</span> |
+            Updated: <span id="sync-time">Memuat...</span>
+          </div>
+        </div>
+
+        <!-- SUMMARY CARDS -->
+        <div class="row g-2 g-md-3 my-2">
+          <div class="col-6 col-md-3">
+            <div class="summary-card">
+              <i class="fa-solid fa-users d-block"></i>
+              <div class="summary-num" id="card-total-members">-</div>
+              <div class="summary-label">Total Members</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="summary-card">
+              <i class="fa-solid fa-user-check d-block"></i>
+              <div class="summary-num" id="card-active-members">-</div>
+              <div class="summary-label">Active Members</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="summary-card">
+              <i class="fa-solid fa-tree d-block"></i>
+              <div class="summary-num" id="card-total-wood">-</div>
+              <div class="summary-label">Total Wood</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="summary-card">
+              <i class="fa-solid fa-dragon d-block"></i>
+              <div class="summary-num" id="card-monsters-caught">-</div>
+              <div class="summary-label">Monsters Caught</div>
             </div>
           </div>
         </div>
 
-        <div class="row g-3">
-          <div class="col-12 col-md-4">
-            <div class="stat-box h-100">
-              <div class="stat-box-title text-warning"><i class="fa-solid fa-tree"></i> Wood Donated</div>
-              <div class="stat-label-row"><span class="stat-lbl-all">All:</span><span class="fw-bold text-warning" id="modal-wood-alltime">0</span></div>
-              <div class="stat-label-row"><span class="stat-lbl-new">New:</span><span class="fw-bold text-light" id="modal-wood-season">0</span></div>
+        <!-- NAVIGATION TABS -->
+        <div class="nav-tabs-wrapper">
+          <div class="custom-nav-container">
+            <ul class="custom-nav-row">
+              <li class="nav-item">
+                <button class="nav-link active" data-pane="overview-pane">
+                  <i class="fa-solid fa-chart-pie"></i> Overview
+                </button>
+              </li>
+              <li class="nav-item">
+                <button class="nav-link" data-pane="member-pane">
+                  <i class="fa-solid fa-id-card"></i> Member
+                </button>
+              </li>
+            </ul>
+            <ul class="custom-nav-row">
+              <li class="nav-item">
+                <button class="nav-link" data-pane="wood-pane">
+                  <i class="fa-solid fa-tree"></i> Wood Score
+                </button>
+              </li>
+              <li class="nav-item">
+                <button class="nav-link" data-pane="monster-pane">
+                  <i class="fa-solid fa-ghost"></i> Monster Score
+                </button>
+              </li>
+              <li class="nav-item">
+                <button class="nav-link" data-pane="battle-pane">
+                  <i class="fa-solid fa-fish-fins"></i> Battle Score
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- OVERVIEW PANE -->
+        <div id="overview-pane" class="tab-pane">
+          <div class="filter-pills-wrapper">
+            <div class="filter-pills" id="overview-filters">
+              <button class="btn-filter active" data-mode="alltime" onclick="setOverviewFilter('alltime')">
+                <i class="fa-solid fa-infinity me-1"></i> All-Time
+              </button>
+              <button class="btn-filter" data-mode="season" onclick="setOverviewFilter('season')">
+                <i class="fa-regular fa-calendar me-1"></i> Current Season
+              </button>
             </div>
           </div>
-          <div class="col-12 col-md-4">
-            <div class="stat-box h-100">
-              <div class="stat-box-title text-success"><i class="fa-solid fa-fish-fins"></i> Battle Score</div>
-              <div class="stat-label-row"><span class="stat-lbl-all">All:</span><span class="fw-bold text-success" id="modal-battle-alltime">-</span></div>
-              <div class="stat-label-row"><span class="stat-lbl-new">New:</span><span class="fw-bold text-light" id="modal-battle-season">-</span></div>
+          <div class="row g-3 justify-content-center">
+            <div class="col-12 col-lg-10">
+              <div class="table-container">
+                <h5 class="text-warning mb-3"><i class="fa-solid fa-trophy me-2"></i>Top 3 Wood Donators</h5>
+                <div id="overview-top-wood">Memuat data...</div>
+              </div>
             </div>
-          </div>
-          <div class="col-12 col-md-4">
-            <div class="stat-box h-100">
-              <div class="stat-box-title text-info"><i class="fa-solid fa-dragon"></i> Monster Caught</div>
-              <div class="stat-label-row"><span class="stat-lbl-all">All:</span><span class="fw-bold text-info" id="modal-monster-alltime">-</span></div>
-              <div class="stat-label-row"><span class="stat-lbl-new">New:</span><span class="fw-bold text-light" id="modal-monster-season">-</span></div>
+            <div class="col-12 col-lg-10">
+              <div class="table-container">
+                <h5 class="text-info mb-3"><i class="fa-solid fa-skull me-2"></i>Top 3 Monster Hunters</h5>
+                <div id="overview-top-monster">Memuat data...</div>
+              </div>
+            </div>
+            <div class="col-12 col-lg-10">
+              <div class="table-container">
+                <h5 class="text-success mb-3"><i class="fa-solid fa-crown me-2"></i>Top 3 Battle Scorers</h5>
+                <div id="overview-top-battle">Memuat data...</div>
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="stat-box mt-3 mb-0">
-          <div class="stat-box-title text-info mb-2"><i class="fa-solid fa-ghost"></i> Monsters Caught Detail</div>
-          <div id="modal-monster-breakdown" class="d-flex flex-wrap gap-2">
-            <span class="text-muted small">Tidak ada data monster</span>
+        <!-- MEMBER PANE -->
+        <div id="member-pane" class="tab-pane d-none">
+          <div class="table-container">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th class="text-center">No</th>
+                    <th>Player Name</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-center">Role</th>
+                    <th class="text-center">Join Date</th>
+                    <th>Unlocked Maps</th>
+                  </tr>
+                </thead>
+                <tbody id="table-member-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- WOOD SCORE PANE -->
+        <div id="wood-pane" class="tab-pane d-none">
+          <div class="filter-pills-wrapper">
+            <div class="filter-pills" id="wood-filters">
+              <button class="btn-filter" data-mode="alltime" onclick="setTableFilter('wood','alltime')">All-Time</button>
+              <button class="btn-filter" data-mode="season" onclick="setTableFilter('wood','season')">Current Season</button>
+              <button class="btn-filter active" data-mode="both" onclick="setTableFilter('wood','both')">Both</button>
+            </div>
+          </div>
+          <div class="table-container">
+            <div class="table-responsive">
+              <table class="table">
+                <thead id="wood-head"></thead>
+                <tbody id="table-wood-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- MONSTER SCORE PANE -->
+        <div id="monster-pane" class="tab-pane d-none">
+          <div class="filter-pills-wrapper">
+            <div class="filter-pills" id="monster-filters">
+              <button class="btn-filter" data-mode="alltime" onclick="setTableFilter('monster','alltime')">All-Time</button>
+              <button class="btn-filter" data-mode="season" onclick="setTableFilter('monster','season')">Current Season</button>
+              <button class="btn-filter active" data-mode="both" onclick="setTableFilter('monster','both')">Both</button>
+            </div>
+          </div>
+          <div class="table-container">
+            <div class="table-responsive">
+              <table class="table text-nowrap">
+                <thead id="monster-head"></thead>
+                <tbody id="table-monster-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- BATTLE SCORE PANE -->
+        <div id="battle-pane" class="tab-pane d-none">
+          <div class="filter-pills-wrapper">
+            <div class="filter-pills" id="battle-filters">
+              <button class="btn-filter" data-mode="alltime" onclick="setTableFilter('battle','alltime')">All-Time</button>
+              <button class="btn-filter" data-mode="season" onclick="setTableFilter('battle','season')">Current Season</button>
+              <button class="btn-filter active" data-mode="both" onclick="setTableFilter('battle','both')">Both</button>
+            </div>
+          </div>
+          <div class="table-container">
+            <div class="latest-battle-card">
+              <div class="latest-battle-title"><i class="fa-solid fa-trophy me-2"></i>Latest Battle Info</div>
+              <div class="battle-info-pills" id="latest-battle-info-container">Memuat data...</div>
+            </div>
+            <div class="table-responsive">
+              <table class="table">
+                <thead id="battle-head"></thead>
+                <tbody id="table-battle-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="mt-auto border-top border-secondary border-opacity-25 bg-slate-950 py-3 text-center text-xs text-muted" style="font-size: 0.75rem;">
+      <p class="mb-0">&copy; 2026 Aussie Tackle Clan Network. Built for Creatures of the Deep Community.</p>
+    </footer>
+
+  </div>
+
+  <!-- MODAL POPUP PLAYER STATS -->
+  <div class="modal fade" id="playerDetailModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-large">
+      <div class="modal-content">
+        <div class="modal-header d-flex align-items-center justify-content-between">
+          <div class="d-flex align-items-center gap-3">
+            <div class="modal-player-avatar"><i class="fa-solid fa-user"></i></div>
+            <div>
+              <h4 class="modal-title fw-bold text-white mb-1" id="modal-player-name">Player Name</h4>
+              <div class="d-flex gap-2" id="modal-player-badges"></div>
+            </div>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row g-3 mb-3">
+            <div class="col-6 col-md-4">
+              <div class="stat-box">
+                <div class="stat-box-title"><i class="fa-regular fa-calendar-check text-info"></i> Join Date</div>
+                <div class="stat-box-val" id="modal-join-date">-</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4">
+              <div class="stat-box">
+                <div class="stat-box-title"><i class="fa-solid fa-hourglass-half text-warning"></i> Tenure</div>
+                <div class="stat-box-val" id="modal-tenure">-</div>
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="stat-box">
+                <div class="stat-box-title"><i class="fa-solid fa-map-location-dot text-success"></i> Unlocked Maps</div>
+                <div class="stat-box-val fs-6" id="modal-unlocked-maps">-</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-12 col-md-4">
+              <div class="stat-box h-100">
+                <div class="stat-box-title text-warning"><i class="fa-solid fa-tree"></i> Wood Donated</div>
+                <div class="stat-label-row"><span class="stat-lbl-all">All:</span><span class="fw-bold text-warning" id="modal-wood-alltime">0</span></div>
+                <div class="stat-label-row"><span class="stat-lbl-new">New:</span><span class="fw-bold text-light" id="modal-wood-season">0</span></div>
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="stat-box h-100">
+                <div class="stat-box-title text-success"><i class="fa-solid fa-fish-fins"></i> Battle Score</div>
+                <div class="stat-label-row"><span class="stat-lbl-all">All:</span><span class="fw-bold text-success" id="modal-battle-alltime">-</span></div>
+                <div class="stat-label-row"><span class="stat-lbl-new">New:</span><span class="fw-bold text-light" id="modal-battle-season">-</span></div>
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="stat-box h-100">
+                <div class="stat-box-title text-info"><i class="fa-solid fa-dragon"></i> Monster Caught</div>
+                <div class="stat-label-row"><span class="stat-lbl-all">All:</span><span class="fw-bold text-info" id="modal-monster-alltime">-</span></div>
+                <div class="stat-label-row"><span class="stat-lbl-new">New:</span><span class="fw-bold text-light" id="modal-monster-season">-</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="stat-box mt-3 mb-0">
+            <div class="stat-box-title text-info mb-2"><i class="fa-solid fa-ghost"></i> Monsters Caught Detail</div>
+            <div id="modal-monster-breakdown" class="d-flex flex-wrap gap-2">
+              <span class="text-muted small">Tidak ada data monster</span>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyjvC7I9l2OA9fcgBjUrz3qAIFenCFRsr5QVab7tZOtIU7QQ_3lH71fl_3K6ot73yAS/exec';
-const SYNC_INTERVAL = 20000;
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyjvC7I9l2OA9fcgBjUrz3qAIFenCFRsr5QVab7tZOtIU7QQ_3lH71fl_3K6ot73yAS/exec';
+  const SYNC_INTERVAL = 20000;
 
-const CLAN_META = {
-  'AT1': { name: 'Aussie Tackle 1', emoji: '🟠', code: 'AT1' },
-  'AT2': { name: 'Aussie Tackle 2', emoji: '🔴', code: 'AT2' },
-  'AT3': { name: 'Aussie Tackle 3', emoji: '🟢', code: 'AT3' },
-  'AT4': { name: 'Aussie Tackle 4', emoji: '🔵', code: 'AT4' },
-  'AT5': { name: 'Aussie Tackle 5', emoji: '🟤', code: 'AT5' }
-};
+  const CLAN_META = {
+    'AT1': { name: 'Aussie Tackle 1', emoji: '🟠', code: 'AT1' },
+    'AT2': { name: 'Aussie Tackle 2', emoji: '🔴', code: 'AT2' },
+    'AT3': { name: 'Aussie Tackle 3', emoji: '🟢', code: 'AT3' },
+    'AT4': { name: 'Aussie Tackle 4', emoji: '🔵', code: 'AT4' },
+    'AT5': { name: 'Aussie Tackle 5', emoji: '🟤', code: 'AT5' }
+  };
 
-let globalClansData = {};
-let activeClan = null;
-let cachedClanData = null;
-let currentOverviewFilter = 'alltime';
-let tableFilters = { wood: 'both', monster: 'both', battle: 'both' };
-let timerId = null;
-let requestPending = false;
-let playerModal = null;
+  let globalClansData = {};
+  let activeClan = null;
+  let cachedClanData = null;
+  let currentOverviewFilter = 'alltime';
+  let tableFilters = { wood: 'both', monster: 'both', battle: 'both' };
+  let timerId = null;
+  let requestPending = false;
+  let playerModal = null;
 
-const MONSTER_COLUMNS = [
-  {key:'shredder', seasonKey:'shredderSeason', label:'Shredder'},
-  {key:'bessie', seasonKey:'bessieSeason', label:'Bessie'},
-  {key:'donPedro', seasonKey:'donPedroSeason', label:'Don Pedro'},
-  {key:'kraken', seasonKey:'krakenSeason', label:'Kraken'},
-  {key:'bunyip', seasonKey:'bunyipSeason', label:'Bunyip'},
-  {key:'nessie', seasonKey:'nessieSeason', label:'Nessie'},
-  {key:'naga', seasonKey:'nagaSeason', label:'Naga'},
-  {key:'boiuna', seasonKey:'boiunaSeason', label:'Boiúna'}
-];
+  const MONSTER_COLUMNS = [
+    {key:'shredder', seasonKey:'shredderSeason', label:'Shredder'},
+    {key:'bessie', seasonKey:'bessieSeason', label:'Bessie'},
+    {key:'donPedro', seasonKey:'donPedroSeason', label:'Don Pedro'},
+    {key:'kraken', seasonKey:'krakenSeason', label:'Kraken'},
+    {key:'bunyip', seasonKey:'bunyipSeason', label:'Bunyip'},
+    {key:'nessie', seasonKey:'nessieSeason', label:'Nessie'},
+    {key:'naga', seasonKey:'nagaSeason', label:'Naga'},
+    {key:'boiuna', seasonKey:'boiunaSeason', label:'Boiúna'}
+  ];
 
-document.addEventListener('DOMContentLoaded', () => {
-  playerModal = new bootstrap.Modal(document.getElementById('playerDetailModal'));
+  document.addEventListener('DOMContentLoaded', () => {
+    playerModal = new bootstrap.Modal(document.getElementById('playerDetailModal'));
 
-  document.querySelectorAll('.custom-nav-row .nav-link').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.custom-nav-row .nav-link').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('d-none'));
-      document.getElementById(btn.dataset.pane).classList.remove('d-none');
+    document.querySelectorAll('.custom-nav-row .nav-link').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.custom-nav-row .nav-link').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('d-none'));
+        document.getElementById(btn.dataset.pane).classList.remove('d-none');
+      });
+    });
+
+    fetchData();
+    startPolling();
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        stopPolling();
+      } else {
+        fetchData();
+        startPolling();
+      }
     });
   });
 
-  fetchData();
-  startPolling();
+  function startPolling() {
+    stopPolling();
+    timerId = setInterval(fetchData, SYNC_INTERVAL);
+  }
 
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden) {
-      stopPolling();
+  function stopPolling() {
+    if (timerId) clearInterval(timerId);
+    timerId = null;
+  }
+
+  function fetchData() {
+    if (requestPending) return;
+
+    requestPending = true;
+    const syncStatus = document.getElementById('sync-status');
+    if (syncStatus) syncStatus.innerText = 'Menyinkronkan...';
+
+    fetch(APPS_SCRIPT_URL)
+      .then(res => res.json())
+      .then(data => {
+        requestPending = false;
+        if (data.error) {
+          handleFetchError(data.error);
+          return;
+        }
+
+        globalClansData = data.clans || data;
+        
+        if (syncStatus) syncStatus.innerText = 'Real-time Sync Active';
+        const syncDot = document.getElementById('sync-dot');
+        if (syncDot) {
+          syncDot.style.backgroundColor = 'var(--accent-green)';
+          syncDot.style.boxShadow = '0 0 8px var(--accent-green)';
+        }
+        const syncTime = document.getElementById('sync-time');
+        if (syncTime) syncTime.innerText = data.lastUpdated || '-';
+
+        if (activeClan && globalClansData[activeClan]) {
+          cachedClanData = globalClansData[activeClan];
+          renderDashboard(cachedClanData);
+        }
+      })
+      .catch(err => {
+        requestPending = false;
+        handleFetchError(err);
+      });
+  }
+
+  function handleFetchError(err) {
+    console.error('Gagal mengambil data:', err);
+    const syncStatus = document.getElementById('sync-status');
+    if (syncStatus) syncStatus.innerText = 'Sync Gagal';
+    const syncDot = document.getElementById('sync-dot');
+    if (syncDot) {
+      syncDot.style.backgroundColor = '#e53935';
+      syncDot.style.boxShadow = '0 0 8px #e53935';
+    }
+  }
+
+  function showLandingPage() {
+    activeClan = null;
+    cachedClanData = null;
+    document.body.removeAttribute('data-clan');
+    document.getElementById('landingPage').classList.remove('d-none');
+    document.getElementById('clanDetailView').classList.add('d-none');
+    document.getElementById('btnHome').classList.add('d-none');
+  }
+
+  function selectClan(clanCode) {
+    activeClan = clanCode;
+    document.body.setAttribute('data-clan', clanCode);
+
+    document.getElementById('landingPage').classList.add('d-none');
+    document.getElementById('clanDetailView').classList.remove('d-none');
+    document.getElementById('btnHome').classList.remove('d-none');
+
+    const meta = CLAN_META[clanCode] || { name: clanCode, emoji: '🛡️', code: clanCode };
+    document.getElementById('currentClanTitle').innerText = `${meta.name.toUpperCase()} DASHBOARD`;
+    document.getElementById('currentClanEmoji').innerText = meta.emoji;
+
+    if (globalClansData[activeClan]) {
+      cachedClanData = globalClansData[activeClan];
+      renderDashboard(cachedClanData);
     } else {
-      fetchData();
-      startPolling();
+      cachedClanData = globalClansData;
+      renderDashboard(cachedClanData);
     }
-  });
-});
-
-function startPolling() {
-  stopPolling();
-  timerId = setInterval(fetchData, SYNC_INTERVAL);
-}
-
-function stopPolling() {
-  if (timerId) clearInterval(timerId);
-  timerId = null;
-}
-
-function fetchData() {
-  if (requestPending) return;
-
-  requestPending = true;
-  document.getElementById('sync-status').innerText = 'Menyinkronkan...';
-
-  fetch(APPS_SCRIPT_URL)
-    .then(res => res.json())
-    .then(data => {
-      requestPending = false;
-      if (data.error) {
-        handleFetchError(data.error);
-        return;
-      }
-
-      // Mendukung format multi-klan (json.clans) maupun single klan langsung
-      globalClansData = data.clans || data;
-      
-      document.getElementById('sync-status').innerText = 'Real-time Sync Active';
-      document.getElementById('sync-dot').style.backgroundColor = 'var(--accent-green)';
-      document.getElementById('sync-dot').style.boxShadow = '0 0 8px var(--accent-green)';
-      document.getElementById('sync-time').innerText = data.lastUpdated || '-';
-
-      if (activeClan && globalClansData[activeClan]) {
-        cachedClanData = globalClansData[activeClan];
-        renderDashboard(cachedClanData);
-      }
-    })
-    .catch(err => {
-      requestPending = false;
-      handleFetchError(err);
-    });
-}
-
-function handleFetchError(err) {
-  console.error('Gagal mengambil data:', err);
-  document.getElementById('sync-status').innerText = 'Sync Gagal';
-  document.getElementById('sync-dot').style.backgroundColor = '#e53935';
-  document.getElementById('sync-dot').style.boxShadow = '0 0 8px #e53935';
-}
-
-function showLandingPage() {
-  activeClan = null;
-  cachedClanData = null;
-  document.body.removeAttribute('data-clan');
-  document.getElementById('landingPage').classList.remove('d-none');
-  document.getElementById('clanDetailView').classList.add('d-none');
-  document.getElementById('btnHome').classList.add('d-none');
-}
-
-function selectClan(clanCode) {
-  activeClan = clanCode;
-  document.body.setAttribute('data-clan', clanCode);
-
-  document.getElementById('landingPage').classList.add('d-none');
-  document.getElementById('clanDetailView').classList.remove('d-none');
-  document.getElementById('btnHome').classList.remove('d-none');
-
-  const meta = CLAN_META[clanCode] || { name: clanCode, emoji: '🛡️', code: clanCode };
-  document.getElementById('currentClanTitle').innerText = `${meta.name.toUpperCase()} DASHBOARD`;
-  document.getElementById('currentClanEmoji').innerText = meta.emoji;
-
-  if (globalClansData[activeClan]) {
-    cachedClanData = globalClansData[activeClan];
-    renderDashboard(cachedClanData);
-  } else {
-    // Jika data belum di-fetch atau struktur objek klan langsung
-    cachedClanData = globalClansData;
-    renderDashboard(cachedClanData);
-  }
-}
-
-function esc(value) {
-  return String(value == null ? '' : value).replace(/[&<>"']/g, c => ({
-    '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
-  })[c]);
-}
-
-function num(val) {
-  if (val == null || val === '' || val === '-') return 0;
-  if (typeof val === 'number') return val;
-  const match = String(val).trim().match(/^([\d,.]+)/);
-  return match ? Number(match[1].replace(/,/g,'')) || 0 : 0;
-}
-
-function fmt(val) {
-  return Number(val || 0).toLocaleString('en-US');
-}
-
-function fmtMonsterVal(val) {
-  const n = num(val);
-  return n > 0 ? n.toLocaleString('en-US') : '';
-}
-
-function scoreText(val) {
-  return val == null || val === '' ? '-' : esc(val);
-}
-
-function statusBadge(status) {
-  const s = String(status || 'Active');
-  const cls = s.toLowerCase() === 'active' ? 'badge-active' : 'badge-leave';
-  return `<span class="badge ${cls}">${esc(s)}</span>`;
-}
-
-function roleBadge(role) {
-  const r = String(role || 'Member').toLowerCase();
-  let cls = 'badge-member';
-  if (r === 'leader') cls = 'badge-leader';
-  if (r === 'co-leader') cls = 'badge-coleader';
-  return `<span class="badge ${cls}">${esc(role || 'Member')}</span>`;
-}
-
-function playerCell(name, idx, score) {
-  let crown = '';
-  if (score > 0) {
-    if (idx === 0) crown = '<i class="fa-solid fa-crown" style="color: #ffd700;"></i>';
-    else if (idx === 1) crown = '<i class="fa-solid fa-crown" style="color: #c0c0c0;"></i>';
-    else if (idx === 2) crown = '<i class="fa-solid fa-crown" style="color: #cd7f32;"></i>';
-  }
-  return `<div class="player-cell-wrapper">
-    <span class="crown-slot">${crown}</span>
-    <span class="player-name-text">${esc(name)}</span>
-  </div>`;
-}
-
-function sortByScore(arr, prop) {
-  return [...(arr || [])].sort((a,b) => (Number(b[prop]) || 0) - (Number(a[prop]) || 0));
-}
-
-function renderDashboard(data) {
-  if (!data) return;
-
-  const members = data.members || [];
-  const wood = data.wood || [];
-  const monster = data.monster || [];
-
-  document.getElementById('card-total-members').innerText = members.length;
-  document.getElementById('card-active-members').innerText = members.filter(m => String(m.status).toLowerCase() === 'active').length;
-  document.getElementById('card-total-wood').innerText = wood.reduce((sum,w) => sum + (Number(w.allTime) || 0), 0).toLocaleString('en-US');
-
-  const totalMonsters = monster.reduce((sum, m) => sum + (Number(m.allTimeScore) || 0), 0);
-  document.getElementById('card-monsters-caught').innerText = fmt(totalMonsters);
-
-  renderMembers();
-  renderWood();
-  renderMonster();
-  renderBattle();
-  renderLatestBattle(data.latestBattleInfo || []);
-  renderOverview();
-}
-
-function renderMembers() {
-  const members = cachedClanData?.members || [];
-  const body = document.getElementById('table-member-body');
-
-  if (!members.length) {
-    body.innerHTML = '<tr><td colspan="6" class="text-center">Tidak ada data member</td></tr>';
-    return;
   }
 
-  body.innerHTML = members.map(m => `<tr>
-    <td class="text-center">${esc(m.no)}</td>
-    <td>
-      <span class="fw-bold member-clickable" onclick="openPlayerModal('${esc(m.name)}')">
-        ${esc(m.name)} <i class="fa-solid fa-circle-info ms-1 small"></i>
-      </span>
-    </td>
-    <td class="text-center">${statusBadge(m.status)}</td>
-    <td class="text-center">${roleBadge(m.role)}</td>
-    <td class="text-center">${esc(m.joinDate)}</td>
-    <td>${esc(m.unlockedMaps)}</td>
-  </tr>`).join('');
-}
+  function esc(value) {
+    return String(value == null ? '' : value).replace(/[&<>"']/g, c => ({
+      '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
+    })[c]);
+  }
 
-function openPlayerModal(playerName) {
-  if (!cachedClanData) return;
-  const nameClean = String(playerName).trim().toLowerCase();
+  function num(val) {
+    if (val == null || val === '' || val === '-') return 0;
+    if (typeof val === 'number') return val;
+    const match = String(val).trim().match(/^([\d,.]+)/);
+    return match ? Number(match[1].replace(/,/g,'')) || 0 : 0;
+  }
 
-  const memberData = (cachedClanData.members || []).find(m => String(m.name).trim().toLowerCase() === nameClean) || {};
-  const woodData = (cachedClanData.wood || []).find(w => String(w.name).trim().toLowerCase() === nameClean) || {};
-  const monsterData = (cachedClanData.monster || []).find(m => String(m.name).trim().toLowerCase() === nameClean) || {};
-  const battleData = (cachedClanData.battle || []).find(b => String(b.name).trim().toLowerCase() === nameClean) || {};
+  function fmt(val) {
+    return Number(val || 0).toLocaleString('en-US');
+  }
 
-  document.getElementById('modal-player-name').innerText = memberData.name || playerName;
-  document.getElementById('modal-player-badges').innerHTML = `
-    ${roleBadge(memberData.role || 'Member')}
-    ${statusBadge(memberData.status || 'Active')}
-  `;
+  function fmtMonsterVal(val) {
+    const n = num(val);
+    return n > 0 ? n.toLocaleString('en-US') : '';
+  }
 
-  document.getElementById('modal-join-date').innerText = memberData.joinDate || '-';
-  document.getElementById('modal-tenure').innerText = woodData.tenure || memberData.tenure || '-';
-  document.getElementById('modal-unlocked-maps').innerText = memberData.unlockedMaps || '-';
+  function scoreText(val) {
+    return val == null || val === '' ? '-' : esc(val);
+  }
 
-  document.getElementById('modal-wood-alltime').innerText = fmt(woodData.allTime || 0);
-  document.getElementById('modal-wood-season').innerText = fmt(woodData.currentSeason || 0);
+  function statusBadge(status) {
+    const s = String(status || 'Active');
+    const cls = s.toLowerCase() === 'active' ? 'badge-active' : 'badge-leave';
+    return `<span class="badge ${cls}">${esc(s)}</span>`;
+  }
 
-  document.getElementById('modal-battle-alltime').innerText = scoreText(battleData.allTimeText);
-  document.getElementById('modal-battle-season').innerText = scoreText(battleData.currentSeasonText);
+  function roleBadge(role) {
+    const r = String(role || 'Member').toLowerCase();
+    let cls = 'badge-member';
+    if (r === 'leader') cls = 'badge-leader';
+    if (r === 'co-leader') cls = 'badge-coleader';
+    return `<span class="badge ${cls}">${esc(role || 'Member')}</span>`;
+  }
 
-  document.getElementById('modal-monster-alltime').innerText = scoreText(monsterData.allTimeText);
-  document.getElementById('modal-monster-season').innerText = scoreText(monsterData.currentSeasonText);
-
-  const monsterPills = [];
-  MONSTER_COLUMNS.forEach(col => {
-    const valAllTime = num(monsterData[col.key]);
-    const valSeason = num(monsterData[col.seasonKey]);
-
-    if (valAllTime > 0) {
-      let seasonInfo = valSeason > 0 ? `<span class="text-success small ms-1">(+${fmt(valSeason)} season)</span>` : '';
-      monsterPills.push(`
-        <div class="monster-pill">
-          <i class="fa-solid fa-ghost text-info"></i>
-          <span class="fw-semibold">${col.label}:</span>
-          <span class="monster-pill-val">${fmt(valAllTime)}</span>
-          ${seasonInfo}
-        </div>
-      `);
+  function playerCell(name, idx, score) {
+    let crown = '';
+    if (score > 0) {
+      if (idx === 0) crown = '<i class="fa-solid fa-crown" style="color: #ffd700;"></i>';
+      else if (idx === 1) crown = '<i class="fa-solid fa-crown" style="color: #c0c0c0;"></i>';
+      else if (idx === 2) crown = '<i class="fa-solid fa-crown" style="color: #cd7f32;"></i>';
     }
-  });
-
-  const breakdownContainer = document.getElementById('modal-monster-breakdown');
-  breakdownContainer.innerHTML = monsterPills.length > 0 ? monsterPills.join('') : '<span class="text-muted small">Belum ada monster yang ditangkap</span>';
-
-  playerModal.show();
-}
-
-function setTableFilter(type, mode) {
-  tableFilters[type] = mode;
-  document.querySelectorAll(`#${type}-filters .btn-filter`).forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.mode === mode);
-  });
-  if (type === 'wood') renderWood();
-  if (type === 'monster') renderMonster();
-  if (type === 'battle') renderBattle();
-}
-
-function renderWood() {
-  const mode = tableFilters.wood;
-  const showAll = mode !== 'season';
-  const showSeason = mode !== 'alltime';
-
-  const headers = ['<th class="text-center">No</th>', '<th>Player Name</th>', '<th class="text-center">Status</th>', '<th class="text-center">Tenure</th>'];
-  if (showAll) headers.push('<th class="text-end">All-Time Wood</th>');
-  if (showSeason) headers.push('<th class="text-end">Current Season</th>');
-
-  document.getElementById('wood-head').innerHTML = `<tr>${headers.join('')}</tr>`;
-  const source = cachedClanData?.wood || [];
-
-  if (!source.length) {
-    document.getElementById('table-wood-body').innerHTML = `<tr><td colspan="${headers.length}" class="text-center">Tidak ada data wood</td></tr>`;
-    return;
+    return `<div class="player-cell-wrapper">
+      <span class="crown-slot">${crown}</span>
+      <span class="player-name-text">${esc(name)}</span>
+    </div>`;
   }
 
-  const sortProp = mode === 'season' ? 'currentSeason' : 'allTime';
-  const rows = sortByScore(source, sortProp);
-
-  document.getElementById('table-wood-body').innerHTML = rows.map((w,i) => {
-    const cells = [
-      `<td class="text-center text-muted">${i+1}</td>`,
-      `<td>${playerCell(w.name,i,Number(w[sortProp])||0)}</td>`,
-      `<td class="text-center">${statusBadge(w.status)}</td>`,
-      `<td class="text-center">${esc(w.tenure)}</td>`
-    ];
-    if (showAll) cells.push(`<td class="text-end text-warning fw-bold">${fmt(w.allTime)}</td>`);
-    if (showSeason) cells.push(`<td class="text-end">${fmt(w.currentSeason)}</td>`);
-    return `<tr>${cells.join('')}</tr>`;
-  }).join('');
-}
-
-function renderMonster() {
-  const mode = tableFilters.monster;
-  const showAll = mode !== 'season';
-  const showSeason = mode !== 'alltime';
-
-  const headers = ['<th class="text-center">No</th>', '<th>Player Name</th>', '<th class="text-center">Status</th>', '<th class="text-center">Tenure</th>'];
-  if (showAll) headers.push('<th class="text-end">All-Time</th>');
-  if (showSeason) headers.push('<th class="text-end">Current Season</th>');
-  MONSTER_COLUMNS.forEach(col => headers.push(`<th class="text-center">${col.label}</th>`));
-
-  document.getElementById('monster-head').innerHTML = `<tr>${headers.join('')}</tr>`;
-  const source = cachedClanData?.monster || [];
-
-  if (!source.length) {
-    document.getElementById('table-monster-body').innerHTML = `<tr><td colspan="${headers.length}" class="text-center">Tidak ada data monster</td></tr>`;
-    return;
+  function sortByScore(arr, prop) {
+    return [...(arr || [])].sort((a,b) => (Number(b[prop]) || 0) - (Number(a[prop]) || 0));
   }
 
-  const scoreProp = mode === 'season' ? 'currentSeasonScore' : 'allTimeScore';
-  const rows = sortByScore(source, scoreProp);
+  function renderDashboard(data) {
+    if (!data) return;
 
-  document.getElementById('table-monster-body').innerHTML = rows.map((m,i) => {
-    const cells = [
-      `<td class="text-center text-muted">${i+1}</td>`,
-      `<td>${playerCell(m.name,i,Number(m[scoreProp])||0)}</td>`,
-      `<td class="text-center">${statusBadge(m.status)}</td>`,
-      `<td class="text-center">${esc(m.tenure)}</td>`
-    ];
-    if (showAll) cells.push(`<td class="text-end text-info fw-bold">${scoreText(m.allTimeText)}</td>`);
-    if (showSeason) cells.push(`<td class="text-end">${scoreText(m.currentSeasonText)}</td>`);
+    const members = data.members || [];
+    const wood = data.wood || [];
+    const monster = data.monster || [];
+
+    document.getElementById('card-total-members').innerText = members.length;
+    document.getElementById('card-active-members').innerText = members.filter(m => String(m.status).toLowerCase() === 'active').length;
+    document.getElementById('card-total-wood').innerText = wood.reduce((sum,w) => sum + (Number(w.allTime) || 0), 0).toLocaleString('en-US');
+
+    const totalMonsters = monster.reduce((sum, m) => sum + (Number(m.allTimeScore) || 0), 0);
+    document.getElementById('card-monsters-caught').innerText = fmt(totalMonsters);
+
+    renderMembers();
+    renderWood();
+    renderMonster();
+    renderBattle();
+    renderLatestBattle(data.latestBattleInfo || []);
+    renderOverview();
+  }
+
+  function renderMembers() {
+    const members = cachedClanData?.members || [];
+    const body = document.getElementById('table-member-body');
+
+    if (!members.length) {
+      body.innerHTML = '<tr><td colspan="6" class="text-center">Tidak ada data member</td></tr>';
+      return;
+    }
+
+    body.innerHTML = members.map(m => `<tr>
+      <td class="text-center">${esc(m.no)}</td>
+      <td>
+        <span class="fw-bold member-clickable" onclick="openPlayerModal('${esc(m.name)}')">
+          ${esc(m.name)} <i class="fa-solid fa-circle-info ms-1 small"></i>
+        </span>
+      </td>
+      <td class="text-center">${statusBadge(m.status)}</td>
+      <td class="text-center">${roleBadge(m.role)}</td>
+      <td class="text-center">${esc(m.joinDate)}</td>
+      <td>${esc(m.unlockedMaps)}</td>
+    </tr>`).join('');
+  }
+
+  function openPlayerModal(playerName) {
+    if (!cachedClanData) return;
+    const nameClean = String(playerName).trim().toLowerCase();
+
+    const memberData = (cachedClanData.members || []).find(m => String(m.name).trim().toLowerCase() === nameClean) || {};
+    const woodData = (cachedClanData.wood || []).find(w => String(w.name).trim().toLowerCase() === nameClean) || {};
+    const monsterData = (cachedClanData.monster || []).find(m => String(m.name).trim().toLowerCase() === nameClean) || {};
+    const battleData = (cachedClanData.battle || []).find(b => String(b.name).trim().toLowerCase() === nameClean) || {};
+
+    document.getElementById('modal-player-name').innerText = memberData.name || playerName;
+    document.getElementById('modal-player-badges').innerHTML = `
+      ${roleBadge(memberData.role || 'Member')}
+      ${statusBadge(memberData.status || 'Active')}
+    `;
+
+    document.getElementById('modal-join-date').innerText = memberData.joinDate || '-';
+    document.getElementById('modal-tenure').innerText = woodData.tenure || memberData.tenure || '-';
+    document.getElementById('modal-unlocked-maps').innerText = memberData.unlockedMaps || '-';
+
+    document.getElementById('modal-wood-alltime').innerText = fmt(woodData.allTime || 0);
+    document.getElementById('modal-wood-season').innerText = fmt(woodData.currentSeason || 0);
+
+    document.getElementById('modal-battle-alltime').innerText = scoreText(battleData.allTimeText);
+    document.getElementById('modal-battle-season').innerText = scoreText(battleData.currentSeasonText);
+
+    document.getElementById('modal-monster-alltime').innerText = scoreText(monsterData.allTimeText);
+    document.getElementById('modal-monster-season').innerText = scoreText(monsterData.currentSeasonText);
+
+    const monsterPills = [];
     MONSTER_COLUMNS.forEach(col => {
-      const value = mode === 'season' ? m[col.seasonKey] : m[col.key];
-      cells.push(`<td class="text-center">${fmtMonsterVal(value)}</td>`);
+      const valAllTime = num(monsterData[col.key]);
+      const valSeason = num(monsterData[col.seasonKey]);
+
+      if (valAllTime > 0) {
+        let seasonInfo = valSeason > 0 ? `<span class="text-success small ms-1">(+${fmt(valSeason)} season)</span>` : '';
+        monsterPills.push(`
+          <div class="monster-pill">
+            <i class="fa-solid fa-ghost text-info"></i>
+            <span class="fw-semibold">${col.label}:</span>
+            <span class="monster-pill-val">${fmt(valAllTime)}</span>
+            ${seasonInfo}
+          </div>
+        `);
+      }
     });
-    return `<tr>${cells.join('')}</tr>`;
-  }).join('');
-}
 
-function renderBattle() {
-  const mode = tableFilters.battle;
-  const showAll = mode !== 'season';
-  const showSeason = mode !== 'alltime';
+    const breakdownContainer = document.getElementById('modal-monster-breakdown');
+    breakdownContainer.innerHTML = monsterPills.length > 0 ? monsterPills.join('') : '<span class="text-muted small">Belum ada monster yang ditangkap</span>';
 
-  const headers = ['<th class="text-center">No</th>', '<th>Player Name</th>', '<th class="text-center">Tenure</th>'];
-  if (showAll) headers.push('<th class="text-end">All-Time</th>');
-  if (showSeason) headers.push('<th class="text-end">Current Season</th>');
-  headers.push('<th class="text-end">Current Battle</th>');
-
-  document.getElementById('battle-head').innerHTML = `<tr>${headers.join('')}</tr>`;
-  const source = cachedClanData?.battle || [];
-
-  if (!source.length) {
-    document.getElementById('table-battle-body').innerHTML = `<tr><td colspan="${headers.length}" class="text-center">Tidak ada data battle</td></tr>`;
-    return;
+    playerModal.show();
   }
 
-  const prop = mode === 'season' ? 'currentSeasonScore' : 'allTimeScore';
-  const rows = sortByScore(source, prop);
-
-  document.getElementById('table-battle-body').innerHTML = rows.map((b,i) => {
-    const cells = [
-      `<td class="text-center text-muted">${i+1}</td>`,
-      `<td>${playerCell(b.name,i,Number(b[prop])||0)}</td>`,
-      `<td class="text-center">${esc(b.tenure)}</td>`
-    ];
-    if (showAll) cells.push(`<td class="text-end">${scoreText(b.allTimeText)}</td>`);
-    if (showSeason) cells.push(`<td class="text-end">${scoreText(b.currentSeasonText)}</td>`);
-    cells.push(`<td class="text-end cell-current-battle">${scoreText(b.currentBattle)}</td>`);
-    return `<tr>${cells.join('')}</tr>`;
-  }).join('');
-}
-
-function renderLatestBattle(infos) {
-  const container = document.getElementById('latest-battle-info-container');
-  if (!infos.length) {
-    container.innerHTML = '<span class="text-muted small">Tidak ada informasi battle terbaru</span>';
-    return;
+  function setTableFilter(type, mode) {
+    tableFilters[type] = mode;
+    document.querySelectorAll(`#${type}-filters .btn-filter`).forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.mode === mode);
+    });
+    if (type === 'wood') renderWood();
+    if (type === 'monster') renderMonster();
+    if (type === 'battle') renderBattle();
   }
 
-  const isLose = infos.some(s => {
-    const t = String(s).toLowerCase();
-    return (t.includes('result') || t.includes('hasil')) && (t.includes('lose') || t.includes('kalah') || t.includes('loss'));
-  });
+  function renderWood() {
+    const mode = tableFilters.wood;
+    const showAll = mode !== 'season';
+    const showSeason = mode !== 'alltime';
 
-  container.innerHTML = infos.map(info => {
-    const text = String(info);
-    const low = text.toLowerCase();
-    let icon = 'fa-circle-info';
-    if (low.includes('opp')) icon = 'fa-shield-halved';
-    else if (low.includes('map')) icon = 'fa-map-location-dot';
-    else if (low.includes('result') || low.includes('hasil')) icon = isLose ? 'fa-shield-halved' : 'fa-trophy';
-    else if (low.includes('rate') || low.includes('win')) icon = 'fa-chart-line';
+    const headers = ['<th class="text-center">No</th>', '<th>Player Name</th>', '<th class="text-center">Status</th>', '<th class="text-center">Tenure</th>'];
+    if (showAll) headers.push('<th class="text-end">All-Time Wood</th>');
+    if (showSeason) headers.push('<th class="text-end">Current Season</th>');
 
-    const color = isLose ? '#ff5252' : 'var(--accent-green)';
-    return `<div class="battle-info-pill"><i class="fa-solid ${icon} me-1" style="color:${color}"></i>${esc(text)}</div>`;
-  }).join('');
-}
+    document.getElementById('wood-head').innerHTML = `<tr>${headers.join('')}</tr>`;
+    const source = cachedClanData?.wood || [];
 
-function setOverviewFilter(type) {
-  currentOverviewFilter = type;
-  document.querySelectorAll('#overview-filters .btn-filter').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.mode === type);
-  });
-  renderOverview();
-}
+    if (!source.length) {
+      document.getElementById('table-wood-body').innerHTML = `<tr><td colspan="${headers.length}" class="text-center">Tidak ada data wood</td></tr>`;
+      return;
+    }
 
-function renderOverview() {
-  if (!cachedClanData) return;
-  const season = currentOverviewFilter === 'season';
+    const sortProp = mode === 'season' ? 'currentSeason' : 'allTime';
+    const rows = sortByScore(source, sortProp);
 
-  const woodProp = season ? 'currentSeason' : 'allTime';
-  const woodRows = sortByScore(cachedClanData.wood, woodProp).filter(w => Number(w[woodProp]) > 0).slice(0,3);
+    document.getElementById('table-wood-body').innerHTML = rows.map((w,i) => {
+      const cells = [
+        `<td class="text-center text-muted">${i+1}</td>`,
+        `<td>${playerCell(w.name,i,Number(w[sortProp])||0)}</td>`,
+        `<td class="text-center">${statusBadge(w.status)}</td>`,
+        `<td class="text-center">${esc(w.tenure)}</td>`
+      ];
+      if (showAll) cells.push(`<td class="text-end text-warning fw-bold">${fmt(w.allTime)}</td>`);
+      if (showSeason) cells.push(`<td class="text-end">${fmt(w.currentSeason)}</td>`);
+      return `<tr>${cells.join('')}</tr>`;
+    }).join('');
+  }
 
-  document.getElementById('overview-top-wood').innerHTML = woodRows.length ? woodRows.map((w,i) => `
-    <div class="overview-row">
-      <span class="overview-rank">${i+1}.</span>
-      <span class="overview-crown">${i === 0 ? '<i class="fa-solid fa-crown" style="color: #ffd700;"></i>' : i === 1 ? '<i class="fa-solid fa-crown" style="color: #c0c0c0;"></i>' : '<i class="fa-solid fa-crown" style="color: #cd7f32;"></i>'}</span>
-      <span class="overview-name">${esc(w.name)}</span>
-      <span class="badge bg-warning text-dark fs-6 overview-badge">${fmt(w[woodProp])} Wood</span>
-    </div>`).join('') : '<div class="text-muted text-center py-3">Tidak ada data</div>';
+  function renderMonster() {
+    const mode = tableFilters.monster;
+    const showAll = mode !== 'season';
+    const showSeason = mode !== 'alltime';
 
-  const monsterRows = (cachedClanData.monster || []).map(m => ({
-    name: m.name,
-    text: season ? m.currentSeasonText : m.allTimeText,
-    score: season ? m.currentSeasonScore : m.allTimeScore
-  })).filter(m => Number(m.score) > 0).sort((a,b) => b.score-a.score).slice(0,3);
+    const headers = ['<th class="text-center">No</th>', '<th>Player Name</th>', '<th class="text-center">Status</th>', '<th class="text-center">Tenure</th>'];
+    if (showAll) headers.push('<th class="text-end">All-Time</th>');
+    if (showSeason) headers.push('<th class="text-end">Current Season</th>');
+    MONSTER_COLUMNS.forEach(col => headers.push(`<th class="text-center">${col.label}</th>`));
 
-  document.getElementById('overview-top-monster').innerHTML = monsterRows.length ? monsterRows.map((m,i) => `
-    <div class="overview-row">
-      <span class="overview-rank">${i+1}.</span>
-      <span class="overview-crown">${i === 0 ? '<i class="fa-solid fa-crown" style="color: #ffd700;"></i>' : i === 1 ? '<i class="fa-solid fa-crown" style="color: #c0c0c0;"></i>' : '<i class="fa-solid fa-crown" style="color: #cd7f32;"></i>'}</span>
-      <span class="overview-name">${esc(m.name)}</span>
-      <span class="badge bg-info text-dark fs-6 overview-badge">${scoreText(m.text)}</span>
-    </div>`).join('') : '<div class="text-muted text-center py-3">Tidak ada data</div>';
+    document.getElementById('monster-head').innerHTML = `<tr>${headers.join('')}</tr>`;
+    const source = cachedClanData?.monster || [];
 
-  const battleRows = (cachedClanData.battle || []).map(b => ({
-    name: b.name,
-    text: season ? b.currentSeasonText : b.allTimeText,
-    score: season ? b.currentSeasonScore : b.allTimeScore
-  })).filter(b => Number(b.score) > 0).sort((a,b) => b.score-a.score).slice(0,3);
+    if (!source.length) {
+      document.getElementById('table-monster-body').innerHTML = `<tr><td colspan="${headers.length}" class="text-center">Tidak ada data monster</td></tr>`;
+      return;
+    }
 
-  document.getElementById('overview-top-battle').innerHTML = battleRows.length ? battleRows.map((b,i) => `
-    <div class="overview-row">
-      <span class="overview-rank">${i+1}.</span>
-      <span class="overview-crown">${i === 0 ? '<i class="fa-solid fa-crown" style="color: #ffd700;"></i>' : i === 1 ? '<i class="fa-solid fa-crown" style="color: #c0c0c0;"></i>' : '<i class="fa-solid fa-crown" style="color: #cd7f32;"></i>'}</span>
-      <span class="overview-name">${esc(b.name)}</span>
-      <span class="badge bg-success fs-6 overview-badge">${scoreText(b.text)}</span>
-    </div>`).join('') : '<div class="text-muted text-center py-3">Tidak ada data</div>';
-}
-</script>
+    const scoreProp = mode === 'season' ? 'currentSeasonScore' : 'allTimeScore';
+    const rows = sortByScore(source, scoreProp);
+
+    document.getElementById('table-monster-body').innerHTML = rows.map((m,i) => {
+      const cells = [
+        `<td class="text-center text-muted">${i+1}</td>`,
+        `<td>${playerCell(m.name,i,Number(m[scoreProp])||0)}</td>`,
+        `<td class="text-center">${statusBadge(m.status)}</td>`,
+        `<td class="text-center">${esc(m.tenure)}</td>`
+      ];
+      if (showAll) cells.push(`<td class="text-end text-info fw-bold">${scoreText(m.allTimeText)}</td>`);
+      if (showSeason) cells.push(`<td class="text-end">${scoreText(m.currentSeasonText)}</td>`);
+      MONSTER_COLUMNS.forEach(col => {
+        const value = mode === 'season' ? m[col.seasonKey] : m[col.key];
+        cells.push(`<td class="text-center">${fmtMonsterVal(value)}</td>`);
+      });
+      return `<tr>${cells.join('')}</tr>`;
+    }).join('');
+  }
+
+  function renderBattle() {
+    const mode = tableFilters.battle;
+    const showAll = mode !== 'season';
+    const showSeason = mode !== 'alltime';
+
+    const headers = ['<th class="text-center">No</th>', '<th>Player Name</th>', '<th class="text-center">Tenure</th>'];
+    if (showAll) headers.push('<th class="text-end">All-Time</th>');
+    if (showSeason) headers.push('<th class="text-end">Current Season</th>');
+    headers.push('<th class="text-end">Current Battle</th>');
+
+    document.getElementById('battle-head').innerHTML = `<tr>${headers.join('')}</tr>`;
+    const source = cachedClanData?.battle || [];
+
+    if (!source.length) {
+      document.getElementById('table-battle-body').innerHTML = `<tr><td colspan="${headers.length}" class="text-center">Tidak ada data battle</td></tr>`;
+      return;
+    }
+
+    const prop = mode === 'season' ? 'currentSeasonScore' : 'allTimeScore';
+    const rows = sortByScore(source, prop);
+
+    document.getElementById('table-battle-body').innerHTML = rows.map((b,i) => {
+      const cells = [
+        `<td class="text-center text-muted">${i+1}</td>`,
+        `<td>${playerCell(b.name,i,Number(b[prop])||0)}</td>`,
+        `<td class="text-center">${esc(b.tenure)}</td>`
+      ];
+      if (showAll) cells.push(`<td class="text-end">${scoreText(b.allTimeText)}</td>`);
+      if (showSeason) cells.push(`<td class="text-end">${scoreText(b.currentSeasonText)}</td>`);
+      cells.push(`<td class="text-end cell-current-battle">${scoreText(b.currentBattle)}</td>`);
+      return `<tr>${cells.join('')}</tr>`;
+    }).join('');
+  }
+
+  function renderLatestBattle(infos) {
+    const container = document.getElementById('latest-battle-info-container');
+    if (!infos.length) {
+      container.innerHTML = '<span class="text-muted small">Tidak ada informasi battle terbaru</span>';
+      return;
+    }
+
+    const isLose = infos.some(s => {
+      const t = String(s).toLowerCase();
+      return (t.includes('result') || t.includes('hasil')) && (t.includes('lose') || t.includes('kalah') || t.includes('loss'));
+    });
+
+    container.innerHTML = infos.map(info => {
+      const text = String(info);
+      const low = text.toLowerCase();
+      let icon = 'fa-circle-info';
+      if (low.includes('opp')) icon = 'fa-shield-halved';
+      else if (low.includes('map')) icon = 'fa-map-location-dot';
+      else if (low.includes('result') || low.includes('hasil')) icon = isLose ? 'fa-shield-halved' : 'fa-trophy';
+      else if (low.includes('rate') || low.includes('win')) icon = 'fa-chart-line';
+
+      const color = isLose ? '#ff5252' : 'var(--accent-green)';
+      return `<div class="battle-info-pill"><i class="fa-solid ${icon} me-1" style="color:${color}"></i>${esc(text)}</div>`;
+    }).join('');
+  }
+
+  function setOverviewFilter(type) {
+    currentOverviewFilter = type;
+    document.querySelectorAll('#overview-filters .btn-filter').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.mode === type);
+    });
+    renderOverview();
+  }
+
+  function renderOverview() {
+    if (!cachedClanData) return;
+    const season = currentOverviewFilter === 'season';
+
+    const woodProp = season ? 'currentSeason' : 'allTime';
+    const woodRows = sortByScore(cachedClanData.wood, woodProp).filter(w => Number(w[woodProp]) > 0).slice(0,3);
+
+    document.getElementById('overview-top-wood').innerHTML = woodRows.length ? woodRows.map((w,i) => `
+      <div class="overview-row">
+        <span class="overview-rank">${i+1}.</span>
+        <span class="overview-crown">${i === 0 ? '<i class="fa-solid fa-crown" style="color: #ffd700;"></i>' : i === 1 ? '<i class="fa-solid fa-crown" style="color: #c0c0c0;"></i>' : '<i class="fa-solid fa-crown" style="color: #cd7f32;"></i>'}</span>
+        <span class="overview-name">${esc(w.name)}</span>
+        <span class="badge bg-warning text-dark fs-6 overview-badge">${fmt(w[woodProp])} Wood</span>
+      </div>`).join('') : '<div class="text-muted text-center py-3">Tidak ada data</div>';
+
+    const monsterRows = (cachedClanData.monster || []).map(m => ({
+      name: m.name,
+      text: season ? m.currentSeasonText : m.allTimeText,
+      score: season ? m.currentSeasonScore : m.allTimeScore
+    })).filter(m => Number(m.score) > 0).sort((a,b) => b.score-a.score).slice(0,3);
+
+    document.getElementById('overview-top-monster').innerHTML = monsterRows.length ? monsterRows.map((m,i) => `
+      <div class="overview-row">
+        <span class="overview-rank">${i+1}.</span>
+        <span class="overview-crown">${i === 0 ? '<i class="fa-solid fa-crown" style="color: #ffd700;"></i>' : i === 1 ? '<i class="fa-solid fa-crown" style="color: #c0c0c0;"></i>' : '<i class="fa-solid fa-crown" style="color: #cd7f32;"></i>'}</span>
+        <span class="overview-name">${esc(m.name)}</span>
+        <span class="badge bg-info text-dark fs-6 overview-badge">${scoreText(m.text)}</span>
+      </div>`).join('') : '<div class="text-muted text-center py-3">Tidak ada data</div>';
+
+    const battleRows = (cachedClanData.battle || []).map(b => ({
+      name: b.name,
+      text: season ? b.currentSeasonText : b.allTimeText,
+      score: season ? b.currentSeasonScore : b.allTimeScore
+    })).filter(b => Number(b.score) > 0).sort((a,b) => b.score-a.score).slice(0,3);
+
+    document.getElementById('overview-top-battle').innerHTML = battleRows.length ? battleRows.map((b,i) => `
+      <div class="overview-row">
+        <span class="overview-rank">${i+1}.</span>
+        <span class="overview-crown">${i === 0 ? '<i class="fa-solid fa-crown" style="color: #ffd700;"></i>' : i === 1 ? '<i class="fa-solid fa-crown" style="color: #c0c0c0;"></i>' : '<i class="fa-solid fa-crown" style="color: #cd7f32;"></i>'}</span>
+        <span class="overview-name">${esc(b.name)}</span>
+        <span class="badge bg-success fs-6 overview-badge">${scoreText(b.text)}</span>
+      </div>`).join('') : '<div class="text-muted text-center py-3">Tidak ada data</div>';
+  }
+  </script>
 </body>
 </html>

@@ -780,7 +780,7 @@ body[data-clan="AT5"] { --clan-accent: #d97706; }
         btn.classList.add('active');
         document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('d-none'));
         document.getElementById(btn.dataset.pane).classList.remove('d-none');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        // Scroll up dihapus khusus untuk tombol menu tab ini
       });
     });
 
@@ -861,14 +861,13 @@ body[data-clan="AT5"] { --clan-accent: #d97706; }
     cachedClanData = null;
     document.body.removeAttribute('data-clan');
     
-    // Tampilkan logo di header, sembunyikan tombol Main Menu
     document.getElementById('navBrand').classList.remove('d-none');
     document.getElementById('btnHome').classList.add('d-none');
 
     document.getElementById('landingPage').classList.remove('d-none');
     document.getElementById('clanDetailView').classList.add('d-none');
     
-    // Auto-scroll ke paling atas setiap kembali ke halaman utama
+    // Tetap scroll up saat kembali ke halaman utama
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -876,7 +875,6 @@ body[data-clan="AT5"] { --clan-accent: #d97706; }
     activeClan = clanCode;
     document.body.setAttribute('data-clan', clanCode);
 
-    // Sembunyikan logo di header, tampilkan tombol Main Menu
     document.getElementById('navBrand').classList.add('d-none');
     document.getElementById('btnHome').classList.remove('d-none');
 
@@ -894,7 +892,7 @@ body[data-clan="AT5"] { --clan-accent: #d97706; }
       renderDashboard(cachedClanData);
     }
 
-    // Auto-scroll ke paling atas setiap masuk ke dashboard klan
+    // Tetap scroll up saat masuk ke dashboard klan
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 

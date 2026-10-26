@@ -279,7 +279,6 @@
         </div>
       </section>
 
-
       <!-- ==================== CLAN DETAIL VIEW ==================== -->
       <section id="clanDetailView" class="hidden space-y-6">
         
@@ -431,6 +430,7 @@
     // Fetch Data from Backend Google Apps Script
     async function fetchData() {
       const syncIcon = document.getElementById('syncIcon');
+      const loadingState = document.getElementById('loadingState');
       syncIcon.classList.add('fa-spin');
       
       try {
@@ -439,6 +439,7 @@
 
         if (json.error) {
           console.error('GAS Error:', json.error);
+          if (loadingState) loadingState.innerHTML = `<p class="text-xs text-red-400">Gagal memuat data: ${escapeHtml(json.error)}</p>`;
         } else {
           globalData = json.clans || {};
           document.getElementById('lastUpdatedTag').innerText = `Synced: ${json.lastUpdated || '--:--:--'}`;
@@ -449,6 +450,9 @@
         }
       } catch (err) {
         console.error('Fetch Failed:', err);
+        if (loadingState) {
+          loadingState.innerHTML = `<p class="text-xs text-red-400"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Koneksi ke Google Sheets gagal. Silakan coba lagi nanti.</p>`;
+        }
       } finally {
         syncIcon.classList.remove('fa-spin');
       }
@@ -530,10 +534,10 @@
 
       document.getElementById('statMemberCount').innerText = members.length;
       
-      const totalSeasonWood = wood.reduce((sum, item) => sum + (item.currentSeason || 0), 0);
+      const totalSeasonWood = wood.reduce((sum, item) => sum + (Number(item.currentSeason) || 0), 0);
       document.getElementById('statSeasonWood').innerText = totalSeasonWood.toLocaleString();
 
-      const totalSeasonMonsters = monster.reduce((sum, item) => sum + (item.currentSeasonScore || 0), 0);
+      const totalSeasonMonsters = monster.reduce((sum, item) => sum + (Number(item.currentSeasonScore) || 0), 0);
       document.getElementById('statSeasonMonster').innerText = totalSeasonMonsters.toLocaleString();
 
       // Render Match Info Banner if available
@@ -567,7 +571,7 @@
       let filterData = [];
 
       if (currentTab === 'member') {
-        filterData = (clanInfo.members || []).filter(m => m.name.toLowerCase().includes(searchQuery));
+        filterData = (clanInfo.members || []).filter(m => (m.name || '').toLowerCase().includes(searchQuery));
         
         htmlHeader = `
           <tr>
@@ -586,7 +590,7 @@
             <td class="px-4 py-3 text-slate-500 font-mono">${idx + 1}</td>
             <td class="px-4 py-3 font-bold text-white">${escapeHtml(m.name)}</td>
             <td class="px-4 py-3">
-              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${m.status.toLowerCase() === 'active' ? 'bg-emerald-950 text-emerald-400 border border-emerald-800/50' : 'bg-amber-950 text-amber-400 border border-amber-800/50'}">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${(m.status || '').toLowerCase() === 'active' ? 'bg-emerald-950 text-emerald-400 border border-emerald-800/50' : 'bg-amber-950 text-amber-400 border border-amber-800/50'}">
                 ${escapeHtml(m.status)}
               </span>
             </td>
@@ -598,8 +602,12 @@
         `).join('');
 
       } else if (currentTab === 'wood') {
-        filterData = (clanInfo.wood || []).filter(w => w.name.toLowerCase().includes(searchQuery));
-        filterData.sort((a, b) => seasonFilter === 'season' ? (b.currentSeason - a.currentSeason) : (b.allTime - a.allTime));
+        filterData = (clanInfo.wood || []).filter(w => (w.name || '').toLowerCase().includes(searchQuery));
+        filterData.sort((a, b) => {
+          const valA = Number(seasonFilter === 'season' ? a.currentSeason : a.allTime) || 0;
+          const valB = Number(seasonFilter === 'season' ? b.currentSeason : b.allTime) || 0;
+          return valB - valA;
+        });
 
         htmlHeader = `
           <tr>
@@ -611,42 +619,49 @@
           </tr>
         `;
 
-        htmlRows = filterData.map((w, idx) => `
-          <tr class="hover:bg-slate-800/40 transition border-b border-slate-800/40">
-            <td class="px-4 py-3 font-mono ${idx < 3 ? 'text-amber-400 font-bold' : 'text-slate-500'}">
-              ${idx === 0 ? '🥇 1' : idx === 1 ? '🥈 2' : idx === 2 ? '🥉 3' : idx + 1}
-            </td>
-            <td class="px-4 py-3 font-bold text-white">${escapeHtml(w.name)}</td>
-            <td class="px-4 py-3 text-slate-400">${escapeHtml(w.status)}</td>
-            <td class="px-4 py-3 text-slate-400">${escapeHtml(w.tenure)}</td>
-            <td class="px-4 py-3 text-right font-bold text-emerald-400 font-mono text-sm">
-              ${(seasonFilter === 'season' ? w.currentSeason : w.allTime).toLocaleString()}
-            </td>
-          </tr>
-        `).join('');
+        htmlRows = filterData.map((w, idx) => {
+          const woodVal = Number(seasonFilter === 'season' ? w.currentSeason : w.allTime) || 0;
+          return `
+            <tr class="hover:bg-slate-800/40 transition border-b border-slate-800/40">
+              <td class="px-4 py-3 font-mono ${idx < 3 ? 'text-amber-400 font-bold' : 'text-slate-500'}">
+                ${idx === 0 ? '🥇 1' : idx === 1 ? '🥈 2' : idx === 2 ? '🥉 3' : idx + 1}
+              </td>
+              <td class="px-4 py-3 font-bold text-white">${escapeHtml(w.name)}</td>
+              <td class="px-4 py-3 text-slate-400">${escapeHtml(w.status)}</td>
+              <td class="px-4 py-3 text-slate-400">${escapeHtml(w.tenure)}</td>
+              <td class="px-4 py-3 text-right font-bold text-emerald-400 font-mono text-sm">
+                ${woodVal.toLocaleString()}
+              </td>
+            </tr>
+          `;
+        }).join('');
 
       } else if (currentTab === 'monster') {
-        filterData = (clanInfo.monster || []).filter(m => m.name.toLowerCase().includes(searchQuery));
-        filterData.sort((a, b) => seasonFilter === 'season' ? (b.currentSeasonScore - a.currentSeasonScore) : (b.allTimeScore - a.allTimeScore));
+        filterData = (clanInfo.monster || []).filter(m => (m.name || '').toLowerCase().includes(searchQuery));
+        filterData.sort((a, b) => {
+          const scoreA = Number(seasonFilter === 'season' ? a.currentSeasonScore : a.allTimeScore) || 0;
+          const scoreB = Number(seasonFilter === 'season' ? b.currentSeasonScore : b.allTimeScore) || 0;
+          return scoreB - scoreA;
+        });
 
         htmlHeader = `
           <tr>
-            <th class="px-3 py-3">Rank</th>
-            <th class="px-3 py-3">Player Name</th>
-            <th class="px-3 py-3 text-center">Total Caught</th>
-            <th class="px-2 py-3 text-center">Shredder</th>
-            <th class="px-2 py-3 text-center">Bessie</th>
-            <th class="px-2 py-3 text-center">Don Pedro</th>
-            <th class="px-2 py-3 text-center">Kraken</th>
-            <th class="px-2 py-3 text-center">Bunyip</th>
-            <th class="px-2 py-3 text-center">Nessie</th>
-            <th class="px-2 py-3 text-center">Naga</th>
-            <th class="px-2 py-3 text-center">Boiúna</th>
+            <th class="px-3 py-3 whitespace-nowrap">Rank</th>
+            <th class="px-3 py-3 whitespace-nowrap">Player Name</th>
+            <th class="px-3 py-3 text-center whitespace-nowrap">Total Caught</th>
+            <th class="px-2 py-3 text-center whitespace-nowrap">Shredder</th>
+            <th class="px-2 py-3 text-center whitespace-nowrap">Bessie</th>
+            <th class="px-2 py-3 text-center whitespace-nowrap">Don Pedro</th>
+            <th class="px-2 py-3 text-center whitespace-nowrap">Kraken</th>
+            <th class="px-2 py-3 text-center whitespace-nowrap">Bunyip</th>
+            <th class="px-2 py-3 text-center whitespace-nowrap">Nessie</th>
+            <th class="px-2 py-3 text-center whitespace-nowrap">Naga</th>
+            <th class="px-2 py-3 text-center whitespace-nowrap">Boiúna</th>
           </tr>
         `;
 
         htmlRows = filterData.map((m, idx) => {
-          const total = seasonFilter === 'season' ? m.currentSeasonScore : m.allTimeScore;
+          const total = Number(seasonFilter === 'season' ? m.currentSeasonScore : m.allTimeScore) || 0;
           const shredder = seasonFilter === 'season' ? m.shredderSeason : m.shredder;
           const bessie = seasonFilter === 'season' ? m.bessieSeason : m.bessie;
           const donPedro = seasonFilter === 'season' ? m.donPedroSeason : m.donPedro;
@@ -660,7 +675,7 @@
             <tr class="hover:bg-slate-800/40 transition border-b border-slate-800/40">
               <td class="px-3 py-3 font-mono ${idx < 3 ? 'text-amber-400 font-bold' : 'text-slate-500'}">${idx + 1}</td>
               <td class="px-3 py-3 font-bold text-white whitespace-nowrap">${escapeHtml(m.name)}</td>
-              <td class="px-3 py-3 text-center font-bold text-amber-400 font-mono text-sm bg-slate-900/40">${total}</td>
+              <td class="px-3 py-3 text-center font-bold text-amber-400 font-mono text-sm bg-slate-900/40">${total.toLocaleString()}</td>
               <td class="px-2 py-3 text-center text-slate-300 font-mono">${shredder || '-'}</td>
               <td class="px-2 py-3 text-center text-slate-300 font-mono">${bessie || '-'}</td>
               <td class="px-2 py-3 text-center text-slate-300 font-mono">${donPedro || '-'}</td>
@@ -674,8 +689,12 @@
         }).join('');
 
       } else if (currentTab === 'battle') {
-        filterData = (clanInfo.battle || []).filter(b => b.name.toLowerCase().includes(searchQuery));
-        filterData.sort((a, b) => seasonFilter === 'season' ? (b.currentSeasonScore - a.currentSeasonScore) : (b.allTimeScore - a.allTimeScore));
+        filterData = (clanInfo.battle || []).filter(b => (b.name || '').toLowerCase().includes(searchQuery));
+        filterData.sort((a, b) => {
+          const scoreA = Number(seasonFilter === 'season' ? a.currentSeasonScore : a.allTimeScore) || 0;
+          const scoreB = Number(seasonFilter === 'season' ? b.currentSeasonScore : b.allTimeScore) || 0;
+          return scoreB - scoreA;
+        });
 
         htmlHeader = `
           <tr>
@@ -693,7 +712,7 @@
             <td class="px-4 py-3 font-bold text-white">${escapeHtml(b.name)}</td>
             <td class="px-4 py-3 text-slate-400">${escapeHtml(b.tenure)}</td>
             <td class="px-4 py-3 text-right font-bold text-sky-400 font-mono text-sm">
-              ${seasonFilter === 'season' ? escapeHtml(b.currentSeasonText) : escapeHtml(b.allTimeText)}
+              ${seasonFilter === 'season' ? escapeHtml(b.currentSeasonText || b.currentSeasonScore) : escapeHtml(b.allTimeText || b.allTimeScore)}
             </td>
             <td class="px-4 py-3 text-right font-bold text-amber-400 font-mono">
               ${escapeHtml(b.currentBattle)}
@@ -713,7 +732,7 @@
     }
 
     function escapeHtml(str) {
-      if (!str) return '';
+      if (str === null || str === undefined) return '';
       return String(str)
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')

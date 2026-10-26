@@ -36,7 +36,6 @@ body[data-clan="AT3"] { --clan-accent: #22c55e; }
 body[data-clan="AT4"] { --clan-accent: #3b82f6; }
 body[data-clan="AT5"] { --clan-accent: #d97706; }
 
-/* Fallback default accent jika belum pilih klan */
 :root { --clan-accent: #20bf55; }
 
 .header-banner {
@@ -62,7 +61,6 @@ body[data-clan="AT5"] { --clan-accent: #d97706; }
 .clan-title { font-weight: 800; color: white; letter-spacing: 1px; margin-bottom: 2px; }
 .clan-subtitle { color: #90a4ae; font-weight: 600; }
 
-/* Kotak/Card dibuat seragam senada dengan halaman pertama */
 .summary-card {
   background: var(--card-bg);
   border: 1px solid var(--border-color);
@@ -320,8 +318,8 @@ body[data-clan="AT5"] { --clan-accent: #d97706; }
     <header class="border-bottom border-slate-800 bg-slate-950/60 backdrop-blur-md sticky-top z-40" style="background-color: rgba(13, 27, 30, 0.9); backdrop-filter: blur(8px);">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 d-flex align-items-center justify-content-between" style="height: 64px;">
         
-        <!-- Logo & Title (Menggunakan logo dari Google Drive) -->
-        <div class="d-flex align-items-center space-x-3 cursor-pointer" onclick="showLandingPage()" style="cursor: pointer; gap: 12px;">
+        <!-- Logo & Title (Hanya tampil di Halaman Utama / Landing Page) -->
+        <div id="navBrand" class="d-flex align-items-center space-x-3 cursor-pointer" onclick="showLandingPage()" style="cursor: pointer; gap: 12px;">
           <img src="https://lh3.googleusercontent.com/d/1k92AuoJ08vSdniVl6oHAjEOmz8it6Hek" alt="Clan Logo" class="clan-logo-img shadow-lg" style="width: 42px; height: 42px;">
           <div>
             <h1 class="fw-extrabold text-lg tracking-tight text-white m-0 lh-sm" style="font-size: 1rem; font-weight: 800;">AUSSIE TACKLE</h1>
@@ -329,13 +327,14 @@ body[data-clan="AT5"] { --clan-accent: #d97706; }
           </div>
         </div>
 
-        <!-- Navigation Controls -->
+        <!-- Tombol Main Menu (Hanya tampil di dalam Dashboard Klan) -->
+        <button id="btnHome" onclick="showLandingPage()" class="btn btn-sm btn-dark d-none align-items-center gap-2 px-3 py-1.5 rounded-lg border border-secondary border-opacity-50 text-light text-xs fw-semibold">
+          <i class="fa-solid fa-house"></i>
+          <span>Main Menu</span>
+        </button>
+
+        <!-- Navigation Controls (Kanan: Refresh & Sync Tag) -->
         <div class="d-flex align-items-center gap-2">
-          <button id="btnHome" onclick="showLandingPage()" class="btn btn-sm btn-dark d-none align-items-center gap-2 px-3 py-1.5 rounded-lg border border-secondary border-opacity-50 text-light text-xs fw-semibold">
-            <i class="fa-solid fa-house"></i>
-            <span>Main Menu</span>
-          </button>
-          
           <button onclick="fetchData()" title="Sync Data" class="btn btn-sm btn-dark p-2 rounded-lg border border-secondary border-opacity-50 text-light">
             <i id="syncIcon" class="fa-solid fa-arrows-rotate"></i>
           </button>
@@ -781,6 +780,7 @@ body[data-clan="AT5"] { --clan-accent: #d97706; }
         btn.classList.add('active');
         document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('d-none'));
         document.getElementById(btn.dataset.pane).classList.remove('d-none');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       });
     });
 
@@ -860,18 +860,28 @@ body[data-clan="AT5"] { --clan-accent: #d97706; }
     activeClan = null;
     cachedClanData = null;
     document.body.removeAttribute('data-clan');
+    
+    // Tampilkan logo di header, sembunyikan tombol Main Menu
+    document.getElementById('navBrand').classList.remove('d-none');
+    document.getElementById('btnHome').classList.add('d-none');
+
     document.getElementById('landingPage').classList.remove('d-none');
     document.getElementById('clanDetailView').classList.add('d-none');
-    document.getElementById('btnHome').classList.add('d-none');
+    
+    // Auto-scroll ke paling atas setiap kembali ke halaman utama
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function selectClan(clanCode) {
     activeClan = clanCode;
     document.body.setAttribute('data-clan', clanCode);
 
+    // Sembunyikan logo di header, tampilkan tombol Main Menu
+    document.getElementById('navBrand').classList.add('d-none');
+    document.getElementById('btnHome').classList.remove('d-none');
+
     document.getElementById('landingPage').classList.add('d-none');
     document.getElementById('clanDetailView').classList.remove('d-none');
-    document.getElementById('btnHome').classList.remove('d-none');
 
     const meta = CLAN_META[clanCode] || { name: clanCode, emoji: '🛡️', code: clanCode };
     document.getElementById('currentClanTitle').innerText = `${meta.name.toUpperCase()} DASHBOARD`;
@@ -883,6 +893,9 @@ body[data-clan="AT5"] { --clan-accent: #d97706; }
       cachedClanData = globalClansData;
       renderDashboard(cachedClanData);
     }
+
+    // Auto-scroll ke paling atas setiap masuk ke dashboard klan
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function esc(value) {
@@ -1217,11 +1230,11 @@ body[data-clan="AT5"] { --clan-accent: #d97706; }
         <span class="badge bg-info text-dark fs-6 overview-badge">${scoreText(m.text)}</span>
       </div>`).join('') : '<div class="text-muted text-center py-3">Tidak ada data</div>';
 
-    const battleRows = (cachedClanData.battle || []).pop ? (cachedClanData.battle || []).map(b => ({
+    const battleRows = (cachedClanData.battle || []).map(b => ({
       name: b.name,
       text: season ? b.currentSeasonText : b.allTimeText,
       score: season ? b.currentSeasonScore : b.allTimeScore
-    })).filter(b => Number(b.score) > 0).sort((a,b) => b.score-a.score).slice(0,3) : [];
+    })).filter(b => Number(b.score) > 0).sort((a,b) => b.score-a.score).slice(0,3);
 
     document.getElementById('overview-top-battle').innerHTML = battleRows.length ? battleRows.map((b,i) => `
       <div class="overview-row">

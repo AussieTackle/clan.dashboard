@@ -41,10 +41,10 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 
 .header-banner {
   text-align: center;
-  padding: 25px 15px 15px;
-  background: rgba(255, 255, 255, 0.95);
-  border: 1px solid var(--border-color);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  padding: 20px 15px 10px;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 .header-logo-container {
   display: flex;
@@ -61,8 +61,8 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   border: 2px solid var(--clan-accent);
   box-shadow: 0 0 10px rgba(0,0,0,0.15);
 }
-.clan-title { font-weight: 800; color: #0f172a; letter-spacing: 0.5px; margin-bottom: 2px; }
-.clan-subtitle { color: #64748b; font-weight: 600; }
+.clan-title { font-weight: 800; color: #ffffff; letter-spacing: 0.5px; margin-bottom: 2px; }
+.clan-subtitle { color: #cbd5e1; font-weight: 600; }
 
 .summary-card {
   background: var(--card-bg);
@@ -322,7 +322,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 }
 
 .sync-indicator {
-  font-size: .8rem; color: #16a34a;
+  font-size: .8rem; color: #cbd5e1;
   display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 10px; flex-wrap: wrap;
   font-weight: 600;
 }
@@ -410,7 +410,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
           </p>
         </div>
 
-        <!-- Clan Selection Grid Wiki Style (Dinamis dari _CLANS) -->
+        <!-- Clan Selection Grid Wiki Style (Dinamis dari VISIBLE_CLANS) -->
         <div id="clanGridContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 w-100 max-w-5xl" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; width: 100%; max-width: 1000px;">
         </div>
       </section>
@@ -418,8 +418,8 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       <!-- ==================== CLAN DETAIL DASHBOARD VIEW ==================== -->
       <section id="clanDetailView" class="d-none">
 
-        <!-- Header Banner Klan -->
-        <div class="header-banner rounded-4 mb-4 border border-secondary border-opacity-25 shadow-md">
+        <!-- Header Banner Klan (Tanpa Background Putih) -->
+        <div class="header-banner mb-4">
           <div class="header-logo-container">
             <div class="d-flex align-items-center justify-content-center" id="currentClanEmoji">
               <img src="https://lh3.googleusercontent.com/d/1k92AuoJ08vSdniVl6oHAjEOmz8it6Hek" alt="Clan Logo" class="clan-logo-img shadow-md" style="width: 58px; height: 58px;">
@@ -435,7 +435,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
           </div>
         </div>
 
-        <!-- SUMMARY CARDS (Diperbarui: Total Members & Island Progress) -->
+        <!-- SUMMARY CARDS -->
         <div class="row g-2 g-md-3 my-2 justify-content-center">
           <div class="col-6 col-md-4">
             <div class="summary-card">

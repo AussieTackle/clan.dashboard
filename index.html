@@ -30,7 +30,7 @@ body {
   min-height: 100vh;
 }
 
-/* Clan Specific Accent Colors (Untuk Ikon & Highlight ala Wiki) */
+/* Clan Specific Accent Colors */
 body[data-clan="AT1"] { --clan-accent: #d97706; }
 body[data-clan="AT2"] { --clan-accent: #dc2626; }
 body[data-clan="AT3"] { --clan-accent: #16a34a; }
@@ -71,9 +71,17 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   padding: 16px;
   text-align: center;
   box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.summary-card-clickable {
+  cursor: pointer;
+}
+.summary-card-clickable:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 12px -2px rgba(0,0,0,0.1);
 }
 .summary-card i { font-size: 1.8rem; margin-bottom: 8px; color: var(--clan-accent); }
-.summary-num { font-size: 1.6rem; font-weight: bold; color: #0f172a; }
+.summary-num { font-size: 1.4rem; font-weight: bold; color: #0f172a; }
 .summary-label { font-size: .85rem; color: #64748b; text-transform: uppercase; font-weight: 700; }
 
 .nav-tabs-wrapper { display: flex; justify-content: center; margin: 20px 0 25px; padding: 0 5px; }
@@ -288,6 +296,31 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 }
 .monster-pill-val { color: var(--clan-accent); font-weight: bold; }
 
+/* Totem Grid Box di Modal Island Progress */
+.totem-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 12px;
+}
+.totem-card {
+  background: #f8fafc;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+}
+.totem-name {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 4px;
+}
+.totem-val {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--clan-accent);
+}
+
 .sync-indicator {
   font-size: .8rem; color: #16a34a;
   display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 10px; flex-wrap: wrap;
@@ -299,7 +332,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 }
 @keyframes pulse { 0%, 100% { opacity: .3; } 50% { opacity: 1; } }
 
-/* Landing Card Hover Effect - Ringskas & Simpel */
+/* Landing Card Hover Effect */
 .clan-card-hover {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   background: #ffffff !important;
@@ -377,84 +410,8 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
           </p>
         </div>
 
-        <!-- Clan Selection Grid Wiki Style (Versi Sederhana & Ringkas) -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 w-100 max-w-5xl" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; width: 100%; max-width: 1000px;">
-          
-          <!-- AT1 Card -->
-          <div onclick="selectClan('AT1')" class="clan-card-hover cursor-pointer position-relative overflow-hidden group shadow-md">
-            <div class="d-flex align-items-center justify-content-end mb-1">
-              <span class="px-2 py-0.5 rounded-md text-xs fw-bold font-monospace" style="background: rgba(217, 119, 6, 0.1); border: 1px solid rgba(217, 119, 6, 0.3); color: #d97706; font-size: 0.72rem;">AT1</span>
-            </div>
-            <h3 class="text-lg fw-bold mb-0.5" style="color: #d97706; font-size: 1.15rem; font-weight: 800;">Aussie Tackle 1</h3>
-            <p class="text-slate-500 text-xs mb-3">Casual Gold Division</p>
-            <div class="d-flex align-items-center justify-content-between text-xs text-slate-500 pt-2 border-top border-slate-200">
-              <span>Status: Active</span>
-              <span class="fw-semibold d-flex align-items-center gap-1" style="color: #d97706;">
-                View Records <i class="fa-solid fa-arrow-right text-[10px]"></i>
-              </span>
-            </div>
-          </div>
-
-          <!-- AT2 Card -->
-          <div onclick="selectClan('AT2')" class="clan-card-hover cursor-pointer position-relative overflow-hidden group shadow-md">
-            <div class="d-flex align-items-center justify-content-end mb-1">
-              <span class="px-2 py-0.5 rounded-md text-xs fw-bold font-monospace" style="background: rgba(220, 38, 38, 0.1); border: 1px solid rgba(220, 38, 38, 0.3); color: #dc2626; font-size: 0.72rem;">AT2</span>
-            </div>
-            <h3 class="text-lg fw-bold mb-0.5" style="color: #dc2626; font-size: 1.15rem; font-weight: 800;">Aussie Tackle 2</h3>
-            <p class="text-slate-500 text-xs mb-3">Casual Gold Division</p>
-            <div class="d-flex align-items-center justify-content-between text-xs text-slate-500 pt-2 border-top border-slate-200">
-              <span>Status: Active</span>
-              <span class="fw-semibold d-flex align-items-center gap-1" style="color: #dc2626;">
-                View Records <i class="fa-solid fa-arrow-right text-[10px]"></i>
-              </span>
-            </div>
-          </div>
-
-          <!-- AT3 Card -->
-          <div onclick="selectClan('AT3')" class="clan-card-hover cursor-pointer position-relative overflow-hidden group shadow-md">
-            <div class="d-flex align-items-center justify-content-end mb-1">
-              <span class="px-2 py-0.5 rounded-md text-xs fw-bold font-monospace" style="background: rgba(22, 163, 74, 0.1); border: 1px solid rgba(22, 163, 74, 0.3); color: #16a34a; font-size: 0.72rem;">AT3</span>
-            </div>
-            <h3 class="text-lg fw-bold mb-0.5" style="color: #16a34a; font-size: 1.15rem; font-weight: 800;">Aussie Tackle 3</h3>
-            <p class="text-slate-500 text-xs mb-3">Semi-Competitive Division</p>
-            <div class="d-flex align-items-center justify-content-between text-xs text-slate-500 pt-2 border-top border-slate-200">
-              <span>Status: Active</span>
-              <span class="fw-semibold d-flex align-items-center gap-1" style="color: #16a34a;">
-                View Records <i class="fa-solid fa-arrow-right text-[10px]"></i>
-              </span>
-            </div>
-          </div>
-
-          <!-- AT4 Card -->
-          <div onclick="selectClan('AT4')" class="clan-card-hover cursor-pointer position-relative overflow-hidden group shadow-md">
-            <div class="d-flex align-items-center justify-content-end mb-1">
-              <span class="px-2 py-0.5 rounded-md text-xs fw-bold font-monospace" style="background: rgba(37, 99, 235, 0.1); border: 1px solid rgba(37, 99, 235, 0.3); color: #2563eb; font-size: 0.72rem;">AT4</span>
-            </div>
-            <h3 class="text-lg fw-bold mb-0.5" style="color: #2563eb; font-size: 1.15rem; font-weight: 800;">Aussie Tackle 4</h3>
-            <p class="text-slate-500 text-xs mb-3">Hardcore Division</p>
-            <div class="d-flex align-items-center justify-content-between text-xs text-slate-500 pt-2 border-top border-slate-200">
-              <span>Status: Active</span>
-              <span class="fw-semibold d-flex align-items-center gap-1" style="color: #2563eb;">
-                View Records <i class="fa-solid fa-arrow-right text-[10px]"></i>
-              </span>
-            </div>
-          </div>
-
-          <!-- AT5 Card -->
-          <div onclick="selectClan('AT5')" class="clan-card-hover cursor-pointer position-relative overflow-hidden group shadow-md">
-            <div class="d-flex align-items-center justify-content-end mb-1">
-              <span class="px-2 py-0.5 rounded-md text-xs fw-bold font-monospace" style="background: rgba(180, 83, 9, 0.1); border: 1px solid rgba(180, 83, 9, 0.3); color: #b45309; font-size: 0.72rem;">AT5</span>
-            </div>
-            <h3 class="text-lg fw-bold mb-0.5" style="color: #b45309; font-size: 1.15rem; font-weight: 800;">Aussie Tackle 5</h3>
-            <p class="text-slate-500 text-xs mb-3">Training & Development Clan</p>
-            <div class="d-flex align-items-center justify-content-between text-xs text-slate-500 pt-2 border-top border-slate-200">
-              <span>Status: Active</span>
-              <span class="fw-semibold d-flex align-items-center gap-1" style="color: #b45309;">
-                View Records <i class="fa-solid fa-arrow-right text-[10px]"></i>
-              </span>
-            </div>
-          </div>
-
+        <!-- Clan Selection Grid Wiki Style (Dinamis dari VISIBLE_CLANS) -->
+        <div id="clanGridContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 w-100 max-w-5xl" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; width: 100%; max-width: 1000px;">
         </div>
       </section>
 
@@ -478,34 +435,20 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
           </div>
         </div>
 
-        <!-- SUMMARY CARDS -->
-        <div class="row g-2 g-md-3 my-2">
-          <div class="col-6 col-md-3">
+        <!-- SUMMARY CARDS (Diperbarui: Total Members & Island Progress) -->
+        <div class="row g-2 g-md-3 my-2 justify-content-center">
+          <div class="col-6 col-md-4">
             <div class="summary-card">
               <i class="fa-solid fa-users d-block"></i>
               <div class="summary-num" id="card-total-members">-</div>
               <div class="summary-label">Total Members</div>
             </div>
           </div>
-          <div class="col-6 col-md-3">
-            <div class="summary-card">
-              <i class="fa-solid fa-user-check d-block"></i>
-              <div class="summary-num" id="card-active-members">-</div>
-              <div class="summary-label">Active Members</div>
-            </div>
-          </div>
-          <div class="col-6 col-md-3">
-            <div class="summary-card">
-              <i class="fa-solid fa-tree d-block"></i>
-              <div class="summary-num" id="card-total-wood">-</div>
-              <div class="summary-label">Total Wood</div>
-            </div>
-          </div>
-          <div class="col-6 col-md-3">
-            <div class="summary-card">
-              <i class="fa-solid fa-dragon d-block"></i>
-              <div class="summary-num" id="card-monsters-caught">-</div>
-              <div class="summary-label">Monsters Caught</div>
+          <div class="col-6 col-md-4">
+            <div class="summary-card summary-card-clickable" onclick="openIslandProgressModal()">
+              <i class="fa-solid fa-monument d-block"></i>
+              <div class="summary-num" id="card-island-monument">Click Details</div>
+              <div class="summary-label">Island Progress <i class="fa-solid fa-circle-info ms-1 small"></i></div>
             </div>
           </div>
         </div>
@@ -759,17 +702,61 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     </div>
   </div>
 
+  <!-- MODAL POPUP ISLAND PROGRESS -->
+  <div class="modal fade" id="islandProgressModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-large">
+      <div class="modal-content shadow-lg">
+        <div class="modal-header d-flex align-items-center justify-content-between">
+          <div class="d-flex align-items-center gap-3">
+            <div class="modal-player-avatar"><i class="fa-solid fa-monument"></i></div>
+            <div>
+              <h4 class="modal-title fw-bold text-slate-900 mb-0" id="modal-island-clan">Island Progress</h4>
+              <span class="badge bg-emerald-100 text-emerald-800 border border-emerald-300">Clan Overview</span>
+            </div>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Unity Monument Card -->
+          <div class="stat-box text-center mb-4">
+            <div class="stat-box-title justify-content-center text-emerald-700 fs-6">
+              <i class="fa-solid fa-landmark"></i> Unity Monument
+            </div>
+            <div class="stat-box-val fs-3 text-emerald-700" id="modal-unity-monument">-</div>
+          </div>
+
+          <!-- Monster Totems Grid -->
+          <div class="stat-box mb-0">
+            <div class="stat-box-title text-cyan-700 mb-3 justify-content-center fs-6">
+              <i class="fa-solid fa-skull-crossbones"></i> Monster Totems
+            </div>
+            <div class="totem-grid" id="modal-totems-container">
+              <!-- Dynamically Populated -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
   const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyjvC7I9l2OA9fcgBjUrz3qAIFenCFRsr5QVab7tZOtIU7QQ_3lH71fl_3K6ot73yAS/exec';
   const SYNC_INTERVAL = 20000;
 
+  // =========================================================================
+  // KONFIGURASI SHOW/HIDE KLAN DI HALAMAN UTAMA (LANDING PAGE)
+  // Edit array ini untuk memilih klan mana saja yang ingin ditampilkan:
+  // Contoh: const VISIBLE_CLANS = ['AT1', 'AT2', 'AT3', 'AT4', 'AT5'];
+  // =========================================================================
+  const VISIBLE_CLANS = ['AT1', 'AT2', 'AT3', 'AT4', 'AT5'];
+
   const CLAN_META = {
-    'AT1': { name: 'Aussie Tackle 1', emoji: '🟠', code: 'AT1' },
-    'AT2': { name: 'Aussie Tackle 2', emoji: '🔴', code: 'AT2' },
-    'AT3': { name: 'Aussie Tackle 3', emoji: '🟢', code: 'AT3' },
-    'AT4': { name: 'Aussie Tackle 4', emoji: '🔵', code: 'AT4' },
-    'AT5': { name: 'Aussie Tackle 5', emoji: '🟤', code: 'AT5' }
+    'AT1': { name: 'Aussie Tackle 1', badge: 'AT1', color: '#d97706', desc: 'Casual Gold Division' },
+    'AT2': { name: 'Aussie Tackle 2', badge: 'AT2', color: '#dc2626', desc: 'Casual Gold Division' },
+    'AT3': { name: 'Aussie Tackle 3', badge: 'AT3', color: '#16a34a', desc: 'Semi-Competitive Division' },
+    'AT4': { name: 'Aussie Tackle 4', badge: 'AT4', color: '#2563eb', desc: 'Hardcore Division' },
+    'AT5': { name: 'Aussie Tackle 5', badge: 'AT5', color: '#b45309', desc: 'Training & Development Clan' }
   };
 
   let globalClansData = {};
@@ -780,6 +767,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   let timerId = null;
   let requestPending = false;
   let playerModal = null;
+  let islandModal = null;
 
   const MONSTER_COLUMNS = [
     {key:'shredder', seasonKey:'shredderSeason', label:'Shredder'},
@@ -794,6 +782,9 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 
   document.addEventListener('DOMContentLoaded', () => {
     playerModal = new bootstrap.Modal(document.getElementById('playerDetailModal'));
+    islandModal = new bootstrap.Modal(document.getElementById('islandProgressModal'));
+
+    renderLandingPageGrid();
 
     document.querySelectorAll('.custom-nav-row .nav-link').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -804,7 +795,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       });
     });
 
-    // Menangani tombol back fisik / gesture HP
     window.addEventListener('popstate', (event) => {
       if (event.state && event.state.view === 'clan') {
         selectClan(event.state.clanCode, false);
@@ -825,6 +815,29 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       }
     });
   });
+
+  function renderLandingPageGrid() {
+    const grid = document.getElementById('clanGridContainer');
+    grid.innerHTML = VISIBLE_CLANS.map(code => {
+      const meta = CLAN_META[code];
+      if (!meta) return '';
+      return `
+        <div onclick="selectClan('${code}')" class="clan-card-hover cursor-pointer position-relative overflow-hidden group shadow-md">
+          <div class="d-flex align-items-center justify-content-end mb-1">
+            <span class="px-2 py-0.5 rounded-md text-xs fw-bold font-monospace" style="background: ${meta.color}15; border: 1px solid ${meta.color}40; color: ${meta.color}; font-size: 0.72rem;">${meta.badge}</span>
+          </div>
+          <h3 class="text-lg fw-bold mb-0.5" style="color: ${meta.color}; font-size: 1.15rem; font-weight: 800;">${meta.name}</h3>
+          <p class="text-slate-500 text-xs mb-3">${meta.desc}</p>
+          <div class="d-flex align-items-center justify-content-between text-xs text-slate-500 pt-2 border-top border-slate-200">
+            <span>Status: Active</span>
+            <span class="fw-semibold d-flex align-items-center gap-1" style="color: ${meta.color};">
+              View Records <i class="fa-solid fa-arrow-right text-[10px]"></i>
+            </span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
 
   function startPolling() {
     stopPolling();
@@ -911,7 +924,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     document.getElementById('landingPage').classList.add('d-none');
     document.getElementById('clanDetailView').classList.remove('d-none');
 
-    const meta = CLAN_META[clanCode] || { name: clanCode, emoji: '🛡️', code: clanCode };
+    const meta = CLAN_META[clanCode] || { name: clanCode, badge: clanCode };
     document.getElementById('currentClanTitle').innerText = `${meta.name.toUpperCase()} DATABASE`;
 
     if (globalClansData[activeClan]) {
@@ -990,15 +1003,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     if (!data) return;
 
     const members = data.members || [];
-    const wood = data.wood || [];
-    const monster = data.monster || [];
-
     document.getElementById('card-total-members').innerText = members.length;
-    document.getElementById('card-active-members').innerText = members.filter(m => String(m.status).toLowerCase() === 'active').length;
-    document.getElementById('card-total-wood').innerText = wood.reduce((sum,w) => sum + (Number(w.allTime) || 0), 0).toLocaleString('en-US');
-
-    const totalMonsters = monster.reduce((sum, m) => sum + (Number(m.allTimeScore) || 0), 0);
-    document.getElementById('card-monsters-caught').innerText = fmt(totalMonsters);
 
     renderMembers();
     renderWood();
@@ -1006,6 +1011,35 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     renderBattle();
     renderLatestBattle(data.latestBattleInfo || []);
     renderOverview();
+  }
+
+  function openIslandProgressModal() {
+    if (!cachedClanData) return;
+    const island = cachedClanData.islandProgress || {};
+    const meta = CLAN_META[activeClan] || { name: activeClan };
+
+    document.getElementById('modal-island-clan').innerText = `${meta.name} - Island Progress`;
+    document.getElementById('modal-unity-monument').innerText = island.unityMonument || 'Maxed out';
+
+    const totems = [
+      { name: 'Shredder', val: island.shredder },
+      { name: 'Bessie', val: island.bessie },
+      { name: 'Don Pedro', val: island.donPedro },
+      { name: 'Kraken', val: island.kraken },
+      { name: 'Bunyip', val: island.bunyip },
+      { name: 'Nessie', val: island.nessie },
+      { name: 'Naga', val: island.naga },
+      { name: 'Boiúna', val: island.boiuna }
+    ];
+
+    document.getElementById('modal-totems-container').innerHTML = totems.map(t => `
+      <div class="totem-card">
+        <div class="totem-name">${t.name}</div>
+        <div class="totem-val">${t.val || '-'}</div>
+      </div>
+    `).join('');
+
+    islandModal.show();
   }
 
   function renderMembers() {

@@ -346,15 +346,11 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
           <span>Home</span>
         </button>
 
-        <!-- Navigation Controls (Kanan: Refresh & Sync Tag) -->
+        <!-- Navigation Controls (Kanan: Refresh Button Saja, Tag Synced Dihilangkan) -->
         <div class="d-flex align-items-center gap-2">
           <button onclick="fetchData()" title="Sync Data" class="btn btn-sm btn-dark p-2 rounded-lg border border-slate-600 text-light bg-slate-800">
             <i id="syncIcon" class="fa-solid fa-arrows-rotate"></i>
           </button>
-
-          <span id="lastUpdatedTag" class="text-xs px-2.5 py-1 rounded-pill bg-slate-900 text-slate-300 font-monospace d-none d-sm-inline-block border border-slate-700" style="font-size: 0.75rem;">
-            Synced: --:--:--
-          </span>
         </div>
       </div>
     </header>
@@ -481,8 +477,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
           </div>
           <div class="sync-indicator">
             <span class="pulse-dot" id="sync-dot"></span>
-            <span id="sync-status">Menghubungkan...</span> |
-            Updated: <span id="sync-time">Memuat...</span>
+            <span id="sync-status">Menghubungkan...</span>
           </div>
         </div>
 
@@ -812,6 +807,15 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       });
     });
 
+    // Menangani tombol back fisik / gesture HP
+    window.addEventListener('popstate', (event) => {
+      if (event.state && event.state.view === 'clan') {
+        selectClan(event.state.clanCode, false);
+      } else {
+        showLandingPage(false);
+      }
+    });
+
     fetchData();
     startPolling();
 
@@ -859,8 +863,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
           syncDot.style.backgroundColor = 'var(--clan-accent)';
           syncDot.style.boxShadow = '0 0 8px var(--clan-accent)';
         }
-        const syncTime = document.getElementById('sync-time');
-        if (syncTime) syncTime.innerText = data.lastUpdated || '-';
 
         if (activeClan && globalClansData[activeClan]) {
           cachedClanData = globalClansData[activeClan];
@@ -884,7 +886,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     }
   }
 
-  function showLandingPage() {
+  function showLandingPage(pushHistory = true) {
     activeClan = null;
     cachedClanData = null;
     document.body.removeAttribute('data-clan');
@@ -894,11 +896,15 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 
     document.getElementById('landingPage').classList.remove('d-none');
     document.getElementById('clanDetailView').classList.add('d-none');
+
+    if (pushHistory) {
+      history.pushState({ view: 'landing' }, '', '');
+    }
     
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  function selectClan(clanCode) {
+  function selectClan(clanCode, pushHistory = true) {
     activeClan = clanCode;
     document.body.setAttribute('data-clan', clanCode);
 
@@ -917,6 +923,10 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     } else {
       cachedClanData = globalClansData;
       renderDashboard(cachedClanData);
+    }
+
+    if (pushHistory) {
+      history.pushState({ view: 'clan', clanCode: clanCode }, '', '');
     }
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1266,7 +1276,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
         <span class="overview-crown">${i === 0 ? '<i class="fa-solid fa-crown" style="color: #d97706;"></i>' : i === 1 ? '<i class="fa-solid fa-crown" style="color: #64748b;"></i>' : '<i class="fa-solid fa-crown" style="color: #b45309;"></i>'}</span>
         <span class="overview-name">${esc(b.name)}</span>
         <span class="badge bg-emerald-100 text-emerald-800 border border-emerald-300 fs-6 overview-badge">${scoreText(b.text)}</span>
-      </div>`).join('') : '<div class="text-muted text-center py-3">Tidak ada data</div>';
+      </div>`).join('') : '<div class="text-muted text-center py-3">Tidak data</div>';
   }
   </script>
 </body>

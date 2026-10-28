@@ -248,7 +248,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 }
 
 .overview-rank { width: 24px; color: #64748b; flex-shrink: 0; font-weight: bold; }
-.overview-crown { width: 24px; text-align: center; flex-shrink: 0; }
 .overview-name { font-weight: 700; color: #1e293b; word-break: break-word; }
 
 /* STYLE CARD VIEW KHUSUS MOBILE */
@@ -288,8 +287,9 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 .mobile-stat-label { font-size: 0.7rem; color: #64748b; font-weight: 700; text-transform: uppercase; }
 .mobile-stat-val { font-weight: 800; color: #0f172a; }
 
-.player-cell-wrapper { display: flex; align-items: center; }
-.crown-slot { display: inline-block; width: 24px; text-align: center; flex-shrink: 0; margin-right: 6px; }
+/* Rapat tanpa space jika bukan Top 3 */
+.player-cell-wrapper { display: flex; align-items: center; gap: 4px; }
+.crown-slot { display: inline-block; width: 24px; text-align: center; flex-shrink: 0; }
 .player-name-text { font-weight: bold; color: #1e293b; white-space: nowrap; }
 
 .member-clickable {
@@ -392,7 +392,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
-/* RESPONSIVE TOGGLES: TABEL UTK LAPTOP/TAB, CARDS UTK MOBILE */
 .desktop-view-only { display: block; }
 .mobile-view-only { display: none; }
 
@@ -407,7 +406,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   .btn-filter { font-size: .78rem; padding: 9px 11px; }
   .table-container { padding: 12px; }
   .modal-dialog-large { width: 96%; margin: 10px auto; }
-  .overview-badge-container { margin-left: 32px; }
 }
 </style>
 </head>
@@ -574,7 +572,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
         <!-- MEMBER PANE -->
         <div id="member-pane" class="tab-pane d-none">
           <div class="table-container shadow-sm">
-            <!-- Desktop Table View -->
             <div class="table-responsive desktop-view-only">
               <table class="table">
                 <thead>
@@ -590,7 +587,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
                 <tbody id="table-member-body"></tbody>
               </table>
             </div>
-            <!-- Mobile Card View -->
             <div class="mobile-view-only">
               <div class="mobile-card-list" id="mobile-member-list"></div>
             </div>
@@ -611,14 +607,12 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
           </div>
 
           <div class="table-container shadow-sm">
-            <!-- Desktop Table View (Compact: Status Kolom Dihilangkan) -->
             <div class="table-responsive desktop-view-only">
               <table class="table">
                 <thead id="wood-head"></thead>
                 <tbody id="table-wood-body"></tbody>
               </table>
             </div>
-            <!-- Mobile Card View -->
             <div class="mobile-view-only">
               <div class="mobile-card-list" id="mobile-wood-list"></div>
             </div>
@@ -639,14 +633,12 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
           </div>
 
           <div class="table-container shadow-sm">
-            <!-- Desktop Table View (Compact: Status Kolom Dihilangkan) -->
             <div class="table-responsive desktop-view-only">
               <table class="table text-nowrap">
                 <thead id="monster-head"></thead>
                 <tbody id="table-monster-body"></tbody>
               </table>
             </div>
-            <!-- Mobile Card View -->
             <div class="mobile-view-only">
               <div class="mobile-card-list" id="mobile-monster-list"></div>
             </div>
@@ -671,14 +663,12 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
               <div class="latest-battle-title"><i class="fa-solid fa-trophy me-2"></i>Latest Battle Info</div>
               <div class="battle-info-pills" id="latest-battle-info-container">Memuat data...</div>
             </div>
-            <!-- Desktop Table View -->
             <div class="table-responsive desktop-view-only">
               <table class="table">
                 <thead id="battle-head"></thead>
                 <tbody id="table-battle-body"></tbody>
               </table>
             </div>
-            <!-- Mobile Card View -->
             <div class="mobile-view-only">
               <div class="mobile-card-list" id="mobile-battle-list"></div>
             </div>
@@ -841,6 +831,33 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     playerModal = new bootstrap.Modal(document.getElementById('playerDetailModal'));
     islandModal = new bootstrap.Modal(document.getElementById('islandProgressModal'));
 
+    // Handle tombol back perangkat agar menutup modal jika terbuka
+    ['playerDetailModal', 'islandProgressModal'].forEach(modalId => {
+      const el = document.getElementById(modalId);
+      el.addEventListener('show.bs.modal', () => {
+        history.pushState({ modalOpen: modalId }, '', '');
+      });
+      el.addEventListener('hidden.bs.modal', () => {
+        if (history.state && history.state.modalOpen) {
+          history.back();
+        }
+      });
+    });
+
+    window.addEventListener('popstate', (event) => {
+      // Tutup semua modal aktif jika tombol back ditekan
+      const pModal = bootstrap.Modal.getInstance(document.getElementById('playerDetailModal'));
+      const iModal = bootstrap.Modal.getInstance(document.getElementById('islandProgressModal'));
+      if (pModal) pModal.hide();
+      if (iModal) iModal.hide();
+
+      if (event.state && event.state.view === 'clan') {
+        selectClan(event.state.clanCode, false);
+      } else if (!event.state || event.state.view !== 'clan') {
+        showLandingPage(false);
+      }
+    });
+
     renderLandingPageGrid();
 
     document.querySelectorAll('.custom-nav-row .nav-link').forEach(btn => {
@@ -850,14 +867,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
         document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('d-none'));
         document.getElementById(btn.dataset.pane).classList.remove('d-none');
       });
-    });
-
-    window.addEventListener('popstate', (event) => {
-      if (event.state && event.state.view === 'clan') {
-        selectClan(event.state.clanCode, false);
-      } else {
-        showLandingPage(false);
-      }
     });
 
     fetchData();
@@ -1055,15 +1064,16 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     return `<span class="badge ${cls}">${esc(role || 'Member')}</span>`;
   }
 
+  // Hanya render slot mahkota jika rank < 3 (Top 3). Jika tidak, rapatkan tanpa space kosong.
   function playerCell(name, idx, score) {
-    let crown = '';
-    if (score > 0) {
-      if (idx === 0) crown = '<i class="fa-solid fa-crown" style="color: #d97706;"></i>';
-      else if (idx === 1) crown = '<i class="fa-solid fa-crown" style="color: #64748b;"></i>';
-      else if (idx === 2) crown = '<i class="fa-solid fa-crown" style="color: #b45309;"></i>';
+    let crownOrSlot = '';
+    if (score > 0 && idx < 3) {
+      if (idx === 0) crownOrSlot = '<span class="crown-slot"><i class="fa-solid fa-crown" style="color: #d97706;"></i></span>';
+      else if (idx === 1) crownOrSlot = '<span class="crown-slot"><i class="fa-solid fa-crown" style="color: #64748b;"></i></span>';
+      else if (idx === 2) crownOrSlot = '<span class="crown-slot"><i class="fa-solid fa-crown" style="color: #b45309;"></i></span>';
     }
     return `<div class="player-cell-wrapper">
-      <span class="crown-slot">${crown}</span>
+      ${crownOrSlot}
       <span class="player-name-text">${esc(name)}</span>
     </div>`;
   }
@@ -1126,7 +1136,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       return;
     }
 
-    // Render Laptop Table
     body.innerHTML = members.map(m => `<tr>
       <td class="text-center">${esc(m.no)}</td>
       <td>
@@ -1140,7 +1149,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       <td>${esc(m.unlockedMaps)}</td>
     </tr>`).join('');
 
-    // Render Mobile Card View
     mobileContainer.innerHTML = members.map(m => `
       <div class="mobile-card-item">
         <div class="mobile-card-header">
@@ -1235,7 +1243,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     const showAll = mode !== 'season';
     const showSeason = mode !== 'alltime';
 
-    // Compact Header: Kolom Status dihilangkan
     const headers = ['<th class="text-center">No</th>', '<th>Player Name</th>', '<th class="text-center">Tenure</th>'];
     if (showAll) headers.push('<th class="text-end">All-Time Wood</th>');
     if (showSeason) headers.push('<th class="text-end">Current Season</th>');
@@ -1253,7 +1260,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     const sortProp = mode === 'season' ? 'currentSeason' : 'allTime';
     const rows = sortByScore(source, sortProp);
 
-    // Desktop Table View
     document.getElementById('table-wood-body').innerHTML = rows.map((w,i) => {
       const cells = [
         `<td class="text-center text-slate-500">${i+1}</td>`,
@@ -1265,7 +1271,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       return `<tr>${cells.join('')}</tr>`;
     }).join('');
 
-    // Mobile Card View
     mobileContainer.innerHTML = rows.map((w,i) => `
       <div class="mobile-card-item">
         <div class="mobile-card-header">
@@ -1288,7 +1293,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     const showAll = mode !== 'season';
     const showSeason = mode !== 'alltime';
 
-    // Compact Header: Kolom Status dihilangkan
     const headers = ['<th class="text-center">No</th>', '<th>Player Name</th>', '<th class="text-center">Tenure</th>'];
     if (showAll) headers.push('<th class="text-end">All-Time</th>');
     if (showSeason) headers.push('<th class="text-end">Current Season</th>');
@@ -1317,7 +1321,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       return valB - valA;
     });
 
-    // Desktop Table View
     document.getElementById('table-monster-body').innerHTML = rows.map((m,i) => {
       const allTimeNum = parseMonsterPts(m.allTimeText);
       const cells = [
@@ -1334,7 +1337,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       return `<tr>${cells.join('')}</tr>`;
     }).join('');
 
-    // Mobile Card View
     mobileContainer.innerHTML = rows.map((m,i) => {
       const allTimeNum = parseMonsterPts(m.allTimeText);
       return `
@@ -1378,7 +1380,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     const prop = mode === 'season' ? 'currentSeasonScore' : 'allTimeScore';
     const rows = sortByScore(source, prop);
 
-    // Desktop Table View
     document.getElementById('table-battle-body').innerHTML = rows.map((b,i) => {
       const cells = [
         `<td class="text-center text-slate-500">${i+1}</td>`,
@@ -1391,7 +1392,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       return `<tr>${cells.join('')}</tr>`;
     }).join('');
 
-    // Mobile Card View
     mobileContainer.innerHTML = rows.map((b,i) => `
       <div class="mobile-card-item">
         <div class="mobile-card-header">
@@ -1459,8 +1459,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       <div class="overview-row-auto">
         <div class="overview-player-info">
           <span class="overview-rank">${i+1}.</span>
-          <span class="overview-crown">${i === 0 ? '<i class="fa-solid fa-crown" style="color: #d97706;"></i>' : i === 1 ? '<i class="fa-solid fa-crown" style="color: #64748b;"></i>' : '<i class="fa-solid fa-crown" style="color: #b45309;"></i>'}</span>
-          <span class="overview-name">${esc(w.name)}</span>
+          ${playerCell(w.name, i, Number(w[woodProp])||0)}
         </div>
         <div class="overview-badge-container">
           <span class="badge bg-amber-100 text-amber-800 border border-amber-300 fs-6">${fmt(w[woodProp])} Wood</span>
@@ -1478,8 +1477,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       <div class="overview-row-auto">
         <div class="overview-player-info">
           <span class="overview-rank">${i+1}.</span>
-          <span class="overview-crown">${i === 0 ? '<i class="fa-solid fa-crown" style="color: #d97706;"></i>' : i === 1 ? '<i class="fa-solid fa-crown" style="color: #64748b;"></i>' : '<i class="fa-solid fa-crown" style="color: #b45309;"></i>'}</span>
-          <span class="overview-name">${esc(m.name)}</span>
+          ${playerCell(m.name, i, Number(m.score)||0)}
         </div>
         <div class="overview-badge-container">
           <span class="badge bg-cyan-100 text-cyan-800 border border-cyan-300 fs-6">${scoreText(m.text)}</span>
@@ -1497,8 +1495,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       <div class="overview-row-auto">
         <div class="overview-player-info">
           <span class="overview-rank">${i+1}.</span>
-          <span class="overview-crown">${i === 0 ? '<i class="fa-solid fa-crown" style="color: #d97706;"></i>' : i === 1 ? '<i class="fa-solid fa-crown" style="color: #64748b;"></i>' : '<i class="fa-solid fa-crown" style="color: #b45309;"></i>'}</span>
-          <span class="overview-name">${esc(b.name)}</span>
+          ${playerCell(b.name, i, Number(b.score)||0)}
         </div>
         <div class="overview-badge-container">
           <span class="badge bg-emerald-100 text-emerald-800 border border-emerald-300 fs-6">${scoreText(b.text)}</span>

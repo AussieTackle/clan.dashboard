@@ -112,7 +112,7 @@ body[data-clan="AT5"] { --clan-accent: #d97706; }
   border-color: var(--clan-accent) !important;
 }
 
-.filter-pills-wrapper { display: flex; justify-content: center; margin-bottom: 20px; }
+.filter-pills-wrapper { display: flex; justify-content: center; margin-bottom: 10px; }
 .filter-pills {
   background: var(--card-bg);
   border: 1px solid var(--border-color);
@@ -552,6 +552,11 @@ body[data-clan="AT5"] { --clan-accent: #d97706; }
               </button>
             </div>
           </div>
+          <!-- Catatan / Note di bawah filter -->
+          <div class="text-center text-muted small mb-3 fst-italic">
+            <i class="fa-solid fa-circle-info me-1"></i> Note: This leaderboard only tracks currently active clan members. Past members who have left are not included.
+          </div>
+
           <div class="row g-3 justify-content-center">
             <div class="col-12 col-lg-10">
               <div class="table-container">
@@ -604,6 +609,11 @@ body[data-clan="AT5"] { --clan-accent: #d97706; }
               <button class="btn-filter active" data-mode="both" onclick="setTableFilter('wood','both')">Both</button>
             </div>
           </div>
+          <!-- Catatan / Note di bawah filter -->
+          <div class="text-center text-muted small mb-3 fst-italic">
+            <i class="fa-solid fa-circle-info me-1"></i> Note: This leaderboard only tracks currently active clan members. Past members who have left are not included.
+          </div>
+
           <div class="table-container">
             <div class="table-responsive">
               <table class="table">
@@ -623,6 +633,11 @@ body[data-clan="AT5"] { --clan-accent: #d97706; }
               <button class="btn-filter active" data-mode="both" onclick="setTableFilter('monster','both')">Both</button>
             </div>
           </div>
+          <!-- Catatan / Note di bawah filter -->
+          <div class="text-center text-muted small mb-3 fst-italic">
+            <i class="fa-solid fa-circle-info me-1"></i> Note: This leaderboard only tracks currently active clan members. Past members who have left are not included.
+          </div>
+
           <div class="table-container">
             <div class="table-responsive">
               <table class="table text-nowrap">
@@ -642,6 +657,11 @@ body[data-clan="AT5"] { --clan-accent: #d97706; }
               <button class="btn-filter active" data-mode="both" onclick="setTableFilter('battle','both')">Both</button>
             </div>
           </div>
+          <!-- Catatan / Note di bawah filter -->
+          <div class="text-center text-muted small mb-3 fst-italic">
+            <i class="fa-solid fa-circle-info me-1"></i> Note: This leaderboard only tracks currently active clan members. Past members who have left are not included.
+          </div>
+
           <div class="table-container">
             <div class="latest-battle-card">
               <div class="latest-battle-title"><i class="fa-solid fa-trophy me-2"></i>Latest Battle Info</div>
@@ -780,7 +800,6 @@ body[data-clan="AT5"] { --clan-accent: #d97706; }
         btn.classList.add('active');
         document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('d-none'));
         document.getElementById(btn.dataset.pane).classList.remove('d-none');
-        // Scroll up dihapus khusus untuk tombol menu tab ini
       });
     });
 
@@ -867,7 +886,6 @@ body[data-clan="AT5"] { --clan-accent: #d97706; }
     document.getElementById('landingPage').classList.remove('d-none');
     document.getElementById('clanDetailView').classList.add('d-none');
     
-    // Tetap scroll up saat kembali ke halaman utama
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -892,7 +910,6 @@ body[data-clan="AT5"] { --clan-accent: #d97706; }
       renderDashboard(cachedClanData);
     }
 
-    // Tetap scroll up saat masuk ke dashboard klan
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 

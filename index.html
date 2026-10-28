@@ -20,7 +20,6 @@
   --border-color: #e2e8f0;
 }
 
-/* Base Body Style ala Wiki dengan Background Foto */
 body {
   background: linear-gradient(rgba(13, 70, 80, 0.88), rgba(8, 45, 52, 0.95)), url('ATTTTTTT.jpg') no-repeat center center fixed;
   background-size: cover;
@@ -30,7 +29,6 @@ body {
   min-height: 100vh;
 }
 
-/* Clan Specific Accent Colors */
 body[data-clan="AT1"] { --clan-accent: #d97706; }
 body[data-clan="AT2"] { --clan-accent: #dc2626; }
 body[data-clan="AT3"] { --clan-accent: #16a34a; }
@@ -73,9 +71,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-.summary-card-clickable {
-  cursor: pointer;
-}
+.summary-card-clickable { cursor: pointer; }
 .summary-card-clickable:hover {
   transform: translateY(-3px);
   box-shadow: 0 8px 12px -2px rgba(0,0,0,0.1);
@@ -86,7 +82,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 
 .nav-tabs-wrapper { display: flex; justify-content: center; margin: 20px 0 25px; padding: 0 5px; }
 
-/* Kontainer Tab: Tanpa latar belakang kartu putih */
 .custom-nav-container {
   background: transparent !important;
   padding: 0;
@@ -227,25 +222,34 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   overflow-wrap: anywhere;
 }
 
-/* Tata letak kartu 2 baris seragam untuk Overview (Wood, Monster, Battle) */
-.overview-row-card {
+/* CARDS OVERVIEW: Otomatis 1 baris (2 kolom) jika cukup, atau 2 baris jika sempit */
+.overview-row-auto {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
   background: #f8fafc;
   border: 1px solid var(--border-color);
   border-radius: 10px;
-  padding: 12px 14px;
+  padding: 10px 14px;
   margin-bottom: 10px;
   gap: 8px;
 }
-.overview-card-top {
+.overview-player-info {
   display: flex;
   align-items: center;
   gap: 8px;
+  min-width: 180px;
+  flex: 1 1 auto;
 }
+.overview-badge-container {
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+
 .overview-rank { width: 24px; color: #64748b; flex-shrink: 0; font-weight: bold; }
 .overview-crown { width: 24px; text-align: center; flex-shrink: 0; }
-.overview-name { flex: 1; min-width: 0; font-weight: 700; color: #1e293b; overflow-wrap: anywhere; }
+.overview-name { font-weight: 700; color: #1e293b; word-break: break-word; }
 
 .player-cell-wrapper { display: flex; align-items: center; }
 .crown-slot { display: inline-block; width: 24px; text-align: center; flex-shrink: 0; margin-right: 6px; }
@@ -262,7 +266,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   text-decoration: underline;
 }
 
-/* Modal styling ala Wiki */
 .modal-dialog-large { max-width: 950px; width: 92%; }
 .modal-content {
   background: #ffffff;
@@ -305,7 +308,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 }
 .monster-pill-val { color: var(--clan-accent); font-weight: bold; }
 
-/* Totem Grid Box di Modal Island Progress */
 .totem-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
@@ -341,7 +343,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 }
 @keyframes pulse { 0%, 100% { opacity: .3; } 50% { opacity: 1; } }
 
-/* Landing Card Hover Effect */
 .clan-card-hover {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   background: #ffffff !important;
@@ -362,20 +363,18 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   .btn-filter { font-size: .78rem; padding: 9px 11px; }
   .table-container { padding: 12px; }
   .modal-dialog-large { width: 96%; margin: 10px auto; }
+  .overview-badge-container { margin-left: 32px; } /* Memberikan indentasi manis jika turun ke baris 2 di hp */
 }
 </style>
 </head>
 
 <body class="antialiased">
 
-  <!-- APP CONTAINER -->
   <div id="app" class="min-vh-100 d-flex flex-column">
 
-    <!-- TOP NAVIGATION BAR WIKI STYLE -->
+    <!-- TOP NAVIGATION BAR -->
     <header class="border-bottom border-slate-700 sticky-top z-40 shadow-sm" style="background-color: #082d34; border-bottom: 3px solid #062228 !important;">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 d-flex align-items-center justify-content-between" style="height: 64px;">
-        
-        <!-- Logo & Title Wiki -->
         <div id="navBrand" class="d-flex align-items-center space-x-3 cursor-pointer" onclick="showLandingPage()" style="cursor: pointer; gap: 12px;">
           <img src="https://lh3.googleusercontent.com/d/1k92AuoJ08vSdniVl6oHAjEOmz8it6Hek" alt="Clan Logo" class="clan-logo-img shadow-md" style="width: 40px; height: 40px;">
           <div>
@@ -384,13 +383,11 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
           </div>
         </div>
 
-        <!-- Tombol Main Menu -->
         <button id="btnHome" onclick="showLandingPage()" class="btn btn-sm btn-light d-none align-items-center gap-2 px-3 py-1.5 rounded-lg border text-slate-800 text-xs fw-semibold shadow-sm">
           <i class="fa-solid fa-house"></i>
           <span>Home</span>
         </button>
 
-        <!-- Navigation Controls (Kanan: Refresh Button Saja) -->
         <div class="d-flex align-items-center gap-2">
           <button onclick="fetchData()" title="Sync Data" class="btn btn-sm btn-dark p-2 rounded-lg border border-slate-600 text-light bg-slate-800">
             <i id="syncIcon" class="fa-solid fa-arrows-rotate"></i>
@@ -399,13 +396,11 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       </div>
     </header>
 
-    <!-- MAIN CONTENT WRAPPER -->
+    <!-- MAIN CONTENT -->
     <main class="flex-grow-1 max-w-7xl w-100 mx-auto px-3 px-sm-4 px-lg-8 py-4">
 
-      <!-- ==================== LANDING PAGE WIKI ==================== -->
+      <!-- LANDING PAGE -->
       <section id="landingPage" class="py-4 py-sm-5 d-flex flex-column align-items-center justify-content-center">
-        
-        <!-- Header Hero Wiki -->
         <div class="text-center max-w-2xl mx-auto mb-4 p-4 rounded-3 shadow-lg" style="background: rgba(255, 255, 255, 0.92); border: 1px solid var(--border-color);">
           <div class="inline-flex align-items-center gap-2 px-3.5 py-1.5 rounded-pill bg-emerald-100 border border-emerald-300 text-emerald-800 text-xs fw-semibold mb-3">
             <i class="fa-solid fa-book-open"></i>
@@ -419,15 +414,13 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
           </p>
         </div>
 
-        <!-- Clan Selection Grid Wiki Style (Dinamis dari VISIBLE_CLANS) -->
         <div id="clanGridContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 w-100 max-w-5xl" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; width: 100%; max-width: 1000px;">
         </div>
       </section>
 
-      <!-- ==================== CLAN DETAIL DASHBOARD VIEW ==================== -->
+      <!-- CLAN DETAIL VIEW -->
       <section id="clanDetailView" class="d-none">
 
-        <!-- Header Banner Klan -->
         <div class="header-banner mb-4">
           <div class="header-logo-container">
             <div class="d-flex align-items-center justify-content-center" id="currentClanEmoji">
@@ -444,7 +437,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
           </div>
         </div>
 
-        <!-- SUMMARY CARDS -->
         <div class="row g-2 g-md-3 my-2 justify-content-center">
           <div class="col-6 col-md-4">
             <div class="summary-card">
@@ -462,7 +454,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
           </div>
         </div>
 
-        <!-- NAVIGATION TABS -->
+        <!-- TABS -->
         <div class="nav-tabs-wrapper">
           <div class="custom-nav-container">
             <ul class="custom-nav-row">
@@ -633,14 +625,14 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 
     </main>
 
-    <!-- FOOTER WIKI -->
+    <!-- FOOTER -->
     <footer class="mt-auto border-top border-slate-700 bg-slate-900 py-3 text-center text-xs text-slate-400">
       <p class="mb-0">&copy; 2026 Aussie Tackle Clan.</p>
     </footer>
 
   </div>
 
-  <!-- MODAL POPUP PLAYER STATS -->
+  <!-- MODAL PLAYER STATS -->
   <div class="modal fade" id="playerDetailModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-large">
       <div class="modal-content shadow-lg">
@@ -711,7 +703,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     </div>
   </div>
 
-  <!-- MODAL POPUP ISLAND PROGRESS -->
+  <!-- MODAL ISLAND PROGRESS -->
   <div class="modal fade" id="islandProgressModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-large">
       <div class="modal-content shadow-lg">
@@ -726,7 +718,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <!-- Unity Monument Card -->
           <div class="stat-box text-center mb-4">
             <div class="stat-box-title justify-content-center text-emerald-700 fs-6">
               <i class="fa-solid fa-landmark"></i> Unity Monument
@@ -734,13 +725,11 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
             <div class="stat-box-val fs-3 text-emerald-700" id="modal-unity-monument">-</div>
           </div>
 
-          <!-- Monster Totems Grid -->
           <div class="stat-box mb-0">
             <div class="stat-box-title text-cyan-700 mb-3 justify-content-center fs-6">
               <i class="fa-solid fa-skull-crossbones"></i> Monster Totems
             </div>
             <div class="totem-grid" id="modal-totems-container">
-              <!-- Dynamically Populated -->
             </div>
           </div>
         </div>
@@ -753,11 +742,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyjvC7I9l2OA9fcgBjUrz3qAIFenCFRsr5QVab7tZOtIU7QQ_3lH71fl_3K6ot73yAS/exec';
   const SYNC_INTERVAL = 20000;
 
-  // =========================================================================
-  // KONFIGURASI SHOW/HIDE KLAN DI HALAMAN UTAMA (LANDING PAGE)
-  // Edit array ini untuk memilih klan mana saja yang ingin ditampilkan:
-  // Contoh: const VISIBLE_CLANS = ['AT1', 'AT2', 'AT3', 'AT4', 'AT5'];
-  // =========================================================================
   const VISIBLE_CLANS = ['AT3', 'AT5'];
 
   const CLAN_META = {
@@ -964,9 +948,22 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     return match ? Number(match[1].replace(/,/g,'')) || 0 : 0;
   }
 
-  function parseMonsterTextScore(val) {
+  // Membersihkan kata "caught" tambahan dari teks monster (misal: "979 caught / 4893 pts caught" -> "979 caught / 4893 pts")
+  function cleanMonsterText(val) {
+    if (val == null || val === '' || val === '-') return '-';
+    return String(val).replace(/pts\s+caught/gi, 'pts').replace(/\s+/g, ' ').trim();
+  }
+
+  // Mengambil angka poin monster (sebelum pts) untuk melakukan pengurutan angka dari terbesar ke terkecil
+  function parseMonsterPts(val) {
     if (val == null || val === '' || val === '-') return 0;
     const str = String(val).trim();
+    // Cari angka sebelum 'pts' atau 'pts caught'
+    const ptsMatch = str.match(/([\d,.]+)\s*pts/i);
+    if (ptsMatch) {
+      return Number(ptsMatch[1].replace(/,/g, '')) || 0;
+    }
+    // Fallback ambil angka pertama
     const match = str.match(/^([\d,.]+)/);
     return match ? Number(match[1].replace(/,/g, '')) || 0 : 0;
   }
@@ -1106,8 +1103,8 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     document.getElementById('modal-battle-alltime').innerText = scoreText(battleData.allTimeText);
     document.getElementById('modal-battle-season').innerText = scoreText(battleData.currentSeasonText);
 
-    document.getElementById('modal-monster-alltime').innerText = scoreText(monsterData.allTimeText);
-    document.getElementById('modal-monster-season').innerText = scoreText(monsterData.currentSeasonText);
+    document.getElementById('modal-monster-alltime').innerText = esc(cleanMonsterText(monsterData.allTimeText));
+    document.getElementById('modal-monster-season').innerText = esc(cleanMonsterText(monsterData.currentSeasonText));
 
     const monsterPills = [];
     MONSTER_COLUMNS.forEach(col => {
@@ -1201,22 +1198,23 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       sortKeyProp = 'allTimeText';
     }
 
+    // Mengurutkan berdasarkan total poin terbesar (diurai dari teks)
     const rows = [...source].sort((a, b) => {
-      const valA = parseMonsterTextScore(a[sortKeyProp]);
-      const valB = parseMonsterTextScore(b[sortKeyProp]);
+      const valA = parseMonsterPts(a[sortKeyProp]);
+      const valB = parseMonsterPts(b[sortKeyProp]);
       return valB - valA;
     });
 
     document.getElementById('table-monster-body').innerHTML = rows.map((m,i) => {
-      const allTimeNum = parseMonsterTextScore(m.allTimeText);
+      const allTimeNum = parseMonsterPts(m.allTimeText);
       const cells = [
         `<td class="text-center text-slate-500">${i+1}</td>`,
         `<td>${playerCell(m.name,i,allTimeNum)}</td>`,
         `<td class="text-center">${statusBadge(m.status)}</td>`,
         `<td class="text-center">${esc(m.tenure)}</td>`
       ];
-      if (showAll) cells.push(`<td class="text-end text-cyan-700 fw-bold">${scoreText(m.allTimeText)}</td>`);
-      if (showSeason) cells.push(`<td class="text-end fw-semibold">${scoreText(m.currentSeasonText)}</td>`);
+      if (showAll) cells.push(`<td class="text-end text-cyan-700 fw-bold">${esc(cleanMonsterText(m.allTimeText))}</td>`);
+      if (showSeason) cells.push(`<td class="text-end fw-semibold">${esc(cleanMonsterText(m.currentSeasonText))}</td>`);
       MONSTER_COLUMNS.forEach(col => {
         const value = mode === 'season' ? m[col.seasonKey] : m[col.key];
         cells.push(`<td class="text-center">${fmtMonsterVal(value)}</td>`);
@@ -1297,42 +1295,42 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     if (!cachedClanData) return;
     const season = currentOverviewFilter === 'season';
 
-    // 1. Top Wood Donators (2 Baris)
+    // 1. Top Wood Donators
     const woodProp = season ? 'currentSeason' : 'allTime';
     const woodRows = sortByScore(cachedClanData.wood, woodProp).filter(w => Number(w[woodProp]) > 0).slice(0,3);
 
     document.getElementById('overview-top-wood').innerHTML = woodRows.length ? woodRows.map((w,i) => `
-      <div class="overview-row-card">
-        <div class="overview-card-top">
+      <div class="overview-row-auto">
+        <div class="overview-player-info">
           <span class="overview-rank">${i+1}.</span>
           <span class="overview-crown">${i === 0 ? '<i class="fa-solid fa-crown" style="color: #d97706;"></i>' : i === 1 ? '<i class="fa-solid fa-crown" style="color: #64748b;"></i>' : '<i class="fa-solid fa-crown" style="color: #b45309;"></i>'}</span>
           <span class="overview-name">${esc(w.name)}</span>
         </div>
-        <div class="text-start ps-4 ms-2">
+        <div class="overview-badge-container">
           <span class="badge bg-amber-100 text-amber-800 border border-amber-300 fs-6">${fmt(w[woodProp])} Wood</span>
         </div>
       </div>`).join('') : '<div class="text-muted text-center py-3">Tidak ada data</div>';
 
-    // 2. Top Monster Hunters (2 Baris)
+    // 2. Top Monster Hunters
     const monsterRows = (cachedClanData.monster || []).map(m => ({
       name: m.name,
-      text: season ? m.currentSeasonText : m.allTimeText,
-      score: season ? parseMonsterTextScore(m.currentSeasonText) : parseMonsterTextScore(m.allTimeText)
+      text: cleanMonsterText(season ? m.currentSeasonText : m.allTimeText),
+      score: season ? parseMonsterPts(m.currentSeasonText) : parseMonsterPts(m.allTimeText)
     })).filter(m => Number(m.score) > 0).sort((a,b) => b.score-a.score).slice(0,3);
 
     document.getElementById('overview-top-monster').innerHTML = monsterRows.length ? monsterRows.map((m,i) => `
-      <div class="overview-row-card">
-        <div class="overview-card-top">
+      <div class="overview-row-auto">
+        <div class="overview-player-info">
           <span class="overview-rank">${i+1}.</span>
           <span class="overview-crown">${i === 0 ? '<i class="fa-solid fa-crown" style="color: #d97706;"></i>' : i === 1 ? '<i class="fa-solid fa-crown" style="color: #64748b;"></i>' : '<i class="fa-solid fa-crown" style="color: #b45309;"></i>'}</span>
           <span class="overview-name">${esc(m.name)}</span>
         </div>
-        <div class="text-start ps-4 ms-2">
+        <div class="overview-badge-container">
           <span class="badge bg-cyan-100 text-cyan-800 border border-cyan-300 fs-6">${scoreText(m.text)}</span>
         </div>
       </div>`).join('') : '<div class="text-muted text-center py-3">Tidak ada data</div>';
 
-    // 3. Top Battle Scorers (2 Baris)
+    // 3. Top Battle Scorers
     const battleRows = (cachedClanData.battle || []).map(b => ({
       name: b.name,
       text: season ? b.currentSeasonText : b.allTimeText,
@@ -1340,13 +1338,13 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     })).filter(b => Number(b.score) > 0).sort((a,b) => b.score-a.score).slice(0,3);
 
     document.getElementById('overview-top-battle').innerHTML = battleRows.length ? battleRows.map((b,i) => `
-      <div class="overview-row-card">
-        <div class="overview-card-top">
+      <div class="overview-row-auto">
+        <div class="overview-player-info">
           <span class="overview-rank">${i+1}.</span>
           <span class="overview-crown">${i === 0 ? '<i class="fa-solid fa-crown" style="color: #d97706;"></i>' : i === 1 ? '<i class="fa-solid fa-crown" style="color: #64748b;"></i>' : '<i class="fa-solid fa-crown" style="color: #b45309;"></i>'}</span>
           <span class="overview-name">${esc(b.name)}</span>
         </div>
-        <div class="text-start ps-4 ms-2">
+        <div class="overview-badge-container">
           <span class="badge bg-emerald-100 text-emerald-800 border border-emerald-300 fs-6">${scoreText(b.text)}</span>
         </div>
       </div>`).join('') : '<div class="text-muted text-center py-3">Tidak ada data</div>';

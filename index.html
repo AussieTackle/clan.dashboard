@@ -222,7 +222,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   overflow-wrap: anywhere;
 }
 
-/* CARDS OVERVIEW: Otomatis 1 baris (2 kolom) jika cukup, atau 2 baris jika sempit */
+/* CARDS OVERVIEW: Responsif Otomatis */
 .overview-row-auto {
   display: flex;
   flex-wrap: wrap;
@@ -250,6 +250,43 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 .overview-rank { width: 24px; color: #64748b; flex-shrink: 0; font-weight: bold; }
 .overview-crown { width: 24px; text-align: center; flex-shrink: 0; }
 .overview-name { font-weight: 700; color: #1e293b; word-break: break-word; }
+
+/* STYLE CARD VIEW KHUSUS MOBILE */
+.mobile-card-list { display: flex; flex-direction: column; gap: 10px; }
+.mobile-card-item {
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 12px 14px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+  transition: all 0.2s ease;
+}
+.mobile-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.mobile-card-player {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #0f172a;
+}
+.mobile-card-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  background: #f8fafc;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+}
+.mobile-stat-box { display: flex; flex-direction: column; }
+.mobile-stat-label { font-size: 0.7rem; color: #64748b; font-weight: 700; text-transform: uppercase; }
+.mobile-stat-val { font-weight: 800; color: #0f172a; }
 
 .player-cell-wrapper { display: flex; align-items: center; }
 .crown-slot { display: inline-block; width: 24px; text-align: center; flex-shrink: 0; margin-right: 6px; }
@@ -355,7 +392,14 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
+/* RESPONSIVE TOGGLES: TABEL UTK LAPTOP/TAB, CARDS UTK MOBILE */
+.desktop-view-only { display: block; }
+.mobile-view-only { display: none; }
+
 @media(max-width:575px) {
+  .desktop-view-only { display: none !important; }
+  .mobile-view-only { display: block !important; }
+
   .custom-nav-container { padding: 0; gap: 7px; }
   .custom-nav-row { gap: 5px; }
   .custom-nav-row .nav-link { font-size: .75rem; padding: 10px 2px; gap: 4px; }
@@ -363,7 +407,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   .btn-filter { font-size: .78rem; padding: 9px 11px; }
   .table-container { padding: 12px; }
   .modal-dialog-large { width: 96%; margin: 10px auto; }
-  .overview-badge-container { margin-left: 32px; } /* Memberikan indentasi manis jika turun ke baris 2 di hp */
+  .overview-badge-container { margin-left: 32px; }
 }
 </style>
 </head>
@@ -454,7 +498,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
           </div>
         </div>
 
-        <!-- TABS -->
+        <!-- TABS NAVIGATION -->
         <div class="nav-tabs-wrapper">
           <div class="custom-nav-container">
             <ul class="custom-nav-row">
@@ -530,7 +574,8 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
         <!-- MEMBER PANE -->
         <div id="member-pane" class="tab-pane d-none">
           <div class="table-container shadow-sm">
-            <div class="table-responsive">
+            <!-- Desktop Table View -->
+            <div class="table-responsive desktop-view-only">
               <table class="table">
                 <thead>
                   <tr>
@@ -544,6 +589,10 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
                 </thead>
                 <tbody id="table-member-body"></tbody>
               </table>
+            </div>
+            <!-- Mobile Card View -->
+            <div class="mobile-view-only">
+              <div class="mobile-card-list" id="mobile-member-list"></div>
             </div>
           </div>
         </div>
@@ -562,11 +611,16 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
           </div>
 
           <div class="table-container shadow-sm">
-            <div class="table-responsive">
+            <!-- Desktop Table View (Compact: Status Kolom Dihilangkan) -->
+            <div class="table-responsive desktop-view-only">
               <table class="table">
                 <thead id="wood-head"></thead>
                 <tbody id="table-wood-body"></tbody>
               </table>
+            </div>
+            <!-- Mobile Card View -->
+            <div class="mobile-view-only">
+              <div class="mobile-card-list" id="mobile-wood-list"></div>
             </div>
           </div>
         </div>
@@ -585,11 +639,16 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
           </div>
 
           <div class="table-container shadow-sm">
-            <div class="table-responsive">
+            <!-- Desktop Table View (Compact: Status Kolom Dihilangkan) -->
+            <div class="table-responsive desktop-view-only">
               <table class="table text-nowrap">
                 <thead id="monster-head"></thead>
                 <tbody id="table-monster-body"></tbody>
               </table>
+            </div>
+            <!-- Mobile Card View -->
+            <div class="mobile-view-only">
+              <div class="mobile-card-list" id="mobile-monster-list"></div>
             </div>
           </div>
         </div>
@@ -612,11 +671,16 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
               <div class="latest-battle-title"><i class="fa-solid fa-trophy me-2"></i>Latest Battle Info</div>
               <div class="battle-info-pills" id="latest-battle-info-container">Memuat data...</div>
             </div>
-            <div class="table-responsive">
+            <!-- Desktop Table View -->
+            <div class="table-responsive desktop-view-only">
               <table class="table">
                 <thead id="battle-head"></thead>
                 <tbody id="table-battle-body"></tbody>
               </table>
+            </div>
+            <!-- Mobile Card View -->
+            <div class="mobile-view-only">
+              <div class="mobile-card-list" id="mobile-battle-list"></div>
             </div>
           </div>
         </div>
@@ -693,7 +757,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
           </div>
 
           <div class="stat-box mt-3 mb-0">
-            <div class="stat-box-title text-cyan-700 mb-2"><i class="fa-solid fa-ghost"></i> Monsters Caught Detail (pts)</div>
+            <div class="stat-box-title text-cyan-700 mb-2"><i class="fa-solid fa-ghost"></i> Monsters Caught Detail</div>
             <div id="modal-monster-breakdown" class="d-flex flex-wrap gap-2">
               <span class="text-muted small">Tidak ada data monster</span>
             </div>
@@ -948,22 +1012,18 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     return match ? Number(match[1].replace(/,/g,'')) || 0 : 0;
   }
 
-  // Membersihkan kata "caught" tambahan dari teks monster (misal: "979 caught / 4893 pts caught" -> "979 caught / 4893 pts")
   function cleanMonsterText(val) {
     if (val == null || val === '' || val === '-') return '-';
     return String(val).replace(/pts\s+caught/gi, 'pts').replace(/\s+/g, ' ').trim();
   }
 
-  // Mengambil angka poin monster (sebelum pts) untuk melakukan pengurutan angka dari terbesar ke terkecil
   function parseMonsterPts(val) {
     if (val == null || val === '' || val === '-') return 0;
     const str = String(val).trim();
-    // Cari angka sebelum 'pts' atau 'pts caught'
     const ptsMatch = str.match(/([\d,.]+)\s*pts/i);
     if (ptsMatch) {
       return Number(ptsMatch[1].replace(/,/g, '')) || 0;
     }
-    // Fallback ambil angka pertama
     const match = str.match(/^([\d,.]+)/);
     return match ? Number(match[1].replace(/,/g, '')) || 0 : 0;
   }
@@ -1058,12 +1118,15 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   function renderMembers() {
     const members = cachedClanData?.members || [];
     const body = document.getElementById('table-member-body');
+    const mobileContainer = document.getElementById('mobile-member-list');
 
     if (!members.length) {
       body.innerHTML = '<tr><td colspan="6" class="text-center">Tidak ada data member</td></tr>';
+      mobileContainer.innerHTML = '<div class="text-center text-muted py-3">Tidak ada data member</div>';
       return;
     }
 
+    // Render Laptop Table
     body.innerHTML = members.map(m => `<tr>
       <td class="text-center">${esc(m.no)}</td>
       <td>
@@ -1076,6 +1139,33 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       <td class="text-center">${esc(m.joinDate)}</td>
       <td>${esc(m.unlockedMaps)}</td>
     </tr>`).join('');
+
+    // Render Mobile Card View
+    mobileContainer.innerHTML = members.map(m => `
+      <div class="mobile-card-item">
+        <div class="mobile-card-header">
+          <div class="mobile-card-player" onclick="openPlayerModal('${esc(m.name)}')">
+            <span class="text-slate-400 font-monospace">#${esc(m.no)}</span>
+            <span class="member-clickable">${esc(m.name)}</span>
+          </div>
+          <div>${statusBadge(m.status)}</div>
+        </div>
+        <div class="mobile-card-stats-grid">
+          <div class="mobile-stat-box">
+            <span class="mobile-stat-label">Role</span>
+            <span class="mobile-stat-val">${roleBadge(m.role)}</span>
+          </div>
+          <div class="mobile-stat-box">
+            <span class="mobile-stat-label">Join Date</span>
+            <span class="mobile-stat-val">${esc(m.joinDate)}</span>
+          </div>
+          <div class="mobile-stat-box" style="grid-column: span 2;">
+            <span class="mobile-stat-label">Unlocked Maps</span>
+            <span class="mobile-stat-val">${esc(m.unlockedMaps)}</span>
+          </div>
+        </div>
+      </div>
+    `).join('');
   }
 
   function openPlayerModal(playerName) {
@@ -1145,32 +1235,52 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     const showAll = mode !== 'season';
     const showSeason = mode !== 'alltime';
 
-    const headers = ['<th class="text-center">No</th>', '<th>Player Name</th>', '<th class="text-center">Status</th>', '<th class="text-center">Tenure</th>'];
+    // Compact Header: Kolom Status dihilangkan
+    const headers = ['<th class="text-center">No</th>', '<th>Player Name</th>', '<th class="text-center">Tenure</th>'];
     if (showAll) headers.push('<th class="text-end">All-Time Wood</th>');
     if (showSeason) headers.push('<th class="text-end">Current Season</th>');
 
     document.getElementById('wood-head').innerHTML = `<tr>${headers.join('')}</tr>`;
     const source = cachedClanData?.wood || [];
+    const mobileContainer = document.getElementById('mobile-wood-list');
 
     if (!source.length) {
       document.getElementById('table-wood-body').innerHTML = `<tr><td colspan="${headers.length}" class="text-center">Tidak ada data wood</td></tr>`;
+      mobileContainer.innerHTML = '<div class="text-center text-muted py-3">Tidak ada data wood</div>';
       return;
     }
 
     const sortProp = mode === 'season' ? 'currentSeason' : 'allTime';
     const rows = sortByScore(source, sortProp);
 
+    // Desktop Table View
     document.getElementById('table-wood-body').innerHTML = rows.map((w,i) => {
       const cells = [
         `<td class="text-center text-slate-500">${i+1}</td>`,
         `<td>${playerCell(w.name,i,Number(w[sortProp])||0)}</td>`,
-        `<td class="text-center">${statusBadge(w.status)}</td>`,
         `<td class="text-center">${esc(w.tenure)}</td>`
       ];
       if (showAll) cells.push(`<td class="text-end text-amber-700 fw-bold">${fmt(w.allTime)}</td>`);
       if (showSeason) cells.push(`<td class="text-end fw-semibold">${fmt(w.currentSeason)}</td>`);
       return `<tr>${cells.join('')}</tr>`;
     }).join('');
+
+    // Mobile Card View
+    mobileContainer.innerHTML = rows.map((w,i) => `
+      <div class="mobile-card-item">
+        <div class="mobile-card-header">
+          <div class="mobile-card-player" onclick="openPlayerModal('${esc(w.name)}')">
+            <span class="text-slate-400 font-monospace">#${i+1}</span>
+            ${playerCell(w.name,i,Number(w[sortProp])||0)}
+          </div>
+          <span class="badge bg-slate-100 text-slate-600">${esc(w.tenure)}</span>
+        </div>
+        <div class="mobile-card-stats-grid">
+          ${showAll ? `<div class="mobile-stat-box"><span class="mobile-stat-label">All-Time</span><span class="mobile-stat-val text-amber-700">${fmt(w.allTime)} Wood</span></div>` : ''}
+          ${showSeason ? `<div class="mobile-stat-box"><span class="mobile-stat-label">Current Season</span><span class="mobile-stat-val">${fmt(w.currentSeason)} Wood</span></div>` : ''}
+        </div>
+      </div>
+    `).join('');
   }
 
   function renderMonster() {
@@ -1178,16 +1288,19 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     const showAll = mode !== 'season';
     const showSeason = mode !== 'alltime';
 
-    const headers = ['<th class="text-center">No</th>', '<th>Player Name</th>', '<th class="text-center">Status</th>', '<th class="text-center">Tenure</th>'];
+    // Compact Header: Kolom Status dihilangkan
+    const headers = ['<th class="text-center">No</th>', '<th>Player Name</th>', '<th class="text-center">Tenure</th>'];
     if (showAll) headers.push('<th class="text-end">All-Time</th>');
     if (showSeason) headers.push('<th class="text-end">Current Season</th>');
     MONSTER_COLUMNS.forEach(col => headers.push(`<th class="text-center">${col.label}</th>`));
 
     document.getElementById('monster-head').innerHTML = `<tr>${headers.join('')}</tr>`;
     const source = cachedClanData?.monster || [];
+    const mobileContainer = document.getElementById('mobile-monster-list');
 
     if (!source.length) {
       document.getElementById('table-monster-body').innerHTML = `<tr><td colspan="${headers.length}" class="text-center">Tidak ada data monster</td></tr>`;
+      mobileContainer.innerHTML = '<div class="text-center text-muted py-3">Tidak ada data monster</div>';
       return;
     }
 
@@ -1198,19 +1311,18 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       sortKeyProp = 'allTimeText';
     }
 
-    // Mengurutkan berdasarkan total poin terbesar (diurai dari teks)
     const rows = [...source].sort((a, b) => {
       const valA = parseMonsterPts(a[sortKeyProp]);
       const valB = parseMonsterPts(b[sortKeyProp]);
       return valB - valA;
     });
 
+    // Desktop Table View
     document.getElementById('table-monster-body').innerHTML = rows.map((m,i) => {
       const allTimeNum = parseMonsterPts(m.allTimeText);
       const cells = [
         `<td class="text-center text-slate-500">${i+1}</td>`,
         `<td>${playerCell(m.name,i,allTimeNum)}</td>`,
-        `<td class="text-center">${statusBadge(m.status)}</td>`,
         `<td class="text-center">${esc(m.tenure)}</td>`
       ];
       if (showAll) cells.push(`<td class="text-end text-cyan-700 fw-bold">${esc(cleanMonsterText(m.allTimeText))}</td>`);
@@ -1220,6 +1332,26 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
         cells.push(`<td class="text-center">${fmtMonsterVal(value)}</td>`);
       });
       return `<tr>${cells.join('')}</tr>`;
+    }).join('');
+
+    // Mobile Card View
+    mobileContainer.innerHTML = rows.map((m,i) => {
+      const allTimeNum = parseMonsterPts(m.allTimeText);
+      return `
+        <div class="mobile-card-item">
+          <div class="mobile-card-header">
+            <div class="mobile-card-player" onclick="openPlayerModal('${esc(m.name)}')">
+              <span class="text-slate-400 font-monospace">#${i+1}</span>
+              ${playerCell(m.name,i,allTimeNum)}
+            </div>
+            <span class="badge bg-slate-100 text-slate-600">${esc(m.tenure)}</span>
+          </div>
+          <div class="mobile-card-stats-grid">
+            ${showAll ? `<div class="mobile-stat-box" style="grid-column: span 2;"><span class="mobile-stat-label">All-Time</span><span class="mobile-stat-val text-cyan-700">${esc(cleanMonsterText(m.allTimeText))}</span></div>` : ''}
+            ${showSeason ? `<div class="mobile-stat-box" style="grid-column: span 2;"><span class="mobile-stat-label">Current Season</span><span class="mobile-stat-val">${esc(cleanMonsterText(m.currentSeasonText))}</span></div>` : ''}
+          </div>
+        </div>
+      `;
     }).join('');
   }
 
@@ -1235,15 +1367,18 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 
     document.getElementById('battle-head').innerHTML = `<tr>${headers.join('')}</tr>`;
     const source = cachedClanData?.battle || [];
+    const mobileContainer = document.getElementById('mobile-battle-list');
 
     if (!source.length) {
       document.getElementById('table-battle-body').innerHTML = `<tr><td colspan="${headers.length}" class="text-center">Tidak ada data battle</td></tr>`;
+      mobileContainer.innerHTML = '<div class="text-center text-muted py-3">Tidak ada data battle</div>';
       return;
     }
 
     const prop = mode === 'season' ? 'currentSeasonScore' : 'allTimeScore';
     const rows = sortByScore(source, prop);
 
+    // Desktop Table View
     document.getElementById('table-battle-body').innerHTML = rows.map((b,i) => {
       const cells = [
         `<td class="text-center text-slate-500">${i+1}</td>`,
@@ -1255,6 +1390,27 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       cells.push(`<td class="text-end cell-current-battle">${scoreText(b.currentBattle)}</td>`);
       return `<tr>${cells.join('')}</tr>`;
     }).join('');
+
+    // Mobile Card View
+    mobileContainer.innerHTML = rows.map((b,i) => `
+      <div class="mobile-card-item">
+        <div class="mobile-card-header">
+          <div class="mobile-card-player" onclick="openPlayerModal('${esc(b.name)}')">
+            <span class="text-slate-400 font-monospace">#${i+1}</span>
+            ${playerCell(b.name,i,Number(b[prop])||0)}
+          </div>
+          <span class="badge bg-slate-100 text-slate-600">${esc(b.tenure)}</span>
+        </div>
+        <div class="mobile-card-stats-grid">
+          ${showAll ? `<div class="mobile-stat-box"><span class="mobile-stat-label">All-Time</span><span class="mobile-stat-val text-emerald-700">${scoreText(b.allTimeText)}</span></div>` : ''}
+          ${showSeason ? `<div class="mobile-stat-box"><span class="mobile-stat-label">Current Season</span><span class="mobile-stat-val">${scoreText(b.currentSeasonText)}</span></div>` : ''}
+          <div class="mobile-stat-box" style="grid-column: span 2;">
+            <span class="mobile-stat-label">Current Battle</span>
+            <span class="mobile-stat-val text-emerald-600">${scoreText(b.currentBattle)}</span>
+          </div>
+        </div>
+      </div>
+    `).join('');
   }
 
   function renderLatestBattle(infos) {

@@ -227,23 +227,8 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   overflow-wrap: anywhere;
 }
 
-.overview-row {
-  display: flex;
-  align-items: center;
-  background: #f8fafc;
-  border: 1px solid var(--border-color);
-  border-radius: 10px;
-  padding: 10px 14px;
-  margin-bottom: 10px;
-  gap: 8px;
-}
-.overview-rank { width: 24px; color: #64748b; flex-shrink: 0; font-weight: bold; }
-.overview-crown { width: 24px; text-align: center; flex-shrink: 0; }
-.overview-name { flex: 1; min-width: 0; font-weight: 700; color: #1e293b; overflow-wrap: anywhere; }
-.overview-badge { flex-shrink: 0; text-align: right; }
-
-/* Khusus Monster Hunters di Overview agar rapi 2 baris di HP */
-.overview-row-monster {
+/* Tata letak kartu 2 baris seragam untuk Overview (Wood, Monster, Battle) */
+.overview-row-card {
   display: flex;
   flex-direction: column;
   background: #f8fafc;
@@ -253,11 +238,14 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   margin-bottom: 10px;
   gap: 8px;
 }
-.overview-monster-top {
+.overview-card-top {
   display: flex;
   align-items: center;
   gap: 8px;
 }
+.overview-rank { width: 24px; color: #64748b; flex-shrink: 0; font-weight: bold; }
+.overview-crown { width: 24px; text-align: center; flex-shrink: 0; }
+.overview-name { flex: 1; min-width: 0; font-weight: 700; color: #1e293b; overflow-wrap: anywhere; }
 
 .player-cell-wrapper { display: flex; align-items: center; }
 .crown-slot { display: inline-block; width: 24px; text-align: center; flex-shrink: 0; margin-right: 6px; }
@@ -1309,27 +1297,32 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     if (!cachedClanData) return;
     const season = currentOverviewFilter === 'season';
 
+    // 1. Top Wood Donators (2 Baris)
     const woodProp = season ? 'currentSeason' : 'allTime';
     const woodRows = sortByScore(cachedClanData.wood, woodProp).filter(w => Number(w[woodProp]) > 0).slice(0,3);
 
     document.getElementById('overview-top-wood').innerHTML = woodRows.length ? woodRows.map((w,i) => `
-      <div class="overview-row">
-        <span class="overview-rank">${i+1}.</span>
-        <span class="overview-crown">${i === 0 ? '<i class="fa-solid fa-crown" style="color: #d97706;"></i>' : i === 1 ? '<i class="fa-solid fa-crown" style="color: #64748b;"></i>' : '<i class="fa-solid fa-crown" style="color: #b45309;"></i>'}</span>
-        <span class="overview-name">${esc(w.name)}</span>
-        <span class="badge bg-amber-100 text-amber-800 border border-amber-300 fs-6 overview-badge">${fmt(w[woodProp])} Wood</span>
+      <div class="overview-row-card">
+        <div class="overview-card-top">
+          <span class="overview-rank">${i+1}.</span>
+          <span class="overview-crown">${i === 0 ? '<i class="fa-solid fa-crown" style="color: #d97706;"></i>' : i === 1 ? '<i class="fa-solid fa-crown" style="color: #64748b;"></i>' : '<i class="fa-solid fa-crown" style="color: #b45309;"></i>'}</span>
+          <span class="overview-name">${esc(w.name)}</span>
+        </div>
+        <div class="text-start ps-4 ms-2">
+          <span class="badge bg-amber-100 text-amber-800 border border-amber-300 fs-6">${fmt(w[woodProp])} Wood</span>
+        </div>
       </div>`).join('') : '<div class="text-muted text-center py-3">Tidak ada data</div>';
 
+    // 2. Top Monster Hunters (2 Baris)
     const monsterRows = (cachedClanData.monster || []).map(m => ({
       name: m.name,
       text: season ? m.currentSeasonText : m.allTimeText,
       score: season ? parseMonsterTextScore(m.currentSeasonText) : parseMonsterTextScore(m.allTimeText)
     })).filter(m => Number(m.score) > 0).sort((a,b) => b.score-a.score).slice(0,3);
 
-    // Render Top 3 Monster Hunters dengan tata letak 2 baris (Nama di atas, badge poin di bawah)
     document.getElementById('overview-top-monster').innerHTML = monsterRows.length ? monsterRows.map((m,i) => `
-      <div class="overview-row-monster">
-        <div class="overview-monster-top">
+      <div class="overview-row-card">
+        <div class="overview-card-top">
           <span class="overview-rank">${i+1}.</span>
           <span class="overview-crown">${i === 0 ? '<i class="fa-solid fa-crown" style="color: #d97706;"></i>' : i === 1 ? '<i class="fa-solid fa-crown" style="color: #64748b;"></i>' : '<i class="fa-solid fa-crown" style="color: #b45309;"></i>'}</span>
           <span class="overview-name">${esc(m.name)}</span>
@@ -1339,6 +1332,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
         </div>
       </div>`).join('') : '<div class="text-muted text-center py-3">Tidak ada data</div>';
 
+    // 3. Top Battle Scorers (2 Baris)
     const battleRows = (cachedClanData.battle || []).map(b => ({
       name: b.name,
       text: season ? b.currentSeasonText : b.allTimeText,
@@ -1346,11 +1340,15 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     })).filter(b => Number(b.score) > 0).sort((a,b) => b.score-a.score).slice(0,3);
 
     document.getElementById('overview-top-battle').innerHTML = battleRows.length ? battleRows.map((b,i) => `
-      <div class="overview-row">
-        <span class="overview-rank">${i+1}.</span>
-        <span class="overview-crown">${i === 0 ? '<i class="fa-solid fa-crown" style="color: #d97706;"></i>' : i === 1 ? '<i class="fa-solid fa-crown" style="color: #64748b;"></i>' : '<i class="fa-solid fa-crown" style="color: #b45309;"></i>'}</span>
-        <span class="overview-name">${esc(b.name)}</span>
-        <span class="badge bg-emerald-100 text-emerald-800 border border-emerald-300 fs-6 overview-badge">${scoreText(b.text)}</span>
+      <div class="overview-row-card">
+        <div class="overview-card-top">
+          <span class="overview-rank">${i+1}.</span>
+          <span class="overview-crown">${i === 0 ? '<i class="fa-solid fa-crown" style="color: #d97706;"></i>' : i === 1 ? '<i class="fa-solid fa-crown" style="color: #64748b;"></i>' : '<i class="fa-solid fa-crown" style="color: #b45309;"></i>'}</span>
+          <span class="overview-name">${esc(b.name)}</span>
+        </div>
+        <div class="text-start ps-4 ms-2">
+          <span class="badge bg-emerald-100 text-emerald-800 border border-emerald-300 fs-6">${scoreText(b.text)}</span>
+        </div>
       </div>`).join('') : '<div class="text-muted text-center py-3">Tidak ada data</div>';
   }
   </script>

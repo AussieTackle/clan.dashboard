@@ -299,14 +299,16 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 }
 @keyframes pulse { 0%, 100% { opacity: .3; } 50% { opacity: 1; } }
 
-/* Landing Card Hover Effect */
+/* Landing Card Hover Effect - Ringskas & Simpel */
 .clan-card-hover {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   background: #ffffff !important;
   border: 1px solid var(--border-color) !important;
+  border-radius: 0.85rem !important;
+  padding: 1rem 1.25rem !important;
 }
 .clan-card-hover:hover {
-  transform: translateY(-5px);
+  transform: translateY(-4px);
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
@@ -346,7 +348,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
           <span>Home</span>
         </button>
 
-        <!-- Navigation Controls (Kanan: Refresh Button Saja, Tag Synced Dihilangkan) -->
+        <!-- Navigation Controls (Kanan: Refresh Button Saja) -->
         <div class="d-flex align-items-center gap-2">
           <button onclick="fetchData()" title="Sync Data" class="btn btn-sm btn-dark p-2 rounded-lg border border-slate-600 text-light bg-slate-800">
             <i id="syncIcon" class="fa-solid fa-arrows-rotate"></i>
@@ -362,7 +364,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       <section id="landingPage" class="py-4 py-sm-5 d-flex flex-column align-items-center justify-content-center">
         
         <!-- Header Hero Wiki -->
-        <div class="text-center max-w-2xl mx-auto mb-5 p-4 rounded-3 shadow-lg" style="background: rgba(255, 255, 255, 0.92); border: 1px solid var(--border-color);">
+        <div class="text-center max-w-2xl mx-auto mb-4 p-4 rounded-3 shadow-lg" style="background: rgba(255, 255, 255, 0.92); border: 1px solid var(--border-color);">
           <div class="inline-flex align-items-center gap-2 px-3.5 py-1.5 rounded-pill bg-emerald-100 border border-emerald-300 text-emerald-800 text-xs fw-semibold mb-3">
             <i class="fa-solid fa-book-open"></i>
             <span>Community Database & Leaderboards</span>
@@ -375,18 +377,17 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
           </p>
         </div>
 
-        <!-- Clan Selection Grid Wiki Style -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-100 max-w-5xl" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; width: 100%; max-width: 1000px;">
+        <!-- Clan Selection Grid Wiki Style (Versi Sederhana & Ringkas) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 w-100 max-w-5xl" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; width: 100%; max-width: 1000px;">
           
           <!-- AT1 Card -->
-          <div onclick="selectClan('AT1')" class="clan-card-hover rounded-2xl p-5 cursor-pointer position-relative overflow-hidden group shadow-md" style="border-radius: 1rem; padding: 1.5rem; cursor: pointer; position: relative;">
-            <div class="d-flex align-items-center justify-content-between mb-3">
-              <span class="fs-3">🟠</span>
-              <span class="px-2.5 py-1 rounded-md text-xs fw-bold font-monospace" style="background: rgba(217, 119, 6, 0.1); border: 1px solid rgba(217, 119, 6, 0.3); color: #d97706; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem;">AT1</span>
+          <div onclick="selectClan('AT1')" class="clan-card-hover cursor-pointer position-relative overflow-hidden group shadow-md">
+            <div class="d-flex align-items-center justify-content-end mb-1">
+              <span class="px-2 py-0.5 rounded-md text-xs fw-bold font-monospace" style="background: rgba(217, 119, 6, 0.1); border: 1px solid rgba(217, 119, 6, 0.3); color: #d97706; font-size: 0.72rem;">AT1</span>
             </div>
-            <h3 class="text-xl fw-bold text-slate-900 mb-1" style="font-size: 1.25rem; font-weight: 700;">Aussie Tackle 1</h3>
-            <p class="text-slate-500 text-xs mb-4">Casual Gold Division</p>
-            <div class="d-flex align-items-center justify-content-between text-xs text-slate-500 pt-3 border-top border-slate-200">
+            <h3 class="text-lg fw-bold mb-0.5" style="color: #d97706; font-size: 1.15rem; font-weight: 800;">Aussie Tackle 1</h3>
+            <p class="text-slate-500 text-xs mb-3">Casual Gold Division</p>
+            <div class="d-flex align-items-center justify-content-between text-xs text-slate-500 pt-2 border-top border-slate-200">
               <span>Status: Active</span>
               <span class="fw-semibold d-flex align-items-center gap-1" style="color: #d97706;">
                 View Records <i class="fa-solid fa-arrow-right text-[10px]"></i>
@@ -395,14 +396,13 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
           </div>
 
           <!-- AT2 Card -->
-          <div onclick="selectClan('AT2')" class="clan-card-hover rounded-2xl p-5 cursor-pointer position-relative overflow-hidden group shadow-md" style="border-radius: 1rem; padding: 1.5rem; cursor: pointer; position: relative;">
-            <div class="d-flex align-items-center justify-content-between mb-3">
-              <span class="fs-3">🔴</span>
-              <span class="px-2.5 py-1 rounded-md text-xs fw-bold font-monospace" style="background: rgba(220, 38, 38, 0.1); border: 1px solid rgba(220, 38, 38, 0.3); color: #dc2626; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem;">AT2</span>
+          <div onclick="selectClan('AT2')" class="clan-card-hover cursor-pointer position-relative overflow-hidden group shadow-md">
+            <div class="d-flex align-items-center justify-content-end mb-1">
+              <span class="px-2 py-0.5 rounded-md text-xs fw-bold font-monospace" style="background: rgba(220, 38, 38, 0.1); border: 1px solid rgba(220, 38, 38, 0.3); color: #dc2626; font-size: 0.72rem;">AT2</span>
             </div>
-            <h3 class="text-xl fw-bold text-slate-900 mb-1" style="font-size: 1.25rem; font-weight: 700;">Aussie Tackle 2</h3>
-            <p class="text-slate-500 text-xs mb-4">Casual Gold Division</p>
-            <div class="d-flex align-items-center justify-content-between text-xs text-slate-500 pt-3 border-top border-slate-200">
+            <h3 class="text-lg fw-bold mb-0.5" style="color: #dc2626; font-size: 1.15rem; font-weight: 800;">Aussie Tackle 2</h3>
+            <p class="text-slate-500 text-xs mb-3">Casual Gold Division</p>
+            <div class="d-flex align-items-center justify-content-between text-xs text-slate-500 pt-2 border-top border-slate-200">
               <span>Status: Active</span>
               <span class="fw-semibold d-flex align-items-center gap-1" style="color: #dc2626;">
                 View Records <i class="fa-solid fa-arrow-right text-[10px]"></i>
@@ -411,14 +411,13 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
           </div>
 
           <!-- AT3 Card -->
-          <div onclick="selectClan('AT3')" class="clan-card-hover rounded-2xl p-5 cursor-pointer position-relative overflow-hidden group shadow-md" style="border-radius: 1rem; padding: 1.5rem; cursor: pointer; position: relative;">
-            <div class="d-flex align-items-center justify-content-between mb-3">
-              <span class="fs-3">🟢</span>
-              <span class="px-2.5 py-1 rounded-md text-xs fw-bold font-monospace" style="background: rgba(22, 163, 74, 0.1); border: 1px solid rgba(22, 163, 74, 0.3); color: #16a34a; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem;">AT3</span>
+          <div onclick="selectClan('AT3')" class="clan-card-hover cursor-pointer position-relative overflow-hidden group shadow-md">
+            <div class="d-flex align-items-center justify-content-end mb-1">
+              <span class="px-2 py-0.5 rounded-md text-xs fw-bold font-monospace" style="background: rgba(22, 163, 74, 0.1); border: 1px solid rgba(22, 163, 74, 0.3); color: #16a34a; font-size: 0.72rem;">AT3</span>
             </div>
-            <h3 class="text-xl fw-bold text-slate-900 mb-1" style="font-size: 1.25rem; font-weight: 700;">Aussie Tackle 3</h3>
-            <p class="text-slate-500 text-xs mb-4">Semi-Competitive Division</p>
-            <div class="d-flex align-items-center justify-content-between text-xs text-slate-500 pt-3 border-top border-slate-200">
+            <h3 class="text-lg fw-bold mb-0.5" style="color: #16a34a; font-size: 1.15rem; font-weight: 800;">Aussie Tackle 3</h3>
+            <p class="text-slate-500 text-xs mb-3">Semi-Competitive Division</p>
+            <div class="d-flex align-items-center justify-content-between text-xs text-slate-500 pt-2 border-top border-slate-200">
               <span>Status: Active</span>
               <span class="fw-semibold d-flex align-items-center gap-1" style="color: #16a34a;">
                 View Records <i class="fa-solid fa-arrow-right text-[10px]"></i>
@@ -427,14 +426,13 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
           </div>
 
           <!-- AT4 Card -->
-          <div onclick="selectClan('AT4')" class="clan-card-hover rounded-2xl p-5 cursor-pointer position-relative overflow-hidden group shadow-md" style="border-radius: 1rem; padding: 1.5rem; cursor: pointer; position: relative;">
-            <div class="d-flex align-items-center justify-content-between mb-3">
-              <span class="fs-3">🔵</span>
-              <span class="px-2.5 py-1 rounded-md text-xs fw-bold font-monospace" style="background: rgba(37, 99, 235, 0.1); border: 1px solid rgba(37, 99, 235, 0.3); color: #2563eb; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem;">AT4</span>
+          <div onclick="selectClan('AT4')" class="clan-card-hover cursor-pointer position-relative overflow-hidden group shadow-md">
+            <div class="d-flex align-items-center justify-content-end mb-1">
+              <span class="px-2 py-0.5 rounded-md text-xs fw-bold font-monospace" style="background: rgba(37, 99, 235, 0.1); border: 1px solid rgba(37, 99, 235, 0.3); color: #2563eb; font-size: 0.72rem;">AT4</span>
             </div>
-            <h3 class="text-xl fw-bold text-slate-900 mb-1" style="font-size: 1.25rem; font-weight: 700;">Aussie Tackle 4</h3>
-            <p class="text-slate-500 text-xs mb-4">Hardcore Division</p>
-            <div class="d-flex align-items-center justify-content-between text-xs text-slate-500 pt-3 border-top border-slate-200">
+            <h3 class="text-lg fw-bold mb-0.5" style="color: #2563eb; font-size: 1.15rem; font-weight: 800;">Aussie Tackle 4</h3>
+            <p class="text-slate-500 text-xs mb-3">Hardcore Division</p>
+            <div class="d-flex align-items-center justify-content-between text-xs text-slate-500 pt-2 border-top border-slate-200">
               <span>Status: Active</span>
               <span class="fw-semibold d-flex align-items-center gap-1" style="color: #2563eb;">
                 View Records <i class="fa-solid fa-arrow-right text-[10px]"></i>
@@ -443,14 +441,13 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
           </div>
 
           <!-- AT5 Card -->
-          <div onclick="selectClan('AT5')" class="clan-card-hover rounded-2xl p-5 cursor-pointer position-relative overflow-hidden group shadow-md" style="border-radius: 1rem; padding: 1.5rem; cursor: pointer; position: relative;">
-            <div class="d-flex align-items-center justify-content-between mb-3">
-              <span class="fs-3">🟤</span>
-              <span class="px-2.5 py-1 rounded-md text-xs fw-bold font-monospace" style="background: rgba(180, 83, 9, 0.1); border: 1px solid rgba(180, 83, 9, 0.3); color: #b45309; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem;">AT5</span>
+          <div onclick="selectClan('AT5')" class="clan-card-hover cursor-pointer position-relative overflow-hidden group shadow-md">
+            <div class="d-flex align-items-center justify-content-end mb-1">
+              <span class="px-2 py-0.5 rounded-md text-xs fw-bold font-monospace" style="background: rgba(180, 83, 9, 0.1); border: 1px solid rgba(180, 83, 9, 0.3); color: #b45309; font-size: 0.72rem;">AT5</span>
             </div>
-            <h3 class="text-xl fw-bold text-slate-900 mb-1" style="font-size: 1.25rem; font-weight: 700;">Aussie Tackle 5</h3>
-            <p class="text-slate-500 text-xs mb-4">Training & Development Clan</p>
-            <div class="d-flex align-items-center justify-content-between text-xs text-slate-500 pt-3 border-top border-slate-200">
+            <h3 class="text-lg fw-bold mb-0.5" style="color: #b45309; font-size: 1.15rem; font-weight: 800;">Aussie Tackle 5</h3>
+            <p class="text-slate-500 text-xs mb-3">Training & Development Clan</p>
+            <div class="d-flex align-items-center justify-content-between text-xs text-slate-500 pt-2 border-top border-slate-200">
               <span>Status: Active</span>
               <span class="fw-semibold d-flex align-items-center gap-1" style="color: #b45309;">
                 View Records <i class="fa-solid fa-arrow-right text-[10px]"></i>
@@ -1276,7 +1273,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
         <span class="overview-crown">${i === 0 ? '<i class="fa-solid fa-crown" style="color: #d97706;"></i>' : i === 1 ? '<i class="fa-solid fa-crown" style="color: #64748b;"></i>' : '<i class="fa-solid fa-crown" style="color: #b45309;"></i>'}</span>
         <span class="overview-name">${esc(b.name)}</span>
         <span class="badge bg-emerald-100 text-emerald-800 border border-emerald-300 fs-6 overview-badge">${scoreText(b.text)}</span>
-      </div>`).join('') : '<div class="text-muted text-center py-3">Tidak data</div>';
+      </div>`).join('') : '<div class="text-muted text-center py-3">Tidak ada data</div>';
   }
   </script>
 </body>

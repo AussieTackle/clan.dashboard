@@ -85,24 +85,27 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 .summary-label { font-size: .85rem; color: #64748b; text-transform: uppercase; font-weight: 700; }
 
 .nav-tabs-wrapper { display: flex; justify-content: center; margin: 20px 0 25px; padding: 0 5px; }
+
+/* Kontainer Tab: Latar belakang kartu putih dihilangkan */
 .custom-nav-container {
-  background: rgba(255, 255, 255, 0.95);
-  padding: 10px;
-  border-radius: 18px;
-  border: 1px solid var(--border-color);
+  background: transparent !important;
+  padding: 0;
+  border: none !important;
   display: flex;
   flex-direction: column;
   gap: 10px;
   width: 100%;
   max-width: 950px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  box-shadow: none !important;
 }
 .custom-nav-row { display: flex; gap: 8px; width: 100%; margin: 0; padding: 0; list-style: none; }
 .custom-nav-row .nav-item { flex: 1; min-width: 0; }
+
+/* Tombol Tab: Tetap putih, berbayangan lembut, dan berubah warna saat aktif */
 .custom-nav-row .nav-link {
   color: #334155;
   border-radius: 10px;
-  padding: 10px 4px;
+  padding: 12px 4px;
   font-weight: 700;
   font-size: .9rem;
   white-space: nowrap;
@@ -113,14 +116,16 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   align-items: center;
   justify-content: center;
   gap: 7px;
-  background: #f1f5f9;
+  background: #ffffff !important;
   border: 1px solid var(--border-color);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  transition: all 0.2s ease;
 }
-.custom-nav-row .nav-link:hover { background: #e2e8f0; color: #0f172a; }
+.custom-nav-row .nav-link:hover { background: #f8fafc !important; color: #0f172a; }
 .custom-nav-row .nav-link.active {
   background: var(--clan-accent) !important;
   color: #ffffff !important;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.15);
   border-color: var(--clan-accent) !important;
 }
 
@@ -346,7 +351,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 }
 
 @media(max-width:575px) {
-  .custom-nav-container { padding: 7px; gap: 7px; }
+  .custom-nav-container { padding: 0; gap: 7px; }
   .custom-nav-row { gap: 5px; }
   .custom-nav-row .nav-link { font-size: .75rem; padding: 10px 2px; gap: 4px; }
   .filter-pills { gap: 1px; }
@@ -418,7 +423,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       <!-- ==================== CLAN DETAIL DASHBOARD VIEW ==================== -->
       <section id="clanDetailView" class="d-none">
 
-        <!-- Header Banner Klan (Tanpa Background Putih) -->
+        <!-- Header Banner Klan -->
         <div class="header-banner mb-4">
           <div class="header-logo-container">
             <div class="d-flex align-items-center justify-content-center" id="currentClanEmoji">
@@ -455,7 +460,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 
         <!-- NAVIGATION TABS -->
         <div class="nav-tabs-wrapper">
-          <div class="custom-nav-container shadow-sm">
+          <div class="custom-nav-container">
             <ul class="custom-nav-row">
               <li class="nav-item">
                 <button class="nav-link active" data-pane="overview-pane">

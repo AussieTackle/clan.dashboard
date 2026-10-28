@@ -86,7 +86,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 
 .nav-tabs-wrapper { display: flex; justify-content: center; margin: 20px 0 25px; padding: 0 5px; }
 
-/* Kontainer Tab: Latar belakang kartu putih dihilangkan */
+/* Kontainer Tab: Tanpa latar belakang kartu putih */
 .custom-nav-container {
   background: transparent !important;
   padding: 0;
@@ -100,8 +100,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 }
 .custom-nav-row { display: flex; gap: 8px; width: 100%; margin: 0; padding: 0; list-style: none; }
 .custom-nav-row .nav-item { flex: 1; min-width: 0; }
-
-/* Tombol Tab: Tetap putih, berbayangan lembut, dan berubah warna saat aktif */
 .custom-nav-row .nav-link {
   color: #334155;
   border-radius: 10px;
@@ -960,6 +958,14 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     return match ? Number(match[1].replace(/,/g,'')) || 0 : 0;
   }
 
+  // Fungsi khusus untuk membaca angka dari teks monster seperti "33 caught / 165 pts caught"
+  function parseMonsterTextScore(val) {
+    if (val == null || val === '' || val === '-') return 0;
+    const str = String(val).trim();
+    const match = str.match(/^([\d,.]+)/);
+    return match ? Number(match[1].replace(/,/g, '')) || 0 : 0;
+  }
+
   function fmt(val) {
     return Number(val || 0).toLocaleString('en-US');
   }
@@ -1183,13 +1189,26 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       return;
     }
 
-    const scoreProp = mode === 'season' ? 'currentSeasonScore' : 'allTimeScore';
-    const rows = sortByScore(source, scoreProp);
+    // Menggunakan fungsi parseMonsterTextScore agar teks seperti "33 caught..." terbaca angkanya untuk sorting.
+    // Jika mode 'both', urutan berpatokan pada All-Time ('allTimeText').
+    let sortKeyProp = 'allTimeText';
+    if (mode === 'season') {
+      sortKeyProp = 'currentSeasonText';
+    } else if (mode === 'both') {
+      sortKeyProp = 'allTimeText';
+    }
+
+    const rows = [...source].sort((a, b) => {
+      const valA = parseMonsterTextScore(a[sortKeyProp]);
+      const valB = parseMonsterTextScore(b[sortKeyProp]);
+      return valB - valA;
+    });
 
     document.getElementById('table-monster-body').innerHTML = rows.map((m,i) => {
+      const allTimeNum = parseMonsterTextScore(m.allTimeText);
       const cells = [
         `<td class="text-center text-slate-500">${i+1}</td>`,
-        `<td>${playerCell(m.name,i,Number(m[scoreProp])||0)}</td>`,
+        `<td>${playerCell(m.name,i,allTimeNum)}</td>`,
         `<td class="text-center">${statusBadge(m.status)}</td>`,
         `<td class="text-center">${esc(m.tenure)}</td>`
       ];
@@ -1289,7 +1308,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     const monsterRows = (cachedClanData.monster || []).map(m => ({
       name: m.name,
       text: season ? m.currentSeasonText : m.allTimeText,
-      score: season ? m.currentSeasonScore : m.allTimeScore
+      score: season ? parseMonsterTextScore(m.currentSeasonText) : parseMonsterTextScore(m.allTimeText)
     })).filter(m => Number(m.score) > 0).sort((a,b) => b.score-a.score).slice(0,3);
 
     document.getElementById('overview-top-monster').innerHTML = monsterRows.length ? monsterRows.map((m,i) => `
@@ -1312,7 +1331,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
         <span class="overview-crown">${i === 0 ? '<i class="fa-solid fa-crown" style="color: #d97706;"></i>' : i === 1 ? '<i class="fa-solid fa-crown" style="color: #64748b;"></i>' : '<i class="fa-solid fa-crown" style="color: #b45309;"></i>'}</span>
         <span class="overview-name">${esc(b.name)}</span>
         <span class="badge bg-emerald-100 text-emerald-800 border border-emerald-300 fs-6 overview-badge">${scoreText(b.text)}</span>
-      </div>`).join('') : '<div class="text-muted text-center py-3">Tidak ada data</div>';
+      </div>`).join('') : '<div class="text-muted text-center py-3">Tidak ada data nilainya</div>';
   }
   </script>
 </body>

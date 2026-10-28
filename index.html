@@ -241,6 +241,24 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 .overview-crown { width: 24px; text-align: center; flex-shrink: 0; }
 .overview-name { flex: 1; min-width: 0; font-weight: 700; color: #1e293b; overflow-wrap: anywhere; }
 .overview-badge { flex-shrink: 0; text-align: right; }
+
+/* Khusus Monster Hunters di Overview agar rapi 2 baris di HP */
+.overview-row-monster {
+  display: flex;
+  flex-direction: column;
+  background: #f8fafc;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+  gap: 8px;
+}
+.overview-monster-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .player-cell-wrapper { display: flex; align-items: center; }
 .crown-slot { display: inline-block; width: 24px; text-align: center; flex-shrink: 0; margin-right: 6px; }
 .player-name-text { font-weight: bold; color: #1e293b; white-space: nowrap; }
@@ -958,7 +976,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     return match ? Number(match[1].replace(/,/g,'')) || 0 : 0;
   }
 
-  // Fungsi khusus untuk membaca angka dari teks monster seperti "33 caught / 165 pts caught"
   function parseMonsterTextScore(val) {
     if (val == null || val === '' || val === '-') return 0;
     const str = String(val).trim();
@@ -1189,8 +1206,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       return;
     }
 
-    // Menggunakan fungsi parseMonsterTextScore agar teks seperti "33 caught..." terbaca angkanya untuk sorting.
-    // Jika mode 'both', urutan berpatokan pada All-Time ('allTimeText').
     let sortKeyProp = 'allTimeText';
     if (mode === 'season') {
       sortKeyProp = 'currentSeasonText';
@@ -1311,12 +1326,17 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       score: season ? parseMonsterTextScore(m.currentSeasonText) : parseMonsterTextScore(m.allTimeText)
     })).filter(m => Number(m.score) > 0).sort((a,b) => b.score-a.score).slice(0,3);
 
+    // Render Top 3 Monster Hunters dengan tata letak 2 baris (Nama di atas, badge poin di bawah)
     document.getElementById('overview-top-monster').innerHTML = monsterRows.length ? monsterRows.map((m,i) => `
-      <div class="overview-row">
-        <span class="overview-rank">${i+1}.</span>
-        <span class="overview-crown">${i === 0 ? '<i class="fa-solid fa-crown" style="color: #d97706;"></i>' : i === 1 ? '<i class="fa-solid fa-crown" style="color: #64748b;"></i>' : '<i class="fa-solid fa-crown" style="color: #b45309;"></i>'}</span>
-        <span class="overview-name">${esc(m.name)}</span>
-        <span class="badge bg-cyan-100 text-cyan-800 border border-cyan-300 fs-6 overview-badge">${scoreText(m.text)}</span>
+      <div class="overview-row-monster">
+        <div class="overview-monster-top">
+          <span class="overview-rank">${i+1}.</span>
+          <span class="overview-crown">${i === 0 ? '<i class="fa-solid fa-crown" style="color: #d97706;"></i>' : i === 1 ? '<i class="fa-solid fa-crown" style="color: #64748b;"></i>' : '<i class="fa-solid fa-crown" style="color: #b45309;"></i>'}</span>
+          <span class="overview-name">${esc(m.name)}</span>
+        </div>
+        <div class="text-start ps-4 ms-2">
+          <span class="badge bg-cyan-100 text-cyan-800 border border-cyan-300 fs-6">${scoreText(m.text)}</span>
+        </div>
       </div>`).join('') : '<div class="text-muted text-center py-3">Tidak ada data</div>';
 
     const battleRows = (cachedClanData.battle || []).map(b => ({
@@ -1331,7 +1351,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
         <span class="overview-crown">${i === 0 ? '<i class="fa-solid fa-crown" style="color: #d97706;"></i>' : i === 1 ? '<i class="fa-solid fa-crown" style="color: #64748b;"></i>' : '<i class="fa-solid fa-crown" style="color: #b45309;"></i>'}</span>
         <span class="overview-name">${esc(b.name)}</span>
         <span class="badge bg-emerald-100 text-emerald-800 border border-emerald-300 fs-6 overview-badge">${scoreText(b.text)}</span>
-      </div>`).join('') : '<div class="text-muted text-center py-3">Tidak ada data nilainya</div>';
+      </div>`).join('') : '<div class="text-muted text-center py-3">Tidak ada data</div>';
   }
   </script>
 </body>

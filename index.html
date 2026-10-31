@@ -595,9 +595,8 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
         <!-- MEMBER PANE -->
         <div id="member-pane" class="tab-pane d-none">
           <div class="table-container shadow-sm">
-            <div class="table-header-title-box">
-              <div class="table-header-title"><i class="fa-solid fa-id-card text-slate-700"></i> Member Directory</div>
-              <div class="table-header-note"><i class="fa-solid fa-circle-info">
+            <div class="table-header-title-box" style="margin-bottom: 0; padding-bottom: 0; border-bottom: none;">
+              <div class="table-header-title" style="margin-bottom: 0;"><i class="fa-solid fa-id-card text-slate-700"></i> Member Directory</div>
             </div>
             <div class="table-responsive desktop-view-only">
               <table class="table">
@@ -1261,7 +1260,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       btn.classList.toggle('active', btn.dataset.mode === mode);
     });
 
-    // Update Judul Tabel Berdasarkan Filter yang Dipilih
     const modeLabel = mode === 'alltime' ? 'All-Time' : (mode === 'season' ? 'Current Season' : 'Both');
     if (type === 'wood') {
       document.getElementById('wood-table-title').innerHTML = `<i class="fa-solid fa-tree text-amber-700"></i> Wood Score Leaderboard - ${modeLabel}`;

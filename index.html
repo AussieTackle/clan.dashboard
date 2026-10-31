@@ -246,10 +246,10 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   overflow-wrap: anywhere;
 }
 
-/* CARDS OVERVIEW: Responsif Otomatis */
+/* CARDS OVERVIEW: Diperbarui agar tidak turun baris & ukuran font disesuaikan 2px lebih kecil dari h5 */
 .overview-row-auto {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   justify-content: space-between;
   background: #f8fafc;
@@ -258,21 +258,24 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   padding: 10px 14px;
   margin-bottom: 10px;
   gap: 8px;
+  font-size: 0.9rem; /* Lebih kecil 2px dari h5 (~1.1rem) */
 }
 .overview-player-info {
   display: flex;
   align-items: center;
   gap: 8px;
-  min-width: 180px;
+  min-width: 0;
   flex: 1 1 auto;
+  overflow: hidden;
 }
 .overview-badge-container {
   flex: 0 0 auto;
   margin-left: auto;
+  white-space: nowrap;
 }
 
 .overview-rank { width: 24px; color: #64748b; flex-shrink: 0; font-weight: bold; }
-.overview-name { font-weight: 700; color: #1e293b; word-break: break-word; }
+.overview-name { font-weight: 700; color: #1e293b; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 /* STYLE CARD VIEW KHUSUS MOBILE */
 .mobile-card-list { display: flex; flex-direction: column; gap: 10px; }
@@ -312,9 +315,9 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 .mobile-stat-val { font-weight: 800; color: #0f172a; }
 
 /* Rapat tanpa space jika bukan Top 3 */
-.player-cell-wrapper { display: flex; align-items: center; gap: 4px; }
+.player-cell-wrapper { display: flex; align-items: center; gap: 4px; min-width: 0; overflow: hidden; }
 .crown-slot { display: inline-block; width: 24px; text-align: center; flex-shrink: 0; }
-.player-name-text { font-weight: bold; color: #1e293b; white-space: nowrap; }
+.player-name-text { font-weight: bold; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 .member-clickable {
   color: var(--clan-accent) !important;
@@ -390,10 +393,10 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 .totem-val {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #0f172a; /* Default hitam jika belum max */
+  color: #0f172a;
 }
 .totem-val.maxed {
-  color: var(--clan-accent); /* Warna aksen clan jika sudah max */
+  color: var(--clan-accent);
 }
 
 .sync-indicator {
@@ -1144,7 +1147,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 
     document.getElementById('modal-totems-container').innerHTML = totems.map(t => {
       const valStr = String(t.val || '').trim();
-      // Cek apakah sudah mencapai tahap maksimal (200/200 atau 500/500)
       const isMaxed = valStr === '200/200' || valStr === '500/500' || valStr.toLowerCase().includes('max');
       const valClass = isMaxed ? 'totem-val maxed' : 'totem-val';
       return `
@@ -1256,7 +1258,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     });
 
     const breakdownContainer = document.getElementById('modal-monster-breakdown');
-    breakdownContainer.innerHTML = monsterPills.length > 0 ? monsterPills.join('') : '<span class="text-muted small">Belum ada monster yang ditangkap</span>';
+    breakdownContainer.innerHTML = monsterPills.length > 0 ? monsterPills.join('') : '<span class="text-muted small">Tidak ada data monster</span>';
 
     playerModal.show();
   }

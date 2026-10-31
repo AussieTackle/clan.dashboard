@@ -177,8 +177,9 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   color: #64748b;
   font-style: italic;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 6px;
+  text-align: left;
 }
 
 .table {
@@ -389,7 +390,10 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 .totem-val {
   font-size: 0.95rem;
   font-weight: 700;
-  color: var(--clan-accent);
+  color: #0f172a; /* Default hitam jika belum max */
+}
+.totem-val.maxed {
+  color: var(--clan-accent); /* Warna aksen clan jika sudah max */
 }
 
 .sync-indicator {
@@ -595,9 +599,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
         <!-- MEMBER PANE -->
         <div id="member-pane" class="tab-pane d-none">
           <div class="table-container shadow-sm">
-            <div class="table-header-title-box" style="margin-bottom: 0; padding-bottom: 0; border-bottom: none;">
-              <div class="table-header-title" style="margin-bottom: 0;"><i class="fa-solid fa-id-card text-slate-700"></i> Member Directory</div>
-            </div>
             <div class="table-responsive desktop-view-only">
               <table class="table">
                 <thead>
@@ -632,7 +633,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
           <div class="table-container shadow-sm">
             <div class="table-header-title-box">
               <div class="table-header-title" id="wood-table-title"><i class="fa-solid fa-tree text-amber-700"></i> Wood Score Leaderboard - Both</div>
-              <div class="table-header-note"><i class="fa-solid fa-circle-info"></i> Note: This leaderboard only tracks currently active clan members. Past members who have left are not included.</div>
+              <div class="table-header-note"><i class="fa-solid fa-circle-info"></i> <span>Note: This leaderboard only tracks currently active clan members. Past members who have left are not included.</span></div>
             </div>
             <div class="table-responsive desktop-view-only">
               <table class="table">
@@ -659,7 +660,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
           <div class="table-container shadow-sm">
             <div class="table-header-title-box">
               <div class="table-header-title" id="monster-table-title"><i class="fa-solid fa-ghost text-cyan-700"></i> Monster Score Leaderboard - Both</div>
-              <div class="table-header-note"><i class="fa-solid fa-circle-info"></i> Note: This leaderboard only tracks currently active clan members. Past members who have left are not included.</div>
+              <div class="table-header-note"><i class="fa-solid fa-circle-info"></i> <span>Note: This leaderboard only tracks currently active clan members. Past members who have left are not included.</span></div>
             </div>
             <div class="table-responsive desktop-view-only">
               <table class="table text-nowrap">
@@ -690,7 +691,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
             </div>
             <div class="table-header-title-box">
               <div class="table-header-title" id="battle-table-title"><i class="fa-solid fa-fish-fins text-emerald-700"></i> Battle Score Leaderboard - Both</div>
-              <div class="table-header-note"><i class="fa-solid fa-circle-info"></i> Note: This leaderboard only tracks currently active clan members. Past members who have left are not included.</div>
+              <div class="table-header-note"><i class="fa-solid fa-circle-info"></i> <span>Note: This leaderboard only tracks currently active clan members. Past members who have left are not included.</span></div>
             </div>
             <div class="table-responsive desktop-view-only">
               <table class="table">
@@ -1141,12 +1142,18 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       { name: 'Boiúna', val: island.boiuna }
     ];
 
-    document.getElementById('modal-totems-container').innerHTML = totems.map(t => `
-      <div class="totem-card">
-        <div class="totem-name">${t.name}</div>
-        <div class="totem-val">${t.val || '-'}</div>
-      </div>
-    `).join('');
+    document.getElementById('modal-totems-container').innerHTML = totems.map(t => {
+      const valStr = String(t.val || '').trim();
+      // Cek apakah sudah mencapai tahap maksimal (200/200 atau 500/500)
+      const isMaxed = valStr === '200/200' || valStr === '500/500' || valStr.toLowerCase().includes('max');
+      const valClass = isMaxed ? 'totem-val maxed' : 'totem-val';
+      return `
+        <div class="totem-card">
+          <div class="totem-name">${t.name}</div>
+          <div class="${valClass}">${valStr || '-'}</div>
+        </div>
+      `;
+    }).join('');
 
     islandModal.show();
   }

@@ -246,7 +246,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   overflow-wrap: anywhere;
 }
 
-/* CARDS OVERVIEW: Diperbarui agar tidak turun baris & ukuran font disesuaikan 2px lebih kecil dari h5 */
 .overview-row-auto {
   display: flex;
   flex-wrap: nowrap;
@@ -258,7 +257,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   padding: 10px 14px;
   margin-bottom: 10px;
   gap: 8px;
-  font-size: 0.9rem; /* Lebih kecil 2px dari h5 (~1.1rem) */
+  font-size: 0.9rem;
 }
 .overview-player-info {
   display: flex;
@@ -277,7 +276,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 .overview-rank { width: 24px; color: #64748b; flex-shrink: 0; font-weight: bold; }
 .overview-name { font-weight: 700; color: #1e293b; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-/* STYLE CARD VIEW KHUSUS MOBILE */
 .mobile-card-list { display: flex; flex-direction: column; gap: 10px; }
 .mobile-card-item {
   background: #ffffff;
@@ -314,7 +312,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 .mobile-stat-label { font-size: 0.7rem; color: #64748b; font-weight: 700; text-transform: uppercase; }
 .mobile-stat-val { font-weight: 800; color: #0f172a; }
 
-/* Rapat tanpa space jika bukan Top 3 */
 .player-cell-wrapper { display: flex; align-items: center; gap: 4px; min-width: 0; overflow: hidden; }
 .crown-slot { display: inline-block; width: 24px; text-align: center; flex-shrink: 0; }
 .player-name-text { font-weight: bold; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -461,6 +458,10 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
         </button>
 
         <div class="d-flex align-items-center gap-2">
+          <!-- Tombol Discord Report Generator di sebelah tombol Sync -->
+          <button id="btnOpenDiscordModal" onclick="openDiscordReportModal()" title="Generate Discord Report" class="btn btn-sm btn-dark p-2 rounded-lg border border-slate-600 text-light bg-slate-800 d-none">
+            <i class="fa-brands fa-discord text-cyan-400"></i>
+          </button>
           <button onclick="fetchData()" title="Sync Data" class="btn btn-sm btn-dark p-2 rounded-lg border border-slate-600 text-light bg-slate-800">
             <i id="syncIcon" class="fa-solid fa-arrows-rotate"></i>
           </button>
@@ -824,6 +825,77 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     </div>
   </div>
 
+  <!-- MODAL DISCORD REPORT GENERATOR -->
+  <div class="modal fade" id="discordReportModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-large">
+      <div class="modal-content shadow-lg">
+        <div class="modal-header d-flex align-items-center justify-content-between">
+          <div class="d-flex align-items-center gap-3">
+            <div class="modal-player-avatar" style="color: #5865F2; border-color: #5865F2;"><i class="fa-brands fa-discord"></i></div>
+            <div>
+              <h4 class="modal-title fw-bold text-slate-900 mb-0">Discord Report Generator</h4>
+              <span class="badge bg-indigo-100 text-indigo-800 border border-indigo-300">Community Export</span>
+            </div>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p class="text-slate-600 text-sm mb-3 fw-semibold">Pilih kategori laporan yang ingin dibuat:</p>
+          <div class="row g-2 mb-3">
+            <div class="col-6 col-md-3">
+              <div class="form-check p-3 bg-slate-50 border rounded-lg">
+                <input class="form-check-input discord-cat" type="checkbox" value="wood" id="chkWood" checked>
+                <label class="form-check-label fw-bold text-slate-800 small" for="chkWood">Wood Score</label>
+              </div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="form-check p-3 bg-slate-50 border rounded-lg">
+                <input class="form-check-input discord-cat" type="checkbox" value="monster" id="chkMonster" checked>
+                <label class="form-check-label fw-bold text-slate-800 small" for="chkMonster">Monster</label>
+              </div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="form-check p-3 bg-slate-50 border rounded-lg">
+                <input class="form-check-input discord-cat" type="checkbox" value="battle" id="chkBattle" checked>
+                <label class="form-check-label fw-bold text-slate-800 small" for="chkBattle">Battle Score</label>
+              </div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="form-check p-3 bg-slate-50 border rounded-lg">
+                <input class="form-check-input discord-cat" type="checkbox" value="island" id="chkIsland" checked>
+                <label class="form-check-label fw-bold text-slate-800 small" for="chkIsland">Clan Island</label>
+              </div>
+            </div>
+          </div>
+
+          <p class="text-slate-600 text-sm mb-2 fw-semibold">Pilih Periode Waktu:</p>
+          <div class="d-flex gap-3 mb-4">
+            <div class="form-check">
+              <input class="form-check-input discord-time" type="radio" name="discordTime" id="timeSeason" value="season" checked>
+              <label class="form-check-label fw-semibold text-slate-700" for="timeSeason">Current Season</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input discord-time" type="radio" name="discordTime" id="timeAlltime" value="alltime">
+              <label class="form-check-label fw-semibold text-slate-700" for="timeAlltime">All-Time</label>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="discordReportOutput" class="form-label fw-bold text-slate-700 small">Generated Discord Preview:</label>
+            <textarea class="form-control font-monospace text-xs bg-slate-900 text-slate-100 p-3" id="discordReportOutput" rows="10" readonly style="font-size: 0.8rem; resize: vertical;"></textarea>
+          </div>
+
+          <div class="d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-secondary px-4 fw-bold" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary px-4 fw-bold" id="btnCopyReport" onclick="copyDiscordReport()" style="background-color: #5865F2; border-color: #5865F2;">
+              <i class="fa-regular fa-copy me-1"></i> Copy Report
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
   const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyjvC7I9l2OA9fcgBjUrz3qAIFenCFRsr5QVab7tZOtIU7QQ_3lH71fl_3K6ot73yAS/exec';
@@ -848,6 +920,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   let requestPending = false;
   let playerModal = null;
   let islandModal = null;
+  let discordModal = null;
 
   const MONSTER_COLUMNS = [
     {key:'shredder', seasonKey:'shredderSeason', label:'Shredder'},
@@ -863,8 +936,9 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   document.addEventListener('DOMContentLoaded', () => {
     playerModal = new bootstrap.Modal(document.getElementById('playerDetailModal'));
     islandModal = new bootstrap.Modal(document.getElementById('islandProgressModal'));
+    discordModal = new bootstrap.Modal(document.getElementById('discordReportModal'));
 
-    ['playerDetailModal', 'islandProgressModal'].forEach(modalId => {
+    ['playerDetailModal', 'islandProgressModal', 'discordReportModal'].forEach(modalId => {
       const el = document.getElementById(modalId);
       el.addEventListener('show.bs.modal', () => {
         history.pushState({ modalOpen: modalId }, '', '');
@@ -879,8 +953,10 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     window.addEventListener('popstate', (event) => {
       const pModal = bootstrap.Modal.getInstance(document.getElementById('playerDetailModal'));
       const iModal = bootstrap.Modal.getInstance(document.getElementById('islandProgressModal'));
+      const dModal = bootstrap.Modal.getInstance(document.getElementById('discordReportModal'));
       if (pModal) pModal.hide();
       if (iModal) iModal.hide();
+      if (dModal) dModal.hide();
 
       if (event.state && event.state.view === 'clan') {
         selectClan(event.state.clanCode, false);
@@ -898,6 +974,11 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
         document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('d-none'));
         document.getElementById(btn.dataset.pane).classList.remove('d-none');
       });
+    });
+
+    // Event listener untuk update preview Discord otomatis saat checkbox/radio berubah
+    document.querySelectorAll('.discord-cat, .discord-time').forEach(el => {
+      el.addEventListener('change', generateDiscordReportText);
     });
 
     fetchData();
@@ -1000,6 +1081,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     
     document.getElementById('navBrand').classList.remove('d-none');
     document.getElementById('btnHome').classList.add('d-none');
+    document.getElementById('btnOpenDiscordModal').classList.add('d-none');
 
     document.getElementById('landingPage').classList.remove('d-none');
     document.getElementById('clanDetailView').classList.add('d-none');
@@ -1017,6 +1099,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 
     document.getElementById('navBrand').classList.add('d-none');
     document.getElementById('btnHome').classList.remove('d-none');
+    document.getElementById('btnOpenDiscordModal').classList.remove('d-none');
 
     document.getElementById('landingPage').classList.add('d-none');
     document.getElementById('clanDetailView').classList.remove('d-none');
@@ -1158,6 +1241,133 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     }).join('');
 
     islandModal.show();
+  }
+
+  // --- DISCORD REPORT GENERATOR FUNCTIONS ---
+  function openDiscordReportModal() {
+    generateDiscordReportText();
+    discordModal.show();
+  }
+
+  function generateDiscordReportText() {
+    if (!cachedClanData) return;
+
+    const selectedCats = Array.from(document.querySelectorAll('.discord-cat:checked')).map(el => el.value);
+    const selectedTime = document.querySelector('.discord-time:checked').value;
+    const isSeason = selectedTime === 'season';
+    const timeLabel = isSeason ? 'Current Season' : 'All-Time';
+
+    let sections = [];
+
+    // 1. Wood Score
+    if (selectedCats.includes('wood')) {
+      const woodProp = isSeason ? 'currentSeason' : 'allTime';
+      const rows = sortByScore(cachedClanData.wood || [], woodProp);
+      const formatted = buildDiscordTable(rows, 'name', w => `${fmt(w[woodProp])}`);
+      sections.push(`🌲 **Wood Score Leaderboard** 🌲\n-# ${timeLabel}\n\`\`\`\n${formatted}\n\`\`\``);
+    }
+
+    // 2. Monster Leaderboard
+    if (selectedCats.includes('monster')) {
+      const rows = [...(cachedClanData.monster || [])].sort((a, b) => {
+        const valA = parseMonsterPts(isSeason ? a.currentSeasonText : a.allTimeText);
+        const valB = parseMonsterPts(isSeason ? b.currentSeasonText : b.allTimeText);
+        return valB - valA;
+      });
+      const formatted = buildDiscordTable(rows, 'name', m => `${cleanMonsterText(isSeason ? m.currentSeasonText : m.allTimeText)}`);
+      sections.push(`👹 **Monster Leaderboard** 👹\n-# ${timeLabel}\n\`\`\`\n${formatted}\n\`\`\``);
+    }
+
+    // 3. Battle Score Leaderboard
+    if (selectedCats.includes('battle')) {
+      const prop = isSeason ? 'currentSeasonScore' : 'allTimeScore';
+      const rows = sortByScore(cachedClanData.battle || [], prop);
+      const formatted = buildDiscordTable(rows, 'name', b => `${scoreText(isSeason ? b.currentSeasonText : b.allTimeText)}`);
+      sections.push(`⚔️ **Battle Score Leaderboard** ⚔️\n-# ${timeLabel}\n\`\`\`\n${formatted}\n\`\`\``);
+    }
+
+    // 4. Clan Island (Totem Update)
+    if (selectedCats.includes('island')) {
+      const island = cachedClanData.islandProgress || {};
+      const totems = [
+        { name: 'Shredder', val: island.shredder },
+        { name: 'Bessie', val: island.bessie },
+        { name: 'Don Pedro', val: island.donPedro },
+        { name: 'Kraken', val: island.kraken },
+        { name: 'Bunyip', val: island.bunyip },
+        { name: 'Nessie', val: island.nessie },
+        { name: 'Naga', val: island.naga },
+        { name: 'Boiúna', val: island.boiuna }
+      ];
+      const formattedTotems = buildDiscordTableTotems(totems);
+      sections.push(`🗿 **Totem Update** 🗿\n-# This week\n\`\`\`\n${formattedTotems}\n\`\`\``);
+    }
+
+    // Footer link
+    sections.push(`https://aussietackle.github.io/clan.dashboard/\n-# _Better to use a browser with desktop mode._`);
+
+    document.getElementById('discordReportOutput').value = sections.join('\n\n');
+  }
+
+  function buildDiscordTable(rows, nameProp, scoreGetter) {
+    if (!rows.length) return 'No data available';
+
+    // Cari nama terpanjang untuk padding otomatis
+    let maxNameLen = 4; // Minimal panjang header 'Name'
+    rows.forEach(r => {
+      const nameStr = String(r[nameProp] || '');
+      if (nameStr.length > maxNameLen) {
+        maxNameLen = nameStr.length;
+      }
+    });
+
+    let headerName = 'Name'.padEnd(maxNameLen, ' ');
+    let lines = [`     ${headerName}   Score`, ''];
+
+    rows.forEach((r, idx) => {
+      const rankNum = `${idx + 1}.`.padEnd(3, ' ');
+      const nameStr = String(r[nameProp] || '').padEnd(maxNameLen, ' ');
+      const scoreStr = scoreGetter(r);
+      lines.push(`${rankNum} ${nameStr} | ${scoreStr}`);
+    });
+
+    return lines.join('\n');
+  }
+
+  function buildDiscordTableTotems(totems) {
+    let maxNameLen = 4;
+    totems.forEach(t => {
+      if (t.name.length > maxNameLen) maxNameLen = t.name.length;
+    });
+
+    let lines = [];
+    totems.forEach(t => {
+      const nameStr = t.name.padEnd(maxNameLen, ' ');
+      const valStr = String(t.val || '-');
+      lines.push(`${nameStr} | ${valStr}`);
+    });
+
+    return lines.join('\n');
+  }
+
+  function copyDiscordReport() {
+    const outputBox = document.getElementById('discordReportOutput');
+    outputBox.select();
+    outputBox.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(outputBox.value).then(() => {
+      const btn = document.getElementById('btnCopyReport');
+      const originalHTML = btn.innerHTML;
+      btn.innerHTML = `<i class="fa-solid fa-check me-1"></i> Copied!`;
+      btn.classList.remove('btn-primary');
+      btn.classList.add('btn-success');
+      setTimeout(() => {
+        btn.innerHTML = originalHTML;
+        btn.classList.remove('btn-success');
+        btn.classList.add('btn-primary');
+      }, 2000);
+    }).catch(err => {
+      console.error('Gagal menyalin teks:', err);
+    });
   }
 
   function renderMembers() {

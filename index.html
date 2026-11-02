@@ -1247,7 +1247,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     islandModal.show();
   }
 
-  // --- DISCORD REPORT GENERATOR FUNCTIONS ---
+  // --- DISCORD REPORT GENERATOR FUNCTIONS (URUTAN & TANPA SPASI KOSONG) ---
   function openDiscordReportModal() {
     generateDiscordReportText();
     discordModal.show();
@@ -1290,7 +1290,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       sections.push(`**Totem Contribution**\n-# ${timeLabel}\n\`\`\`\n${formatted}\n\`\`\``);
     }
 
-    // 4. Totem Progress
+    // 4. Totem Progress (Sub-judul diubah jadi All-Time)
     if (selectedCats.includes('island')) {
       const island = cachedClanData.islandProgress || {};
       const totems = [
@@ -1307,10 +1307,10 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       sections.push(`**Totem Progress**\n-# All-Time\n\`\`\`\n${formattedTotems}\n\`\`\``);
     }
 
-    // Footer link
+    // Footer link (tanpa paragraf kosong di antara section)
     sections.push(`https://aussietackle.github.io/clan.dashboard/\n-# _Better to use a browser with desktop mode._`);
 
-    document.getElementById('discordReportOutput').value = sections.join('\n\n');
+    document.getElementById('discordReportOutput').value = sections.join('\n');
   }
 
   function buildDiscordTable(rows, nameProp, scoreGetter) {

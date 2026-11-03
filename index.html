@@ -702,7 +702,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
               <button class="btn-filter active" data-mode="alltime" onclick="setTableFilter('battle','alltime')">All-Time</button>
               <button class="btn-filter" data-mode="season" onclick="setTableFilter('battle','season')">Current Season</button>
             </div>
-            <!-- CHECKBOX FILTER (BATTLE SCORE vs 1ST PLACE WINS) -->
             <div class="checkbox-filter-box">
               <span>Filter by:</span>
               <label><input type="checkbox" id="chkFilterBattle" checked onchange="handleBattleFilterChange('score')"> Battle Score</label>
@@ -778,7 +777,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
             </div>
           </div>
 
-          <!-- REKOR BATTLE & 1ST PLACE WINS IN MODAL -->
           <div class="row g-3">
             <div class="col-12 col-md-3">
               <div class="stat-box h-100">
@@ -876,6 +874,12 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
               <div class="form-check p-3 bg-slate-50 border rounded-lg">
                 <input class="form-check-input discord-cat" type="checkbox" value="battle" id="chkBattle" checked>
                 <label class="form-check-label fw-bold text-slate-800 small" for="chkBattle">Battle Score</label>
+              </div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="form-check p-3 bg-slate-50 border rounded-lg">
+                <input class="form-check-input discord-cat" type="checkbox" value="firstplace" id="chkFirstPlace" checked>
+                <label class="form-check-label fw-bold text-slate-800 small" for="chkFirstPlace">1st Place Wins</label>
               </div>
             </div>
             <div class="col-6 col-md-3">
@@ -1216,9 +1220,9 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   function playerCell(name, idx, score) {
     let crownOrSlot = '';
     if (score > 0 && idx < 3) {
-      if (idx === 0) crownOrSlot = '<span class="crown-slot">🏆</span>';
-      else if (idx === 1) crownOrSlot = '<span class="crown-slot">🏆</span>';
-      else if (idx === 2) crownOrSlot = '<span class="crown-slot">🏆</span>';
+      if (idx === 0) crownOrSlot = '<span class="crown-slot"><i class="fa-solid fa-crown" style="color: #d97706;"></i></span>';
+      else if (idx === 1) crownOrSlot = '<span class="crown-slot"><i class="fa-solid fa-crown" style="color: #64748b;"></i></span>';
+      else if (idx === 2) crownOrSlot = '<span class="crown-slot"><i class="fa-solid fa-crown" style="color: #b45309;"></i></span>';
     }
     return `<div class="player-cell-wrapper">
       ${crownOrSlot}
@@ -1303,6 +1307,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 
     let sections = [];
 
+    // 1. Battle Score
     if (selectedCats.includes('battle')) {
       const prop = isSeason ? 'currentSeasonScore' : 'allTimeScore';
       const rows = sortByScore(cachedClanData.activeBattle || [], prop).filter(b => (Number(b[prop]) || 0) > 0);
@@ -1310,13 +1315,23 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       sections.push(`**Battle Score Leaderboard**\n-# ${timeLabel}\n\`\`\`\n${formatted}\n\`\`\``);
     }
 
+    // 2. 1st Place Wins (Urutan sesuai permintaan: setelah Battle Score, sebelum Totem)
+    if (selectedCats.includes('firstplace')) {
+      const prop = isSeason ? 'seasonFirstPlace' : 'allTimeFirstPlace';
+      const rows = sortByScore(cachedClanData.activeBattle || [], prop).filter(b => (Number(b[prop]) || 0) > 0);
+      const formatted = buildDiscordTable(rows, 'name', b => `${Number(b[prop]) || 0} Wins`);
+      sections.push(`**1st Place Wins Leaderboard**\n-# ${timeLabel}\n\`\`\`\n${formatted}\n\`\`\``);
+    }
+
+    // 3. Unity Monument Contribution
     if (selectedCats.includes('wood')) {
       const woodProp = isSeason ? 'currentSeason' : 'allTime';
       const rows = sortByScore(cachedClanData.activeWood || [], woodProp).filter(w => (Number(w[woodProp]) || 0) > 0);
-      const formatted = buildDiscordTable(rows, 'name', w => `${fmt(w[woodProp])}`);
+      const formatted = buildDiscordTable(rows, 'name', w => `${fmt(w[woodProp])} woods`);
       sections.push(`**Unity Monument Contribution**\n-# ${timeLabel}\n\`\`\`\n${formatted}\n\`\`\``);
     }
 
+    // 4. Totem Contribution
     if (selectedCats.includes('monster')) {
       const rows = [...(cachedClanData.activeMonster || [])].map(m => {
         const scoreVal = parseMonsterPts(isSeason ? m.currentSeasonText : m.allTimeText);
@@ -1327,6 +1342,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       sections.push(`**Totem Contribution**\n-# ${timeLabel}\n\`\`\`\n${formatted}\n\`\`\``);
     }
 
+    // 5. Totem Progress
     if (selectedCats.includes('island')) {
       const island = cachedClanData.islandProgress || {};
       const totems = [
@@ -1480,8 +1496,8 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     document.getElementById('modal-tenure').innerText = woodData.tenure || memberData.tenure || '-';
     document.getElementById('modal-unlocked-maps').innerText = memberData.unlockedMaps || '-';
 
-    document.getElementById('modal-wood-alltime').innerText = fmt(woodData.allTime || 0);
-    document.getElementById('modal-wood-season').innerText = woodData.currentSeason > 0 ? fmt(woodData.currentSeason) : 'No data yet';
+    document.getElementById('modal-wood-alltime').innerText = `${fmt(woodData.allTime || 0)} woods`;
+    document.getElementById('modal-wood-season').innerText = woodData.currentSeason > 0 ? `${fmt(woodData.currentSeason)} woods` : 'No data yet';
 
     document.getElementById('modal-battle-alltime').innerText = scoreText(battleData.allTimeText);
     document.getElementById('modal-battle-season').innerText = scoreText(battleData.currentSeasonText, 'battle');
@@ -1546,14 +1562,14 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
         chkFirstPlace.checked = false;
         battleCategory = 'score';
       } else {
-        chkBattle.checked = true; // Jangan biarkan kosong keduanya
+        chkBattle.checked = true;
       }
     } else if (target === 'firstPlace') {
       if (chkFirstPlace.checked) {
         chkBattle.checked = false;
         battleCategory = 'firstPlace';
       } else {
-        chkFirstPlace.checked = true; // Jangan biarkan kosong keduanya
+        chkFirstPlace.checked = true;
       }
     }
     renderBattle();
@@ -1715,7 +1731,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     const headers = ['<th class="text-center">No</th>', '<th>Player Name</th>', '<th class="text-center">Tenure</th>'];
     
     if (isFirstPlaceMode) {
-      headers.push(`<th class="text-end text-amber-600">🏆 ${isSeason ? 'Season 1st Places' : 'All-Time 1st Places'}</th>`);
+      headers.push(`<th class="text-end text-amber-600">${isSeason ? 'Season 1st Places' : 'All-Time 1st Places'}</th>`);
     } else {
       headers.push(`<th class="text-end">${isSeason ? 'Current Season Score' : 'All-Time Battle Score'}</th>`);
     }
@@ -1756,7 +1772,13 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 
       if (isFirstPlaceMode) {
         const fpCount = Number(b[prop]) || 0;
-        scoreValText = `<span class="text-amber-600 fw-bold">🏆 ${fpCount} Wins</span>`;
+        let trophyIcon = '';
+        if (fpCount > 0 && i < 3) {
+          if (i === 0) trophyIcon = '🥇 ';
+          else if (i === 1) trophyIcon = '🥈 ';
+          else if (i === 2) trophyIcon = '🥉 ';
+        }
+        scoreValText = `<span class="text-amber-600 fw-bold">${trophyIcon}${fpCount} Wins</span>`;
       } else {
         scoreValText = scoreText(isSeason ? b.currentSeasonText : b.allTimeText, 'battle');
       }
@@ -1777,7 +1799,13 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 
       if (isFirstPlaceMode) {
         const fpCount = Number(b[prop]) || 0;
-        scoreValText = `🏆 ${fpCount} Wins`;
+        let trophyIcon = '';
+        if (fpCount > 0 && i < 3) {
+          if (i === 0) trophyIcon = '🥇 ';
+          else if (i === 1) trophyIcon = '🥈 ';
+          else if (i === 2) trophyIcon = '🥉 ';
+        }
+        scoreValText = `${trophyIcon}${fpCount} Wins`;
       } else {
         scoreValText = scoreText(isSeason ? b.currentSeasonText : b.allTimeText, 'battle');
       }
@@ -1857,7 +1885,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
           ${playerCell(w.name, i, Number(w[woodProp])||0)}
         </div>
         <div class="overview-badge-container">
-          <span class="text-amber-800 fw-bold">${fmt(w[woodProp])} woods</span>
+          <span class="text-slate-800 fw-bold">${fmt(w[woodProp])} woods</span>
         </div>
       </div>`).join('') : '<div class="text-muted text-center py-3">No data yet</div>';
 
@@ -1874,7 +1902,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
           ${playerCell(m.name, i, Number(m.score)||0)}
         </div>
         <div class="overview-badge-container">
-          <span class="text-cyan-800 fw-bold">${scoreText(m.text)}</span>
+          <span class="text-slate-800 fw-bold">${scoreText(m.text)}</span>
         </div>
       </div>`).join('') : '<div class="text-muted text-center py-3">No data yet</div>';
 
@@ -1891,7 +1919,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
           ${playerCell(b.name, i, Number(b.score)||0)}
         </div>
         <div class="overview-badge-container">
-          <span class="text-emerald-800 fw-bold">${scoreText(b.text, 'battle')}</span>
+          <span class="text-slate-800 fw-bold">${scoreText(b.text, 'battle')}</span>
         </div>
       </div>`).join('') : '<div class="text-muted text-center py-3">No data yet</div>';
   }

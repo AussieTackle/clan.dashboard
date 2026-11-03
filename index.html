@@ -794,7 +794,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
             </div>
             <div class="col-12 col-md-3">
               <div class="stat-box h-100">
-                <div class="stat-box-title text-amber-600">🏆 1st Place Wins</div>
+                <div class="stat-box-title text-amber-600">🥇 1st Place Wins</div>
                 <div class="stat-label-row"><span class="stat-lbl-all">All:</span><span class="fw-bold text-amber-600" id="modal-firstplace-alltime">0</span></div>
                 <div class="stat-label-row"><span class="stat-lbl-new">New:</span><span class="fw-bold text-slate-900" id="modal-firstplace-season">0</span></div>
               </div>
@@ -1310,12 +1310,12 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     // 1. Battle Score
     if (selectedCats.includes('battle')) {
       const prop = isSeason ? 'currentSeasonScore' : 'allTimeScore';
-      const rows = sortByScore(cachedClanData.activeBattle || [], prop).filter(b => (Number(b[prop]) || 0) > 0);
+      const rows = sortByScore(cachedClanData.activeBattle || [], prop);
       const formatted = buildDiscordTable(rows, 'name', b => `${scoreText(isSeason ? b.currentSeasonText : b.allTimeText, 'battle')}`);
       sections.push(`**Battle Score Leaderboard**\n-# ${timeLabel}\n\`\`\`\n${formatted}\n\`\`\``);
     }
 
-    // 2. 1st Place Wins (Urutan sesuai permintaan: setelah Battle Score, sebelum Totem)
+    // 2. 1st Place Wins (Hanya player dengan nilai > 0)
     if (selectedCats.includes('firstplace')) {
       const prop = isSeason ? 'seasonFirstPlace' : 'allTimeFirstPlace';
       const rows = sortByScore(cachedClanData.activeBattle || [], prop).filter(b => (Number(b[prop]) || 0) > 0);
@@ -1326,7 +1326,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     // 3. Unity Monument Contribution
     if (selectedCats.includes('wood')) {
       const woodProp = isSeason ? 'currentSeason' : 'allTime';
-      const rows = sortByScore(cachedClanData.activeWood || [], woodProp).filter(w => (Number(w[woodProp]) || 0) > 0);
+      const rows = sortByScore(cachedClanData.activeWood || [], woodProp);
       const formatted = buildDiscordTable(rows, 'name', w => `${fmt(w[woodProp])} woods`);
       sections.push(`**Unity Monument Contribution**\n-# ${timeLabel}\n\`\`\`\n${formatted}\n\`\`\``);
     }
@@ -1336,7 +1336,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       const rows = [...(cachedClanData.activeMonster || [])].map(m => {
         const scoreVal = parseMonsterPts(isSeason ? m.currentSeasonText : m.allTimeText);
         return { ...m, calcScore: scoreVal };
-      }).filter(m => m.calcScore > 0).sort((a, b) => b.calcScore - a.calcScore);
+      }).sort((a, b) => b.calcScore - a.calcScore);
 
       const formatted = buildDiscordTable(rows, 'name', m => `${cleanMonsterText(isSeason ? m.currentSeasonText : m.allTimeText)}`);
       sections.push(`**Totem Contribution**\n-# ${timeLabel}\n\`\`\`\n${formatted}\n\`\`\``);
@@ -1518,7 +1518,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
         monsterPills.push(`
           <div class="monster-pill">
             <i class="fa-solid fa-ghost text-cyan-700"></i>
-            <span class="fw-semibold">${col.label}:</span>
+            <span class="semibold">${col.label}:</span>
             <span class="monster-pill-val">${fmt(valAllTime)}</span>
             ${seasonInfo}
           </div>
@@ -1597,17 +1597,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     }
 
     const sortProp = isSeason ? 'currentSeason' : 'allTime';
-    let rows = sortByScore(source, sortProp);
-
-    if (isSeason) {
-      rows = rows.filter(w => (Number(w.currentSeason) || 0) > 0);
-    }
-
-    if (!rows.length) {
-      document.getElementById('table-wood-body').innerHTML = `<tr><td colspan="${headers.length}" class="text-center text-muted py-4">No data yet</td></tr>`;
-      mobileContainer.innerHTML = '<div class="text-center text-muted py-4 fw-semibold">No data yet</div>';
-      return;
-    }
+    const rows = sortByScore(source, sortProp); // Member 0 / belum punya skor tetap ditampilkan
 
     document.getElementById('table-wood-body').innerHTML = rows.map((w,i) => {
       const val = Number(w[sortProp]) || 0;
@@ -1667,21 +1657,11 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     }
 
     const sortKeyProp = isSeason ? 'currentSeasonText' : 'allTimeText';
-    let rows = [...source].sort((a, b) => {
+    const rows = [...source].sort((a, b) => {
       const valA = parseMonsterPts(a[sortKeyProp]);
       const valB = parseMonsterPts(b[sortKeyProp]);
       return valB - valA;
-    });
-
-    if (isSeason) {
-      rows = rows.filter(m => parseMonsterPts(m.currentSeasonText) > 0);
-    }
-
-    if (!rows.length) {
-      document.getElementById('table-monster-body').innerHTML = `<tr><td colspan="${headers.length}" class="text-center text-muted py-4">No data yet</td></tr>`;
-      mobileContainer.innerHTML = '<div class="text-center text-muted py-4 fw-semibold">No data yet</div>';
-      return;
-    }
+    }); // Member 0 / belum punya skor tetap ditampilkan
 
     document.getElementById('table-monster-body').innerHTML = rows.map((m,i) => {
       const scoreNum = parseMonsterPts(m[sortKeyProp]);
@@ -1756,13 +1736,14 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 
     let rows = sortByScore(source, prop);
 
-    if (isSeason) {
+    // KETENTUAN: Khusus pada sort 1st Place, sembunyikan member yang belum punya skor (0)
+    if (isFirstPlaceMode) {
       rows = rows.filter(b => (Number(b[prop]) || 0) > 0);
     }
 
     if (!rows.length) {
-      document.getElementById('table-battle-body').innerHTML = `<tr><td colspan="${headers.length}" class="text-center text-muted py-4">No match data yet</td></tr>`;
-      mobileContainer.innerHTML = '<div class="text-center text-muted py-4 fw-semibold">No match data yet</div>';
+      document.getElementById('table-battle-body').innerHTML = `<tr><td colspan="${headers.length}" class="text-center text-muted py-4">No data yet</td></tr>`;
+      mobileContainer.innerHTML = '<div class="text-center text-muted py-4 fw-semibold">No data yet</div>';
       return;
     }
 
@@ -1876,7 +1857,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     const season = currentOverviewFilter === 'season';
 
     const woodProp = season ? 'currentSeason' : 'allTime';
-    const woodRows = sortByScore(cachedClanData.activeWood, woodProp).filter(w => Number(w[woodProp]) > 0).slice(0,3);
+    const woodRows = sortByScore(cachedClanData.activeWood, woodProp).slice(0,3);
 
     document.getElementById('overview-top-wood').innerHTML = woodRows.length ? woodRows.map((w,i) => `
       <div class="overview-row-auto">
@@ -1893,7 +1874,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       name: m.name,
       text: cleanMonsterText(season ? m.currentSeasonText : m.allTimeText),
       score: season ? parseMonsterPts(m.currentSeasonText) : parseMonsterPts(m.allTimeText)
-    })).filter(m => Number(m.score) > 0).sort((a,b) => b.score-a.score).slice(0,3);
+    })).sort((a,b) => b.score-a.score).slice(0,3);
 
     document.getElementById('overview-top-monster').innerHTML = monsterRows.length ? monsterRows.map((m,i) => `
       <div class="overview-row-auto">
@@ -1910,7 +1891,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       name: b.name,
       text: season ? b.currentSeasonText : b.allTimeText,
       score: season ? b.currentSeasonScore : b.allTimeScore
-    })).filter(b => Number(b.score) > 0).sort((a,b) => b.score-a.score).slice(0,3);
+    })).sort((a,b) => b.score-a.score).slice(0,3);
 
     document.getElementById('overview-top-battle').innerHTML = battleRows.length ? battleRows.map((b,i) => `
       <div class="overview-row-auto">

@@ -122,7 +122,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   border-color: var(--clan-accent) !important;
 }
 
-.filter-pills-wrapper { display: flex; justify-content: center; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+.filter-pills-wrapper { display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
 .filter-pills {
   background: rgba(255, 255, 255, 0.9);
   border: 1px solid var(--border-color);
@@ -150,17 +150,24 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 
-.select-filter-dropdown {
+.checkbox-filter-box {
   background: rgba(255, 255, 255, 0.95);
   border: 1px solid var(--border-color);
   border-radius: 20px;
-  padding: 8px 16px;
+  padding: 8px 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
   font-weight: 700;
   font-size: 0.85rem;
   color: #0f172a;
-  outline: none;
-  cursor: pointer;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+.checkbox-filter-box label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
 }
 
 .table-container {
@@ -383,7 +390,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 .monster-pill-val { color: var(--clan-accent); font-weight: bold; }
 
 .totem-grid {
-  display grid;
+  display: grid;
   grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
   gap: 12px;
 }
@@ -695,11 +702,12 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
               <button class="btn-filter active" data-mode="alltime" onclick="setTableFilter('battle','alltime')">All-Time</button>
               <button class="btn-filter" data-mode="season" onclick="setTableFilter('battle','season')">Current Season</button>
             </div>
-            <!-- DROPDOWN OPTION (BATTLE SCORE vs 1ST PLACE WINS) -->
-            <select class="select-filter-dropdown" id="battleCategorySelect" onchange="changeBattleCategory(this.value)">
-              <option value="score">⚔️ Battle Score</option>
-              <option value="firstPlace">👑 1st Place Wins</option>
-            </select>
+            <!-- CHECKBOX FILTER (BATTLE SCORE vs 1ST PLACE WINS) -->
+            <div class="checkbox-filter-box">
+              <span>Filter by:</span>
+              <label><input type="checkbox" id="chkFilterBattle" checked onchange="handleBattleFilterChange('score')"> Battle Score</label>
+              <label><input type="checkbox" id="chkFilterFirstPlace" onchange="handleBattleFilterChange('firstPlace')"> 1st Place Wins</label>
+            </div>
           </div>
 
           <div class="table-container shadow-sm">
@@ -788,7 +796,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
             </div>
             <div class="col-12 col-md-3">
               <div class="stat-box h-100">
-                <div class="stat-box-title text-amber-600"><i class="fa-solid fa-crown"></i> 1st Place Wins</div>
+                <div class="stat-box-title text-amber-600">🏆 1st Place Wins</div>
                 <div class="stat-label-row"><span class="stat-lbl-all">All:</span><span class="fw-bold text-amber-600" id="modal-firstplace-alltime">0</span></div>
                 <div class="stat-label-row"><span class="stat-lbl-new">New:</span><span class="fw-bold text-slate-900" id="modal-firstplace-season">0</span></div>
               </div>
@@ -1208,9 +1216,9 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   function playerCell(name, idx, score) {
     let crownOrSlot = '';
     if (score > 0 && idx < 3) {
-      if (idx === 0) crownOrSlot = '<span class="crown-slot"><i class="fa-solid fa-crown" style="color: #d97706;"></i></span>';
-      else if (idx === 1) crownOrSlot = '<span class="crown-slot"><i class="fa-solid fa-crown" style="color: #64748b;"></i></span>';
-      else if (idx === 2) crownOrSlot = '<span class="crown-slot"><i class="fa-solid fa-crown" style="color: #b45309;"></i></span>';
+      if (idx === 0) crownOrSlot = '<span class="crown-slot">🏆</span>';
+      else if (idx === 1) crownOrSlot = '<span class="crown-slot">🏆</span>';
+      else if (idx === 2) crownOrSlot = '<span class="crown-slot">🏆</span>';
     }
     return `<div class="player-cell-wrapper">
       ${crownOrSlot}
@@ -1218,7 +1226,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     </div>`;
   }
 
-  // LOGIKA UTAMA: Filter hanya member berstatus Active
   function getActiveMembersOnly(membersList) {
     return (membersList || []).filter(m => String(m.status || 'Active').toLowerCase() === 'active');
   }
@@ -1230,11 +1237,9 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   function renderDashboard(data) {
     if (!data) return;
 
-    // Filter data utama: hanya aktifkan player yang Active
     const activeMembers = getActiveMembersOnly(data.members);
     const activeNames = new Set(activeMembers.map(m => String(m.name).trim().toLowerCase()));
 
-    // Filter dataset sekunder berdasarkan nama player yang aktif
     data.activeWood = (data.wood || []).filter(w => activeNames.has(String(w.name).trim().toLowerCase()));
     data.activeMonster = (data.monster || []).filter(m => activeNames.has(String(m.name).trim().toLowerCase()));
     data.activeBattle = (data.battle || []).filter(b => activeNames.has(String(b.name).trim().toLowerCase()));
@@ -1298,7 +1303,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 
     let sections = [];
 
-    // 1. Battle Score
     if (selectedCats.includes('battle')) {
       const prop = isSeason ? 'currentSeasonScore' : 'allTimeScore';
       const rows = sortByScore(cachedClanData.activeBattle || [], prop).filter(b => (Number(b[prop]) || 0) > 0);
@@ -1306,7 +1310,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       sections.push(`**Battle Score Leaderboard**\n-# ${timeLabel}\n\`\`\`\n${formatted}\n\`\`\``);
     }
 
-    // 2. Unity Monument Contribution
     if (selectedCats.includes('wood')) {
       const woodProp = isSeason ? 'currentSeason' : 'allTime';
       const rows = sortByScore(cachedClanData.activeWood || [], woodProp).filter(w => (Number(w[woodProp]) || 0) > 0);
@@ -1314,7 +1317,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       sections.push(`**Unity Monument Contribution**\n-# ${timeLabel}\n\`\`\`\n${formatted}\n\`\`\``);
     }
 
-    // 3. Totem Contribution
     if (selectedCats.includes('monster')) {
       const rows = [...(cachedClanData.activeMonster || [])].map(m => {
         const scoreVal = parseMonsterPts(isSeason ? m.currentSeasonText : m.allTimeText);
@@ -1325,7 +1327,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       sections.push(`**Totem Contribution**\n-# ${timeLabel}\n\`\`\`\n${formatted}\n\`\`\``);
     }
 
-    // 4. Totem Progress
     if (selectedCats.includes('island')) {
       const island = cachedClanData.islandProgress || {};
       const totems = [
@@ -1485,7 +1486,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     document.getElementById('modal-battle-alltime').innerText = scoreText(battleData.allTimeText);
     document.getElementById('modal-battle-season').innerText = scoreText(battleData.currentSeasonText, 'battle');
 
-    // MODAL REKOR 1ST PLACE WINS
     document.getElementById('modal-firstplace-alltime').innerText = `${fmt(battleData.allTimeFirstPlace || 0)} Wins`;
     document.getElementById('modal-firstplace-season').innerText = `${fmt(battleData.seasonFirstPlace || 0)} Wins`;
 
@@ -1537,8 +1537,25 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     }
   }
 
-  function changeBattleCategory(val) {
-    battleCategory = val;
+  function handleBattleFilterChange(target) {
+    const chkBattle = document.getElementById('chkFilterBattle');
+    const chkFirstPlace = document.getElementById('chkFilterFirstPlace');
+
+    if (target === 'score') {
+      if (chkBattle.checked) {
+        chkFirstPlace.checked = false;
+        battleCategory = 'score';
+      } else {
+        chkBattle.checked = true; // Jangan biarkan kosong keduanya
+      }
+    } else if (target === 'firstPlace') {
+      if (chkFirstPlace.checked) {
+        chkBattle.checked = false;
+        battleCategory = 'firstPlace';
+      } else {
+        chkFirstPlace.checked = true; // Jangan biarkan kosong keduanya
+      }
+    }
     renderBattle();
   }
 
@@ -1578,7 +1595,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 
     document.getElementById('table-wood-body').innerHTML = rows.map((w,i) => {
       const val = Number(w[sortProp]) || 0;
-      const displayVal = val > 0 ? `${fmt(val)} Monument` : 'No data yet';
+      const displayVal = val > 0 ? `${fmt(val)} woods` : 'No data yet';
 
       return `<tr>
         <td class="text-center text-slate-500">${i+1}</td>
@@ -1590,7 +1607,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 
     mobileContainer.innerHTML = rows.map((w,i) => {
       const val = Number(w[sortProp]) || 0;
-      const displayVal = val > 0 ? `${fmt(val)} Monument` : 'No data yet';
+      const displayVal = val > 0 ? `${fmt(val)} woods` : 'No data yet';
       return `
         <div class="mobile-card-item">
           <div class="mobile-card-header">
@@ -1698,7 +1715,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     const headers = ['<th class="text-center">No</th>', '<th>Player Name</th>', '<th class="text-center">Tenure</th>'];
     
     if (isFirstPlaceMode) {
-      headers.push(`<th class="text-end text-amber-600">👑 ${isSeason ? 'Season 1st Places' : 'All-Time 1st Places'}</th>`);
+      headers.push(`<th class="text-end text-amber-600">🏆 ${isSeason ? 'Season 1st Places' : 'All-Time 1st Places'}</th>`);
     } else {
       headers.push(`<th class="text-end">${isSeason ? 'Current Season Score' : 'All-Time Battle Score'}</th>`);
     }
@@ -1739,7 +1756,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 
       if (isFirstPlaceMode) {
         const fpCount = Number(b[prop]) || 0;
-        scoreValText = `<span class="text-amber-600 fw-bold">👑 ${fpCount} Wins</span>`;
+        scoreValText = `<span class="text-amber-600 fw-bold">🏆 ${fpCount} Wins</span>`;
       } else {
         scoreValText = scoreText(isSeason ? b.currentSeasonText : b.allTimeText, 'battle');
       }
@@ -1760,7 +1777,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 
       if (isFirstPlaceMode) {
         const fpCount = Number(b[prop]) || 0;
-        scoreValText = `👑 ${fpCount} Wins`;
+        scoreValText = `🏆 ${fpCount} Wins`;
       } else {
         scoreValText = scoreText(isSeason ? b.currentSeasonText : b.allTimeText, 'battle');
       }
@@ -1840,7 +1857,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
           ${playerCell(w.name, i, Number(w[woodProp])||0)}
         </div>
         <div class="overview-badge-container">
-          <span class="badge bg-amber-100 text-amber-800 border border-amber-300 fs-6">${fmt(w[woodProp])} Monument</span>
+          <span class="text-amber-800 fw-bold">${fmt(w[woodProp])} woods</span>
         </div>
       </div>`).join('') : '<div class="text-muted text-center py-3">No data yet</div>';
 
@@ -1857,7 +1874,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
           ${playerCell(m.name, i, Number(m.score)||0)}
         </div>
         <div class="overview-badge-container">
-          <span class="badge bg-cyan-100 text-cyan-800 border border-cyan-300 fs-6">${scoreText(m.text)}</span>
+          <span class="text-cyan-800 fw-bold">${scoreText(m.text)}</span>
         </div>
       </div>`).join('') : '<div class="text-muted text-center py-3">No data yet</div>';
 
@@ -1874,7 +1891,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
           ${playerCell(b.name, i, Number(b.score)||0)}
         </div>
         <div class="overview-badge-container">
-          <span class="badge bg-emerald-100 text-emerald-800 border border-emerald-300 fs-6">${scoreText(b.text, 'battle')}</span>
+          <span class="text-emerald-800 fw-bold">${scoreText(b.text, 'battle')}</span>
         </div>
       </div>`).join('') : '<div class="text-muted text-center py-3">No data yet</div>';
   }

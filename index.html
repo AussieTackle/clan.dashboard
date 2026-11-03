@@ -794,7 +794,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
             </div>
             <div class="col-12 col-md-3">
               <div class="stat-box h-100">
-                <div class="stat-box-title text-amber-600">🏆 1st Place Wins</div>
+                <div class="stat-box-title text-amber-600">🥇 1st Place Wins</div>
                 <div class="stat-label-row"><span class="stat-lbl-all">All:</span><span class="fw-bold text-amber-600" id="modal-firstplace-alltime">0</span></div>
                 <div class="stat-label-row"><span class="stat-lbl-new">New:</span><span class="fw-bold text-slate-900" id="modal-firstplace-season">0</span></div>
               </div>
@@ -1311,15 +1311,15 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     if (selectedCats.includes('battle')) {
       const prop = isSeason ? 'currentSeasonScore' : 'allTimeScore';
       const rows = sortByScore(cachedClanData.activeBattle || [], prop).filter(b => (Number(b[prop]) || 0) > 0);
-      const formatted = buildDiscordTable(rows, 'name', b => `${scoreText(isSeason ? b.currentSeasonText : b.allTimeText, 'battle')}`);
+      const formatted = buildDiscordTable(rows, 'name', b => `${scoreText(isSeason ? b.currentSeasonText : b.allTimeText, 'battle')}`, true);
       sections.push(`**Battle Score Leaderboard**\n-# ${timeLabel}\n\`\`\`\n${formatted}\n\`\`\``);
     }
 
-    // 2. 1st Place Wins (Urutan sesuai permintaan: setelah Battle Score, sebelum Totem)
+    // 2. 1st Place Wins
     if (selectedCats.includes('firstplace')) {
       const prop = isSeason ? 'seasonFirstPlace' : 'allTimeFirstPlace';
       const rows = sortByScore(cachedClanData.activeBattle || [], prop).filter(b => (Number(b[prop]) || 0) > 0);
-      const formatted = buildDiscordTable(rows, 'name', b => `${Number(b[prop]) || 0} Wins`);
+      const formatted = buildDiscordTable(rows, 'name', b => `${Number(b[prop]) || 0} Wins`, true);
       sections.push(`**1st Place Wins Leaderboard**\n-# ${timeLabel}\n\`\`\`\n${formatted}\n\`\`\``);
     }
 
@@ -1327,7 +1327,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     if (selectedCats.includes('wood')) {
       const woodProp = isSeason ? 'currentSeason' : 'allTime';
       const rows = sortByScore(cachedClanData.activeWood || [], woodProp).filter(w => (Number(w[woodProp]) || 0) > 0);
-      const formatted = buildDiscordTable(rows, 'name', w => `${fmt(w[woodProp])} woods`);
+      const formatted = buildDiscordTable(rows, 'name', w => `${fmt(w[woodProp])} woods`, true);
       sections.push(`**Unity Monument Contribution**\n-# ${timeLabel}\n\`\`\`\n${formatted}\n\`\`\``);
     }
 
@@ -1338,7 +1338,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
         return { ...m, calcScore: scoreVal };
       }).filter(m => m.calcScore > 0).sort((a, b) => b.calcScore - a.calcScore);
 
-      const formatted = buildDiscordTable(rows, 'name', m => `${cleanMonsterText(isSeason ? m.currentSeasonText : m.allTimeText)}`);
+      const formatted = buildDiscordTable(rows, 'name', m => `${cleanMonsterText(isSeason ? m.currentSeasonText : m.allTimeText)}`, true);
       sections.push(`**Totem Contribution**\n-# ${timeLabel}\n\`\`\`\n${formatted}\n\`\`\``);
     }
 
@@ -1364,12 +1364,18 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     document.getElementById('discordReportOutput').value = sections.join('\n');
   }
 
-  function buildDiscordTable(rows, nameProp, scoreGetter) {
+  function buildDiscordTable(rows, nameProp, scoreGetter, addPodiumEmoji = false) {
     if (!rows.length) return 'No data available';
 
     let maxNameLen = 4;
     rows.forEach(r => {
-      const nameStr = String(r[nameProp] || '');
+      const scoreVal = Number(scoreGetter(r).replace(/[^0-9.]/g, '')) || 0;
+      let nameStr = String(r[nameProp] || '');
+      if (addPodiumEmoji && rows.indexOf(r) < 3 && scoreVal > 0) {
+        if (rows.indexOf(r) === 0) nameStr += ' 👑';
+        else if (rows.indexOf(r) === 1) nameStr += ' 🥈';
+        else if (rows.indexOf(r) === 2) nameStr += ' 🥉';
+      }
       if (nameStr.length > maxNameLen) {
         maxNameLen = nameStr.length;
       }
@@ -1380,9 +1386,18 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 
     rows.forEach((r, idx) => {
       const rankNum = `${idx + 1}.`.padEnd(3, ' ');
-      const nameStr = String(r[nameProp] || '').padEnd(maxNameLen, ' ');
+      const scoreVal = Number(scoreGetter(r).replace(/[^0-9.]/g, '')) || 0;
+      let nameStr = String(r[nameProp] || '');
+      
+      if (addPodiumEmoji && idx < 3 && scoreVal > 0) {
+        if (idx === 0) nameStr += ' 👑';
+        else if (idx === 1) nameStr += ' 🥈';
+        else if (idx === 2) nameStr += ' 🥉';
+      }
+
+      const paddedName = nameStr.padEnd(maxNameLen, ' ');
       const scoreStr = scoreGetter(r);
-      lines.push(`${rankNum} ${nameStr} | ${scoreStr}`);
+      lines.push(`${rankNum} ${paddedName} | ${scoreStr}`);
     });
 
     return lines.join('\n');

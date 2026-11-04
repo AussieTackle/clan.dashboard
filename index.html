@@ -231,28 +231,29 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   font-weight: bold;
   background: #f8fafc !important;
 }
-.table-responsive { border-radius: 8px; }
 
-/* STICKY / FREEZE COLUMNS BATTLE LOG */
-.battle-log-table-wrapper {
+/* STICKY / FREEZE COLUMNS FORMAT FOR ALL TABLES */
+.freeze-table-wrapper {
   position: relative;
   overflow-x: auto;
   max-width: 100%;
   border-radius: 8px;
 }
-.battle-log-table {
+.freeze-table {
   width: max-content;
   border-collapse: separate;
   border-spacing: 0;
   font-size: 0.88rem;
+  margin-bottom: 0;
 }
-.battle-log-table th, .battle-log-table td {
+.freeze-table th, .freeze-table td {
   white-space: nowrap;
   background: #ffffff;
   padding: 10px 12px;
   vertical-align: middle;
+  border-bottom: 1px solid var(--border-color);
 }
-.battle-log-table thead th {
+.freeze-table thead th {
   position: sticky;
   top: 0;
   z-index: 20;
@@ -260,29 +261,29 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 }
 
 /* Kolom Freeze ke-1: No */
-.battle-log-table th:nth-child(1),
-.battle-log-table td:nth-child(1) {
+.freeze-table th:nth-child(1),
+.freeze-table td:nth-child(1) {
   position: sticky;
   left: 0;
   z-index: 10;
   background: #ffffff !important;
   border-right: 1px solid var(--border-color);
-  min-width: 40px;
+  min-width: 36px;
 }
-.battle-log-table thead th:nth-child(1) { z-index: 30; background: #f8fafc !important; }
+.freeze-table thead th:nth-child(1) { z-index: 30; background: #f8fafc !important; }
 
 /* Kolom Freeze ke-2: Player Name */
-.battle-log-table th:nth-child(2),
-.battle-log-table td:nth-child(2) {
+.freeze-table th:nth-child(2),
+.freeze-table td:nth-child(2) {
   position: sticky;
-  left: 40px;
+  left: 36px;
   z-index: 10;
   background: #ffffff !important;
   border-right: 2px solid var(--border-color);
   box-shadow: 4px 0 6px -2px rgba(0, 0, 0, 0.05);
-  min-width: 140px;
+  min-width: 130px;
 }
-.battle-log-table thead th:nth-child(2) { z-index: 30; background: #f8fafc !important; }
+.freeze-table thead th:nth-child(2) { z-index: 30; background: #f8fafc !important; }
 
 .badge-active { background: #16a34a; color: white; }
 .badge-leave { background: #dc2626; color: white; }
@@ -348,44 +349,8 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 .overview-rank { width: 24px; color: #64748b; flex-shrink: 0; font-weight: bold; }
 .overview-name { font-weight: 700; color: #1e293b; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-.mobile-card-list { display: flex; flex-direction: column; gap: 10px; }
-.mobile-card-item {
-  background: #ffffff;
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 12px 14px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.03);
-  transition: all 0.2s ease;
-}
-.mobile-card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 6px;
-}
-.mobile-card-player {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 700;
-  font-size: 0.95rem;
-  color: #0f172a;
-}
-.mobile-card-stats-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
-  background: #f8fafc;
-  padding: 8px 10px;
-  border-radius: 8px;
-  font-size: 0.8rem;
-}
-.mobile-stat-box { display: flex; flex-direction: column; }
-.mobile-stat-label { font-size: 0.7rem; color: #64748b; font-weight: 700; text-transform: uppercase; }
-.mobile-stat-val { font-weight: 800; color: #0f172a; }
-
 .player-cell-wrapper { display: flex; align-items: center; gap: 4px; min-width: 0; overflow: hidden; }
-.crown-slot { display: inline-block; width: 24px; text-align: center; flex-shrink: 0; }
+.crown-slot { display: inline-block; width: 20px; text-align: center; flex-shrink: 0; }
 .player-name-text { font-weight: bold; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 .member-clickable {
@@ -491,14 +456,8 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
-.desktop-view-only { display: block; }
-.mobile-view-only { display: none; }
-
-/* PENYESUAIAN KHUSUS LAYAR HP (MOBILE) */
+/* PENYESUAIAN KHUSUS LAYAR HP (MOBILE) UNTUK SEMUA TABEL FREEZE */
 @media(max-width: 575px) {
-  .desktop-view-only { display: none !important; }
-  .mobile-view-only { display: block !important; }
-
   .custom-nav-container { padding: 0; gap: 6px; }
   .custom-nav-row { gap: 4px; }
   .custom-nav-row .nav-link { font-size: .7rem; padding: 8px 2px; gap: 3px; }
@@ -507,25 +466,24 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   .table-container { padding: 10px; }
   .modal-dialog-large { width: 96%; margin: 10px auto; }
 
-  /* PENYESUAIAN JUDUL TABEL DI HP DISAMAKAN DENGAN UKURAN NAMA PLAYER (.mobile-card-player) */
   .table-header-title {
     font-size: 0.95rem !important;
     font-weight: 700 !important;
   }
 
-  /* PENYESUAIAN TEKS TABEL BATTLE LOG KHUSUS HP */
-  .battle-log-table {
+  /* KONSISTENSI UKURAN TEKS SEMUA TABEL PADA HP */
+  .freeze-table {
     font-size: 0.72rem !important;
   }
-  .battle-log-table th, .battle-log-table td {
+  .freeze-table th, .freeze-table td {
     padding: 6px 7px !important;
   }
-  .battle-log-table th:nth-child(1),
-  .battle-log-table td:nth-child(1) {
+  .freeze-table th:nth-child(1),
+  .freeze-table td:nth-child(1) {
     min-width: 28px !important;
   }
-  .battle-log-table th:nth-child(2),
-  .battle-log-table td:nth-child(2) {
+  .freeze-table th:nth-child(2),
+  .freeze-table td:nth-child(2) {
     left: 28px !important;
     min-width: 105px !important;
   }
@@ -703,8 +661,8 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
         <!-- MEMBER PANE -->
         <div id="member-pane" class="tab-pane d-none">
           <div class="table-container shadow-sm">
-            <div class="table-responsive desktop-view-only">
-              <table class="table">
+            <div class="freeze-table-wrapper">
+              <table class="table freeze-table">
                 <thead>
                   <tr>
                     <th class="text-center">No</th>
@@ -717,9 +675,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
                 </thead>
                 <tbody id="table-member-body"></tbody>
               </table>
-            </div>
-            <div class="mobile-view-only">
-              <div class="mobile-card-list" id="mobile-member-list"></div>
             </div>
           </div>
         </div>
@@ -742,7 +697,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
               <div class="table-header-note"><i class="fa-solid fa-circle-info"></i> <span>Note: Full battle history and match logs recorded since October 2026. Scroll horizontally to view all battles.</span></div>
             </div>
             
-            <div id="battleLogContainer" class="battle-log-table-wrapper">
+            <div id="battleLogContainer" class="freeze-table-wrapper">
               <div class="text-center text-muted py-4">Please select a season above.</div>
             </div>
           </div>
@@ -762,14 +717,11 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
               <div class="table-header-title" id="wood-table-title"><i class="fa-solid fa-tree text-amber-700"></i> Unity Monument Leaderboard - All-Time</div>
               <div class="table-header-note"><i class="fa-solid fa-circle-info"></i> <span>Note: Only active clan members are displayed (data created since October 2026).</span></div>
             </div>
-            <div class="table-responsive desktop-view-only">
-              <table class="table">
+            <div class="freeze-table-wrapper">
+              <table class="table freeze-table">
                 <thead id="wood-head"></thead>
                 <tbody id="table-wood-body"></tbody>
               </table>
-            </div>
-            <div class="mobile-view-only">
-              <div class="mobile-card-list" id="mobile-wood-list"></div>
             </div>
           </div>
         </div>
@@ -788,14 +740,11 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
               <div class="table-header-title" id="monster-table-title"><i class="fa-solid fa-ghost text-cyan-700"></i> Totem Contributions Leaderboard - All-Time</div>
               <div class="table-header-note"><i class="fa-solid fa-circle-info"></i> <span>Note: Only active clan members are displayed (data created since October 2026).</span></div>
             </div>
-            <div class="table-responsive desktop-view-only">
-              <table class="table text-nowrap">
+            <div class="freeze-table-wrapper">
+              <table class="table freeze-table text-nowrap">
                 <thead id="monster-head"></thead>
                 <tbody id="table-monster-body"></tbody>
               </table>
-            </div>
-            <div class="mobile-view-only">
-              <div class="mobile-card-list" id="mobile-monster-list"></div>
             </div>
           </div>
         </div>
@@ -823,14 +772,11 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
               <div class="table-header-title" id="battle-table-title"><i class="fa-solid fa-fish-fins text-emerald-700"></i> Battle Score Leaderboard - All-Time</div>
               <div class="table-header-note"><i class="fa-solid fa-circle-info"></i> <span>Note: Only active clan members are displayed (data created since October 2026).</span></div>
             </div>
-            <div class="table-responsive desktop-view-only">
-              <table class="table">
+            <div class="freeze-table-wrapper">
+              <table class="table freeze-table">
                 <thead id="battle-head"></thead>
                 <tbody id="table-battle-body"></tbody>
               </table>
-            </div>
-            <div class="mobile-view-only">
-              <div class="mobile-card-list" id="mobile-battle-list"></div>
             </div>
           </div>
         </div>
@@ -1470,7 +1416,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     });
 
     container.innerHTML = `
-      <table class="table table-bordered battle-log-table">
+      <table class="table freeze-table">
         <thead>${headersHtml}</thead>
         <tbody>${rowsHtml}</tbody>
       </table>
@@ -1648,16 +1594,14 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 
   function renderMembers(members) {
     const body = document.getElementById('table-member-body');
-    const mobileContainer = document.getElementById('mobile-member-list');
 
     if (!members.length) {
       body.innerHTML = '<tr><td colspan="6" class="text-center">No active member data available</td></tr>';
-      mobileContainer.innerHTML = '<div class="text-center text-muted py-3">No active member data available</div>';
       return;
     }
 
     body.innerHTML = members.map((m, idx) => `<tr>
-      <td class="text-center">${idx + 1}</td>
+      <td class="text-center text-slate-500">${idx + 1}</td>
       <td>
         <span class="fw-bold member-clickable" onclick="openPlayerModal('${esc(m.name)}')">
           ${esc(m.name)} <i class="fa-solid fa-circle-info ms-1 small"></i>
@@ -1668,32 +1612,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       <td class="text-center">${esc(m.joinDate)}</td>
       <td>${esc(m.unlockedMaps)}</td>
     </tr>`).join('');
-
-    mobileContainer.innerHTML = members.map((m, idx) => `
-      <div class="mobile-card-item">
-        <div class="mobile-card-header">
-          <div class="mobile-card-player" onclick="openPlayerModal('${esc(m.name)}')">
-            <span class="text-slate-400 font-monospace">#${idx + 1}</span>
-            <span class="member-clickable">${esc(m.name)}</span>
-          </div>
-          <div>${statusBadge(m.status)}</div>
-        </div>
-        <div class="mobile-card-stats-grid">
-          <div class="mobile-stat-box">
-            <span class="mobile-stat-label">Role</span>
-            <span class="mobile-stat-val">${roleBadge(m.role)}</span>
-          </div>
-          <div class="mobile-stat-box">
-            <span class="mobile-stat-label">Join Date</span>
-            <span class="mobile-stat-val">${esc(m.joinDate)}</span>
-          </div>
-          <div class="mobile-stat-box" style="grid-column: span 2;">
-            <span class="mobile-stat-label">Unlocked Maps</span>
-            <span class="mobile-stat-val">${esc(m.unlockedMaps)}</span>
-          </div>
-        </div>
-      </div>
-    `).join('');
   }
 
   function openPlayerModal(playerName) {
@@ -1807,11 +1725,9 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 
     document.getElementById('wood-head').innerHTML = `<tr>${headers.join('')}</tr>`;
     const source = cachedClanData?.activeWood || [];
-    const mobileContainer = document.getElementById('mobile-wood-list');
 
     if (!source.length) {
       document.getElementById('table-wood-body').innerHTML = `<tr><td colspan="${headers.length}" class="text-center">No unity monument data available</td></tr>`;
-      mobileContainer.innerHTML = '<div class="text-center text-muted py-3">No unity monument data available</div>';
       return;
     }
 
@@ -1829,28 +1745,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
         <td class="text-end text-amber-700 fw-bold">${displayVal}</td>
       </tr>`;
     }).join('');
-
-    mobileContainer.innerHTML = rows.map((w,i) => {
-      const val = Number(w[sortProp]) || 0;
-      const displayVal = val > 0 ? `${fmt(val)} woods` : 'No data yet';
-      return `
-        <div class="mobile-card-item">
-          <div class="mobile-card-header">
-            <div class="mobile-card-player" onclick="openPlayerModal('${esc(w.name)}')">
-              <span class="text-slate-400 font-monospace">#${i+1}</span>
-              ${playerCell(w.name,i,val)}
-            </div>
-            <span class="badge bg-slate-100 text-slate-600">${esc(w.tenure)}</span>
-          </div>
-          <div class="mobile-card-stats-grid">
-            <div class="mobile-stat-box" style="grid-column: span 2;">
-              <span class="mobile-stat-label">${isSeason ? 'Current Season' : 'All-Time'}</span>
-              <span class="mobile-stat-val text-amber-700">${displayVal}</span>
-            </div>
-          </div>
-        </div>
-      `;
-    }).join('');
   }
 
   function renderMonster() {
@@ -1867,11 +1761,9 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 
     document.getElementById('monster-head').innerHTML = `<tr>${headers.join('')}</tr>`;
     const source = cachedClanData?.activeMonster || [];
-    const mobileContainer = document.getElementById('mobile-monster-list');
 
     if (!source.length) {
       document.getElementById('table-monster-body').innerHTML = `<tr><td colspan="${headers.length}" class="text-center">No totem contribution data available</td></tr>`;
-      mobileContainer.innerHTML = '<div class="text-center text-muted py-3">No totem contribution data available</div>';
       return;
     }
 
@@ -1898,28 +1790,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       });
       return `<tr>${cells.join('')}</tr>`;
     }).join('');
-
-    mobileContainer.innerHTML = rows.map((m,i) => {
-      const scoreNum = parseMonsterPts(m[sortKeyProp]);
-      const mainText = cleanMonsterText(m[sortKeyProp]);
-      return `
-        <div class="mobile-card-item">
-          <div class="mobile-card-header">
-            <div class="mobile-card-player" onclick="openPlayerModal('${esc(m.name)}')">
-              <span class="text-slate-400 font-monospace">#${i+1}</span>
-              ${playerCell(m.name,i,scoreNum)}
-            </div>
-            <span class="badge bg-slate-100 text-slate-600">${esc(m.tenure)}</span>
-          </div>
-          <div class="mobile-card-stats-grid">
-            <div class="mobile-stat-box" style="grid-column: span 2;">
-              <span class="mobile-stat-label">${isSeason ? 'Current Season' : 'All-Time'}</span>
-              <span class="mobile-stat-val text-cyan-700">${esc(mainText)}</span>
-            </div>
-          </div>
-        </div>
-      `;
-    }).join('');
   }
 
   function renderBattle() {
@@ -1938,11 +1808,9 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 
     document.getElementById('battle-head').innerHTML = `<tr>${headers.join('')}</tr>`;
     const source = cachedClanData?.activeBattle || [];
-    const mobileContainer = document.getElementById('mobile-battle-list');
 
     if (!source.length) {
       document.getElementById('table-battle-body').innerHTML = `<tr><td colspan="${headers.length}" class="text-center">No battle data available</td></tr>`;
-      mobileContainer.innerHTML = '<div class="text-center text-muted py-3">No battle data available</div>';
       return;
     }
 
@@ -1961,7 +1829,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 
     if (!rows.length) {
       document.getElementById('table-battle-body').innerHTML = `<tr><td colspan="${headers.length}" class="text-center text-muted py-4">No data yet</td></tr>`;
-      mobileContainer.innerHTML = '<div class="text-center text-muted py-4 fw-semibold">No data yet</div>';
       return;
     }
 
@@ -1990,46 +1857,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
         `<td class="text-end cell-current-battle">${currentBattleText}</td>`
       ];
       return `<tr>${cells.join('')}</tr>`;
-    }).join('');
-
-    mobileContainer.innerHTML = rows.map((b,i) => {
-      const currentBattleText = scoreText(b.currentBattle, 'battle');
-      let scoreValText = '';
-
-      if (isFirstPlaceMode) {
-        const fpCount = Number(b[prop]) || 0;
-        let trophyIcon = '';
-        if (fpCount > 0 && i < 3) {
-          if (i === 0) trophyIcon = '🥇 ';
-          else if (i === 1) trophyIcon = '🥈 ';
-          else if (i === 2) trophyIcon = '🥉 ';
-        }
-        scoreValText = `${trophyIcon}${fpCount} Wins`;
-      } else {
-        scoreValText = scoreText(isSeason ? b.currentSeasonText : b.allTimeText, 'battle');
-      }
-
-      return `
-        <div class="mobile-card-item">
-          <div class="mobile-card-header">
-            <div class="mobile-card-player" onclick="openPlayerModal('${esc(b.name)}')">
-              <span class="text-slate-400 font-monospace">#${i+1}</span>
-              ${playerCell(b.name,i,Number(b[prop])||0)}
-            </div>
-            <span class="badge bg-slate-100 text-slate-600">${esc(b.tenure)}</span>
-          </div>
-          <div class="mobile-card-stats-grid">
-            <div class="mobile-stat-box" style="grid-column: span 2;">
-              <span class="mobile-stat-label">${isFirstPlaceMode ? '1st Place Wins' : (isSeason ? 'Current Season' : 'All-Time Score')}</span>
-              <span class="mobile-stat-val text-emerald-700">${scoreValText}</span>
-            </div>
-            <div class="mobile-stat-box" style="grid-column: span 2;">
-              <span class="mobile-stat-label">Current Battle Score</span>
-              <span class="mobile-stat-val text-emerald-600">${currentBattleText}</span>
-            </div>
-          </div>
-        </div>
-      `;
     }).join('');
   }
 
@@ -2115,7 +1942,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       <div class="overview-row-auto">
         <div class="overview-player-info">
           <span class="overview-rank">${i+1}.</span>
-          ${playerCell(m.name, i, Number(m.score)||0)}
+          ${playerCell(b.name, i, Number(b.score)||0)}
         </div>
         <div class="overview-badge-container">
           <span class="text-slate-800 fw-bold">${scoreText(b.text, 'battle')}</span>

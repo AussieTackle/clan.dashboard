@@ -231,29 +231,28 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   font-weight: bold;
   background: #f8fafc !important;
 }
+.table-responsive { border-radius: 8px; }
 
-/* FREEZE TABLE FORMAT (DEFAULT DESKTOP: HANYA UNTUK BATTLE LOG) */
-.freeze-table-wrapper {
+/* STICKY / FREEZE COLUMNS UNTUK TABEL FORMAT UNIFIED (BATTLE LOG STYLE) */
+.custom-table-wrapper {
   position: relative;
   overflow-x: auto;
   max-width: 100%;
   border-radius: 8px;
 }
-.freeze-table {
+.custom-log-table {
   width: max-content;
   border-collapse: separate;
   border-spacing: 0;
   font-size: 0.88rem;
-  margin-bottom: 0;
 }
-.freeze-table th, .freeze-table td {
+.custom-log-table th, .custom-log-table td {
   white-space: nowrap;
   background: #ffffff;
   padding: 10px 12px;
   vertical-align: middle;
-  border-bottom: 1px solid var(--border-color);
 }
-.freeze-table thead th {
+.custom-log-table thead th {
   position: sticky;
   top: 0;
   z-index: 20;
@@ -261,41 +260,29 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 }
 
 /* Kolom Freeze ke-1: No */
-.freeze-table th:nth-child(1),
-.freeze-table td:nth-child(1) {
+.custom-log-table th:nth-child(1),
+.custom-log-table td:nth-child(1) {
   position: sticky;
   left: 0;
   z-index: 10;
   background: #ffffff !important;
   border-right: 1px solid var(--border-color);
-  min-width: 36px;
+  min-width: 40px;
 }
-.freeze-table thead th:nth-child(1) { z-index: 30; background: #f8fafc !important; }
+.custom-log-table thead th:nth-child(1) { z-index: 30; background: #f8fafc !important; }
 
 /* Kolom Freeze ke-2: Player Name */
-.freeze-table th:nth-child(2),
-.freeze-table td:nth-child(2) {
+.custom-log-table th:nth-child(2),
+.custom-log-table td:nth-child(2) {
   position: sticky;
-  left: 36px;
+  left: 40px;
   z-index: 10;
   background: #ffffff !important;
   border-right: 2px solid var(--border-color);
   box-shadow: 4px 0 6px -2px rgba(0, 0, 0, 0.05);
-  min-width: 130px;
+  min-width: 140px;
 }
-.freeze-table thead th:nth-child(2) { z-index: 30; background: #f8fafc !important; }
-
-/* TABEL STANDAR DESKTOP UNTUK HALAMAN LAIN (MEMBER, MONUMENT, TOTEM, BATTLE SCORE) */
-.standard-table-wrapper {
-  width: 100%;
-  overflow-x: auto;
-}
-.standard-table {
-  width: 100%;
-}
-.standard-table th, .standard-table td {
-  background: transparent !important;
-}
+.custom-log-table thead th:nth-child(2) { z-index: 30; background: #f8fafc !important; }
 
 .badge-active { background: #16a34a; color: white; }
 .badge-leave { background: #dc2626; color: white; }
@@ -362,7 +349,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 .overview-name { font-weight: 700; color: #1e293b; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .player-cell-wrapper { display: flex; align-items: center; gap: 4px; min-width: 0; overflow: hidden; }
-.crown-slot { display: inline-block; width: 20px; text-align: center; flex-shrink: 0; }
+.crown-slot { display: inline-block; width: 24px; text-align: center; flex-shrink: 0; }
 .player-name-text { font-weight: bold; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 .member-clickable {
@@ -468,8 +455,14 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
+.desktop-view-only { display: block; }
+.mobile-view-only { display: none; }
+
 /* PENYESUAIAN KHUSUS LAYAR HP (MOBILE) */
 @media(max-width: 575px) {
+  .desktop-view-only { display: none !important; }
+  .mobile-view-only { display: block !important; }
+
   .custom-nav-container { padding: 0; gap: 6px; }
   .custom-nav-row { gap: 4px; }
   .custom-nav-row .nav-link { font-size: .7rem; padding: 8px 2px; gap: 3px; }
@@ -483,22 +476,19 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     font-weight: 700 !important;
   }
 
-  /* UKURAN DATA TABEL HP & HEADER KOLOM (HEADER 2px LEBIH KECIL DARI DATA) */
-  .freeze-table {
-    font-size: 0.76rem !important;
+  /* FORMAT TABEL LOG UNTUK MOBILE */
+  .custom-log-table {
+    font-size: 0.72rem !important;
   }
-  .freeze-table th, .freeze-table td {
+  .custom-log-table th, .custom-log-table td {
     padding: 6px 7px !important;
   }
-  .freeze-table thead th {
-    font-size: calc(0.76rem - 2px) !important; /* 2px lebih kecil dari teks data tabel */
-  }
-  .freeze-table th:nth-child(1),
-  .freeze-table td:nth-child(1) {
+  .custom-log-table th:nth-child(1),
+  .custom-log-table td:nth-child(1) {
     min-width: 28px !important;
   }
-  .freeze-table th:nth-child(2),
-  .freeze-table td:nth-child(2) {
+  .custom-log-table th:nth-child(2),
+  .custom-log-table td:nth-child(2) {
     left: 28px !important;
     min-width: 105px !important;
   }
@@ -676,8 +666,35 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
         <!-- MEMBER PANE -->
         <div id="member-pane" class="tab-pane d-none">
           <div class="table-container shadow-sm">
-            <div id="memberTableWrapper">
-              <!-- Render dinamis via JS sesuai ukuran layar (freeze di HP, standard di Laptop) -->
+            <div class="table-responsive desktop-view-only">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th class="text-center">No</th>
+                    <th>Player Name</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-center">Role</th>
+                    <th class="text-center">Join Date</th>
+                    <th>Unlocked Maps</th>
+                  </tr>
+                </thead>
+                <tbody id="table-member-body"></tbody>
+              </table>
+            </div>
+            <div class="mobile-view-only custom-table-wrapper">
+              <table class="table table-bordered custom-log-table">
+                <thead>
+                  <tr>
+                    <th class="text-center">No</th>
+                    <th>Player Name</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-center">Role</th>
+                    <th class="text-center">Join Date</th>
+                    <th>Unlocked Maps</th>
+                  </tr>
+                </thead>
+                <tbody id="mobile-member-list"></tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -700,7 +717,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
               <div class="table-header-note"><i class="fa-solid fa-circle-info"></i> <span>Note: Full battle history and match logs recorded since October 2026. Scroll horizontally to view all battles.</span></div>
             </div>
             
-            <div id="battleLogContainer" class="freeze-table-wrapper">
+            <div id="battleLogContainer" class="custom-table-wrapper">
               <div class="text-center text-muted py-4">Please select a season above.</div>
             </div>
           </div>
@@ -720,8 +737,17 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
               <div class="table-header-title" id="wood-table-title"><i class="fa-solid fa-tree text-amber-700"></i> Unity Monument Leaderboard - All-Time</div>
               <div class="table-header-note"><i class="fa-solid fa-circle-info"></i> <span>Note: Only active clan members are displayed (data created since October 2026).</span></div>
             </div>
-            <div id="woodTableWrapper">
-              <!-- Render dinamis via JS -->
+            <div class="table-responsive desktop-view-only">
+              <table class="table">
+                <thead id="wood-head"></thead>
+                <tbody id="table-wood-body"></tbody>
+              </table>
+            </div>
+            <div class="mobile-view-only custom-table-wrapper">
+              <table class="table table-bordered custom-log-table">
+                <thead id="mobile-wood-head"></thead>
+                <tbody id="mobile-wood-list"></tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -740,8 +766,17 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
               <div class="table-header-title" id="monster-table-title"><i class="fa-solid fa-ghost text-cyan-700"></i> Totem Contributions Leaderboard - All-Time</div>
               <div class="table-header-note"><i class="fa-solid fa-circle-info"></i> <span>Note: Only active clan members are displayed (data created since October 2026).</span></div>
             </div>
-            <div id="monsterTableWrapper">
-              <!-- Render dinamis via JS -->
+            <div class="table-responsive desktop-view-only">
+              <table class="table text-nowrap">
+                <thead id="monster-head"></thead>
+                <tbody id="table-monster-body"></tbody>
+              </table>
+            </div>
+            <div class="mobile-view-only custom-table-wrapper">
+              <table class="table table-bordered custom-log-table">
+                <thead id="mobile-monster-head"></thead>
+                <tbody id="mobile-monster-list"></tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -769,8 +804,17 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
               <div class="table-header-title" id="battle-table-title"><i class="fa-solid fa-fish-fins text-emerald-700"></i> Battle Score Leaderboard - All-Time</div>
               <div class="table-header-note"><i class="fa-solid fa-circle-info"></i> <span>Note: Only active clan members are displayed (data created since October 2026).</span></div>
             </div>
-            <div id="battleTableWrapper">
-              <!-- Render dinamis via JS -->
+            <div class="table-responsive desktop-view-only">
+              <table class="table">
+                <thead id="battle-head"></thead>
+                <tbody id="table-battle-body"></tbody>
+              </table>
+            </div>
+            <div class="mobile-view-only custom-table-wrapper">
+              <table class="table table-bordered custom-log-table">
+                <thead id="mobile-battle-head"></thead>
+                <tbody id="mobile-battle-list"></tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -1031,15 +1075,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       });
     });
 
-    window.addEventListener('resize', () => {
-      if (cachedClanData) {
-        renderMembers(getActiveMembersOnly(cachedClanData.members));
-        renderWood();
-        renderMonster();
-        renderBattle();
-      }
-    });
-
     window.addEventListener('popstate', (event) => {
       const pModal = bootstrap.Modal.getInstance(document.getElementById('playerDetailModal'));
       const iModal = bootstrap.Modal.getInstance(document.getElementById('islandProgressModal'));
@@ -1082,10 +1117,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       }
     });
   });
-
-  function isMobileScreen() {
-    return window.innerWidth <= 575;
-  }
 
   function renderLandingPageGrid() {
     const grid = document.getElementById('clanGridContainer');
@@ -1289,7 +1320,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     }
     return `<div class="player-cell-wrapper">
       ${crownOrSlot}
-      <span class="player-name-text">${esc(name)}</span>
+      <span class="player-name-text member-clickable" onclick="openPlayerModal('${esc(name)}')">${esc(name)}</span>
     </div>`;
   }
 
@@ -1413,7 +1444,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       rowsHtml += `
         <tr>
           <td class="text-center text-slate-500">${i + 1}</td>
-          <td><span class="fw-bold">${esc(p.name)}</span></td>
+          <td><span class="fw-bold member-clickable" onclick="openPlayerModal('${esc(p.name)}')">${esc(p.name)}</span></td>
           <td class="text-end fw-bold text-emerald-700">${esc(p.totalScore)}</td>
           <td class="text-center fw-semibold text-amber-600">${esc(p.totalFirstPlace)}</td>
           <td class="text-center text-slate-500">${esc(p.notJoined)}</td>
@@ -1423,7 +1454,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     });
 
     container.innerHTML = `
-      <table class="table freeze-table">
+      <table class="table table-bordered custom-log-table">
         <thead>${headersHtml}</thead>
         <tbody>${rowsHtml}</tbody>
       </table>
@@ -1600,16 +1631,18 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   }
 
   function renderMembers(members) {
-    const container = document.getElementById('memberTableWrapper');
-    const mobile = isMobileScreen();
+    const body = document.getElementById('table-member-body');
+    const mobileBody = document.getElementById('mobile-member-list');
 
     if (!members.length) {
-      container.innerHTML = '<div class="text-center text-muted py-3">No active member data available</div>';
+      const noData = '<tr><td colspan="6" class="text-center">No active member data available</td></tr>';
+      body.innerHTML = noData;
+      mobileBody.innerHTML = noData;
       return;
     }
 
     const rowsHtml = members.map((m, idx) => `<tr>
-      <td class="text-center text-slate-500">${idx + 1}</td>
+      <td class="text-center">${idx + 1}</td>
       <td>
         <span class="fw-bold member-clickable" onclick="openPlayerModal('${esc(m.name)}')">
           ${esc(m.name)} <i class="fa-solid fa-circle-info ms-1 small"></i>
@@ -1621,43 +1654,8 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       <td>${esc(m.unlockedMaps)}</td>
     </tr>`).join('');
 
-    if (mobile) {
-      container.innerHTML = `
-        <div class="freeze-table-wrapper">
-          <table class="table freeze-table">
-            <thead>
-              <tr>
-                <th class="text-center">No</th>
-                <th>Player Name</th>
-                <th class="text-center">Status</th>
-                <th class="text-center">Role</th>
-                <th class="text-center">Join Date</th>
-                <th>Unlocked Maps</th>
-              </tr>
-            </thead>
-            <tbody>${rowsHtml}</tbody>
-          </table>
-        </div>
-      `;
-    } else {
-      container.innerHTML = `
-        <div class="standard-table-wrapper">
-          <table class="table standard-table">
-            <thead>
-              <tr>
-                <th class="text-center">No</th>
-                <th>Player Name</th>
-                <th class="text-center">Status</th>
-                <th class="text-center">Role</th>
-                <th class="text-center">Join Date</th>
-                <th>Unlocked Maps</th>
-              </tr>
-            </thead>
-            <tbody>${rowsHtml}</tbody>
-          </table>
-        </div>
-      `;
-    }
+    body.innerHTML = rowsHtml;
+    mobileBody.innerHTML = rowsHtml;
   }
 
   function openPlayerModal(playerName) {
@@ -1761,8 +1759,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   function renderWood() {
     const mode = tableFilters.wood;
     const isSeason = mode === 'season';
-    const container = document.getElementById('woodTableWrapper');
-    const mobile = isMobileScreen();
 
     const headers = [
       '<th class="text-center">No</th>',
@@ -1771,10 +1767,17 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       `<th class="text-end">${isSeason ? 'Current Season Monument' : 'All-Time Monument'}</th>`
     ];
 
+    document.getElementById('wood-head').innerHTML = `<tr>${headers.join('')}</tr>`;
+    document.getElementById('mobile-wood-head').innerHTML = `<tr>${headers.join('')}</tr>`;
+
     const source = cachedClanData?.activeWood || [];
+    const body = document.getElementById('table-wood-body');
+    const mobileBody = document.getElementById('mobile-wood-list');
 
     if (!source.length) {
-      container.innerHTML = '<div class="text-center text-muted py-3">No unity monument data available</div>';
+      const emptyRow = `<tr><td colspan="${headers.length}" class="text-center">No unity monument data available</td></tr>`;
+      body.innerHTML = emptyRow;
+      mobileBody.innerHTML = emptyRow;
       return;
     }
 
@@ -1793,32 +1796,13 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       </tr>`;
     }).join('');
 
-    if (mobile) {
-      container.innerHTML = `
-        <div class="freeze-table-wrapper">
-          <table class="table freeze-table">
-            <thead><tr>${headers.join('')}</tr></thead>
-            <tbody>${rowsHtml}</tbody>
-          </table>
-        </div>
-      `;
-    } else {
-      container.innerHTML = `
-        <div class="standard-table-wrapper">
-          <table class="table standard-table">
-            <thead><tr>${headers.join('')}</tr></thead>
-            <tbody>${rowsHtml}</tbody>
-          </table>
-        </div>
-      `;
-    }
+    body.innerHTML = rowsHtml;
+    mobileBody.innerHTML = rowsHtml;
   }
 
   function renderMonster() {
     const mode = tableFilters.monster;
     const isSeason = mode === 'season';
-    const container = document.getElementById('monsterTableWrapper');
-    const mobile = isMobileScreen();
 
     const headers = [
       '<th class="text-center">No</th>',
@@ -1828,10 +1812,17 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     ];
     MONSTER_COLUMNS.forEach(col => headers.push(`<th class="text-center">${col.label}</th>`));
 
+    document.getElementById('monster-head').innerHTML = `<tr>${headers.join('')}</tr>`;
+    document.getElementById('mobile-monster-head').innerHTML = `<tr>${headers.join('')}</tr>`;
+
     const source = cachedClanData?.activeMonster || [];
+    const body = document.getElementById('table-monster-body');
+    const mobileBody = document.getElementById('mobile-monster-list');
 
     if (!source.length) {
-      container.innerHTML = '<div class="text-center text-muted py-3">No totem contribution data available</div>';
+      const emptyRow = `<tr><td colspan="${headers.length}" class="text-center">No totem contribution data available</td></tr>`;
+      body.innerHTML = emptyRow;
+      mobileBody.innerHTML = emptyRow;
       return;
     }
 
@@ -1859,33 +1850,14 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       return `<tr>${cells.join('')}</tr>`;
     }).join('');
 
-    if (mobile) {
-      container.innerHTML = `
-        <div class="freeze-table-wrapper">
-          <table class="table freeze-table text-nowrap">
-            <thead><tr>${headers.join('')}</tr></thead>
-            <tbody>${rowsHtml}</tbody>
-          </table>
-        </div>
-      `;
-    } else {
-      container.innerHTML = `
-        <div class="standard-table-wrapper">
-          <table class="table standard-table text-nowrap">
-            <thead><tr>${headers.join('')}</tr></thead>
-            <tbody>${rowsHtml}</tbody>
-          </table>
-        </div>
-      `;
-    }
+    body.innerHTML = rowsHtml;
+    mobileBody.innerHTML = rowsHtml;
   }
 
   function renderBattle() {
     const mode = tableFilters.battle;
     const isSeason = mode === 'season';
     const isFirstPlaceMode = battleCategory === 'firstPlace';
-    const container = document.getElementById('battleTableWrapper');
-    const mobile = isMobileScreen();
 
     const headers = ['<th class="text-center">No</th>', '<th>Player Name</th>', '<th class="text-center">Tenure</th>'];
     
@@ -1896,10 +1868,17 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     }
     headers.push('<th class="text-end">Current Battle</th>');
 
+    document.getElementById('battle-head').innerHTML = `<tr>${headers.join('')}</tr>`;
+    document.getElementById('mobile-battle-head').innerHTML = `<tr>${headers.join('')}</tr>`;
+
     const source = cachedClanData?.activeBattle || [];
+    const body = document.getElementById('table-battle-body');
+    const mobileBody = document.getElementById('mobile-battle-list');
 
     if (!source.length) {
-      container.innerHTML = '<div class="text-center text-muted py-3">No battle data available</div>';
+      const emptyRow = `<tr><td colspan="${headers.length}" class="text-center">No battle data available</td></tr>`;
+      body.innerHTML = emptyRow;
+      mobileBody.innerHTML = emptyRow;
       return;
     }
 
@@ -1917,7 +1896,9 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     }
 
     if (!rows.length) {
-      container.innerHTML = '<div class="text-center text-muted py-4">No data yet</div>';
+      const emptyRow = `<tr><td colspan="${headers.length}" class="text-center text-muted py-4">No data yet</td></tr>`;
+      body.innerHTML = emptyRow;
+      mobileBody.innerHTML = emptyRow;
       return;
     }
 
@@ -1948,25 +1929,8 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       return `<tr>${cells.join('')}</tr>`;
     }).join('');
 
-    if (mobile) {
-      container.innerHTML = `
-        <div class="freeze-table-wrapper">
-          <table class="table freeze-table">
-            <thead><tr>${headers.join('')}</tr></thead>
-            <tbody>${rowsHtml}</tbody>
-          </table>
-        </div>
-      `;
-    } else {
-      container.innerHTML = `
-        <div class="standard-table-wrapper">
-          <table class="table standard-table">
-            <thead><tr>${headers.join('')}</tr></thead>
-            <tbody>${rowsHtml}</tbody>
-          </table>
-        </div>
-      `;
-    }
+    body.innerHTML = rowsHtml;
+    mobileBody.innerHTML = rowsHtml;
   }
 
   function renderLatestBattle(infos) {
@@ -2051,7 +2015,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       <div class="overview-row-auto">
         <div class="overview-player-info">
           <span class="overview-rank">${i+1}.</span>
-          ${playerCell(m.name, i, Number(m.score)||0)}
+          ${playerCell(b.name, i, Number(b.score)||0)}
         </div>
         <div class="overview-badge-container">
           <span class="text-slate-800 fw-bold">${scoreText(b.text, 'battle')}</span>

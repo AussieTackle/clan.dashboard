@@ -1895,17 +1895,40 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       return;
     }
 
-    let prop = 'allTimeScore';
+    let rows = [...source];
+
     if (isFirstPlaceMode) {
-      prop = isSeason ? 'seasonFirstPlace' : 'allTimeFirstPlace';
+      const fpProp = isSeason ? 'seasonFirstPlace' : 'allTimeFirstPlace';
+      const scoreProp = isSeason ? 'currentSeasonScore' : 'allTimeScore';
+
+      // Urutkan berdasarkan 1st place terbanyak, lalu jika sama diurutkan berdasarkan battle score terbanyak
+      rows.sort((a, b) => {
+        const fpA = Number(a[fpProp]) || 0;
+        const fpB = Number(b[fpProp]) || 0;
+        if (fpB !== fpA) {
+          return fpB - fpA;
+        }
+        const scoreA = Number(a[scoreProp]) || 0;
+        const scoreB = Number(b[scoreProp]) || 0;
+        return scoreB - scoreA;
+      });
+
+      rows = rows.filter(b => (Number(b[fpProp]) || 0) > 0);
     } else {
-      prop = isSeason ? 'currentSeasonScore' : 'allTimeScore';
-    }
+      const scoreProp = isSeason ? 'currentSeasonScore' : 'allTimeScore';
+      const fpProp = isSeason ? 'seasonFirstPlace' : 'allTimeFirstPlace';
 
-    let rows = sortByScore(source, prop);
-
-    if (isFirstPlaceMode) {
-      rows = rows.filter(b => (Number(b[prop]) || 0) > 0);
+      // Urutkan berdasarkan battle score terbanyak, lalu jika sama diurutkan berdasarkan 1st place terbanyak
+      rows.sort((a, b) => {
+        const scoreA = Number(a[scoreProp]) || 0;
+        const scoreB = Number(b[scoreProp]) || 0;
+        if (scoreB !== scoreA) {
+          return scoreB - scoreA;
+        }
+        const fpA = Number(a[fpProp]) || 0;
+        const fpB = Number(b[fpProp]) || 0;
+        return fpB - fpA;
+      });
     }
 
     if (!rows.length) {
@@ -1918,6 +1941,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     const rowsHtml = rows.map((b,i) => {
       const currentBattleText = scoreText(b.currentBattle, 'battle');
       let scoreValText = '';
+      const prop = isFirstPlaceMode ? (isSeason ? 'seasonFirstPlace' : 'allTimeFirstPlace') : (isSeason ? 'currentSeasonScore' : 'allTimeScore');
 
       if (isFirstPlaceMode) {
         const fpCount = Number(b[prop]) || 0;
@@ -1934,7 +1958,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 
       const cells = [
         `<td class="text-center text-slate-500">${i+1}</td>`,
-        `<td>${playerCellPlain(b.name,i,Number(b[prop])||0)}</td>`,
+        `<td>${playerCellPlain(b.name, i, Number(b[prop])||0)}</td>`,
         `<td class="text-center">${esc(b.tenure)}</td>`,
         `<td class="text-end fw-bold">${scoreValText}</td>`,
         `<td class="text-end cell-current-battle">${currentBattleText}</td>`

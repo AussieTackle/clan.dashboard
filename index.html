@@ -352,6 +352,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 .crown-slot { display: inline-block; width: 24px; text-align: center; flex-shrink: 0; }
 .player-name-text { font-weight: bold; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
+/* Style interaktif klik khusus halaman Member */
 .member-clickable {
   color: var(--clan-accent) !important;
   cursor: pointer;
@@ -471,7 +472,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   .table-container { padding: 10px; }
   .modal-dialog-large { width: 96%; margin: 10px auto; }
 
-  /* PENYESUAIAN PROPORSI FONT JUDUL & NOTE DI HP */
+  /* PENYESUAIAN HIERARCI FONT JUDUL & NOTE DI HP */
   .table-header-title {
     font-size: 0.82rem !important;
     font-weight: 700 !important;
@@ -1321,7 +1322,8 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     return `<span class="badge ${cls}">${esc(role || 'Member')}</span>`;
   }
 
-  function playerCell(name, idx, score) {
+  /* Fungsi playerCell khusus untuk halaman Member (bisa diklik) */
+  function playerCellMember(name, idx, score) {
     let crownOrSlot = '';
     if (score > 0 && idx < 3) {
       if (idx === 0) crownOrSlot = '<span class="crown-slot"><i class="fa-solid fa-crown" style="color: #d97706;"></i></span>';
@@ -1331,6 +1333,20 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     return `<div class="player-cell-wrapper">
       ${crownOrSlot}
       <span class="player-name-text member-clickable" onclick="openPlayerModal('${esc(name)}')">${esc(name)}</span>
+    </div>`;
+  }
+
+  /* Fungsi playerCell standar untuk leaderboard lain (TIDAK BISA DIKLIK) */
+  function playerCellPlain(name, idx, score) {
+    let crownOrSlot = '';
+    if (score > 0 && idx < 3) {
+      if (idx === 0) crownOrSlot = '<span class="crown-slot"><i class="fa-solid fa-crown" style="color: #d97706;"></i></span>';
+      else if (idx === 1) crownOrSlot = '<span class="crown-slot"><i class="fa-solid fa-crown" style="color: #64748b;"></i></span>';
+      else if (idx === 2) crownOrSlot = '<span class="crown-slot"><i class="fa-solid fa-crown" style="color: #b45309;"></i></span>';
+    }
+    return `<div class="player-cell-wrapper">
+      ${crownOrSlot}
+      <span class="player-name-text">${esc(name)}</span>
     </div>`;
   }
 
@@ -1454,7 +1470,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       rowsHtml += `
         <tr>
           <td class="text-center text-slate-500">${i + 1}</td>
-          <td><span class="fw-bold member-clickable" onclick="openPlayerModal('${esc(p.name)}')">${esc(p.name)}</span></td>
+          <td><span class="fw-bold">${esc(p.name)}</span></td>
           <td class="text-end fw-bold text-emerald-700">${esc(p.totalScore)}</td>
           <td class="text-center fw-semibold text-amber-600">${esc(p.totalFirstPlace)}</td>
           <td class="text-center text-slate-500">${esc(p.notJoined)}</td>
@@ -1800,7 +1816,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 
       return `<tr>
         <td class="text-center text-slate-500">${i+1}</td>
-        <td>${playerCell(w.name, i, val)}</td>
+        <td>${playerCellPlain(w.name, i, val)}</td>
         <td class="text-center">${esc(w.tenure)}</td>
         <td class="text-end text-amber-700 fw-bold">${displayVal}</td>
       </tr>`;
@@ -1849,7 +1865,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 
       const cells = [
         `<td class="text-center text-slate-500">${i+1}</td>`,
-        `<td>${playerCell(m.name,i,scoreNum)}</td>`,
+        `<td>${playerCellPlain(m.name,i,scoreNum)}</td>`,
         `<td class="text-center">${esc(m.tenure)}</td>`,
         `<td class="text-end text-cyan-700 fw-bold">${esc(mainText)}</td>`
       ];
@@ -1931,7 +1947,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 
       const cells = [
         `<td class="text-center text-slate-500">${i+1}</td>`,
-        `<td>${playerCell(b.name,i,Number(b[prop])||0)}</td>`,
+        `<td>${playerCellPlain(b.name,i,Number(b[prop])||0)}</td>`,
         `<td class="text-center">${esc(b.tenure)}</td>`,
         `<td class="text-end fw-bold">${scoreValText}</td>`,
         `<td class="text-end cell-current-battle">${currentBattleText}</td>`
@@ -1991,7 +2007,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       <div class="overview-row-auto">
         <div class="overview-player-info">
           <span class="overview-rank">${i+1}.</span>
-          ${playerCell(w.name, i, Number(w[woodProp])||0)}
+          ${playerCellPlain(w.name, i, Number(w[woodProp])||0)}
         </div>
         <div class="overview-badge-container">
           <span class="text-slate-800 fw-bold">${fmt(w[woodProp])} woods</span>
@@ -2008,7 +2024,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       <div class="overview-row-auto">
         <div class="overview-player-info">
           <span class="overview-rank">${i+1}.</span>
-          ${playerCell(m.name, i, Number(m.score)||0)}
+          ${playerCellPlain(m.name, i, Number(m.score)||0)}
         </div>
         <div class="overview-badge-container">
           <span class="text-slate-800 fw-bold">${scoreText(m.text)}</span>
@@ -2025,7 +2041,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       <div class="overview-row-auto">
         <div class="overview-player-info">
           <span class="overview-rank">${i+1}.</span>
-          ${playerCell(b.name, i, Number(b.score)||0)}
+          ${playerCellPlain(b.name, i, Number(b.score)||0)}
         </div>
         <div class="overview-badge-container">
           <span class="text-slate-800 fw-bold">${scoreText(b.text, 'battle')}</span>

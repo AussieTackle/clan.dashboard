@@ -124,14 +124,15 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 
 .filter-pills-wrapper { display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
 .filter-pills {
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.95);
   border: 1px solid var(--border-color);
   border-radius: 30px;
-  padding: 4px;
+  padding: 6px 16px;
   display: inline-flex;
-  gap: 4px;
+  align-items: center;
+  gap: 10px;
   max-width: 100%;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
 }
 .btn-filter {
   border: none;
@@ -232,7 +233,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 }
 .table-responsive { border-radius: 8px; }
 
-/* STICKY / FREEZE COLUMNS DENGAN BACKGROUND SOLID UNTUK BATTLE LOG */
+/* STICKY / FREEZE COLUMNS BATTLE LOG */
 .battle-log-table-wrapper {
   position: relative;
   overflow-x: auto;
@@ -243,10 +244,13 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   width: max-content;
   border-collapse: separate;
   border-spacing: 0;
+  font-size: 0.88rem;
 }
 .battle-log-table th, .battle-log-table td {
   white-space: nowrap;
   background: #ffffff;
+  padding: 10px 12px;
+  vertical-align: middle;
 }
 .battle-log-table thead th {
   position: sticky;
@@ -263,18 +267,20 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   z-index: 10;
   background: #ffffff !important;
   border-right: 1px solid var(--border-color);
+  min-width: 40px;
 }
 .battle-log-table thead th:nth-child(1) { z-index: 30; background: #f8fafc !important; }
 
-/* Kolom Freeze ke-2: Player Name (Diberi bayangan halus agar tidak menabrak teks lain) */
+/* Kolom Freeze ke-2: Player Name */
 .battle-log-table th:nth-child(2),
 .battle-log-table td:nth-child(2) {
   position: sticky;
-  left: 45px;
+  left: 40px;
   z-index: 10;
   background: #ffffff !important;
   border-right: 2px solid var(--border-color);
   box-shadow: 4px 0 6px -2px rgba(0, 0, 0, 0.05);
+  min-width: 140px;
 }
 .battle-log-table thead th:nth-child(2) { z-index: 30; background: #f8fafc !important; }
 
@@ -488,17 +494,35 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 .desktop-view-only { display: block; }
 .mobile-view-only { display: none; }
 
-@media(max-width:575px) {
+/* PENYESUAIAN KHUSUS LAYAR HP (MOBILE) */
+@media(max-width: 575px) {
   .desktop-view-only { display: none !important; }
   .mobile-view-only { display: block !important; }
 
   .custom-nav-container { padding: 0; gap: 6px; }
   .custom-nav-row { gap: 4px; }
   .custom-nav-row .nav-link { font-size: .7rem; padding: 8px 2px; gap: 3px; }
-  .filter-pills { gap: 1px; }
+  .filter-pills { gap: 6px; padding: 6px 12px; }
   .btn-filter { font-size: .75rem; padding: 8px 10px; }
-  .table-container { padding: 12px; }
+  .table-container { padding: 10px; }
   .modal-dialog-large { width: 96%; margin: 10px auto; }
+
+  /* PENYESUAIAN TEKS TABEL BATTLE LOG KHUSUS HP */
+  .battle-log-table {
+    font-size: 0.72rem !important; /* Ukuran teks lebih kecil agar muat banyak */
+  }
+  .battle-log-table th, .battle-log-table td {
+    padding: 6px 7px !important; /* Padding rapat */
+  }
+  .battle-log-table th:nth-child(1),
+  .battle-log-table td:nth-child(1) {
+    min-width: 28px !important;
+  }
+  .battle-log-table th:nth-child(2),
+  .battle-log-table td:nth-child(2) {
+    left: 28px !important;
+    min-width: 105px !important;
+  }
 }
 </style>
 </head>
@@ -697,9 +721,10 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
         <!-- BATTLE LOG PANE -->
         <div id="battlelog-pane" class="tab-pane d-none">
           <div class="filter-pills-wrapper">
-            <div class="filter-pills shadow-sm" style="padding: 6px 16px; gap: 10px; align-items: center;">
-              <span class="fw-bold text-slate-700 text-sm"><i class="fa-regular fa-calendar me-1"></i> Season:</span>
-              <select id="battleLogMonthSelect" class="form-select form-select-sm fw-bold text-slate-800 border-0 bg-slate-100" style="cursor: pointer;" onchange="renderBattleLogTable()">
+            <div class="filter-pills shadow-sm">
+              <i class="fa-regular fa-calendar text-slate-600 fs-6"></i>
+              <span class="fw-bold text-slate-800 text-sm whitespace-nowrap">Season:</span>
+              <select id="battleLogMonthSelect" class="form-select form-select-sm fw-bold text-slate-800 border-0 bg-slate-100 rounded-pill px-3" style="cursor: pointer; width: auto; min-width: 150px;" onchange="renderBattleLogTable()">
                 <option value="">Select season...</option>
               </select>
             </div>
@@ -1341,7 +1366,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   function cleanSeasonName(rawName) {
     if (!rawName) return '';
     let cleaned = String(rawName).trim();
-    // Jika format tanggal Google Sheets seperti "Sat Oct 31 2026 ...", ubah menjadi "October 2026"
     if (cleaned.includes('GMT') || cleaned.includes('00:00:00')) {
       try {
         const d = new Date(cleaned);
@@ -1397,18 +1421,18 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 
     let headersHtml = `
       <tr>
-        <th class="text-center" style="min-width: 45px;">No</th>
-        <th style="min-width: 160px;">Player Name</th>
-        <th class="text-end" style="min-width: 100px;">Total Score</th>
-        <th class="text-center" style="min-width: 90px;">Total 1st</th>
-        <th class="text-center" style="min-width: 90px;">Not Joined</th>
+        <th class="text-center">No</th>
+        <th>Player Name</th>
+        <th class="text-end" style="min-width: 90px;">Total Score</th>
+        <th class="text-center" style="min-width: 75px;">Total 1st</th>
+        <th class="text-center" style="min-width: 80px;">Not Joined</th>
     `;
 
     battlesMeta.forEach((b, idx) => {
-      headersHtml += `<th class="text-center" style="min-width: 130px; font-size: 0.78rem;">
+      headersHtml += `<th class="text-center" style="min-width: 110px;">
         <div><b>Battle ${b.battleNo || (idx+1)}</b></div>
         <div class="text-muted fw-normal">${esc(b.opponent || '-')}</div>
-        <div class="text-cyan-700 fw-normal" style="font-size: 0.72rem;">${esc(b.mapInfo || '-')}</div>
+        <div class="text-cyan-700 fw-normal" style="font-size: 0.8em;">${esc(b.mapInfo || '-')}</div>
         <div class="fw-bold ${String(b.result).toLowerCase() === 'win' ? 'text-emerald-600' : 'text-rose-600'}">${esc(b.result || '-')}</div>
       </th>`;
     });
@@ -2079,7 +2103,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       name: b.name,
       text: season ? b.currentSeasonText : b.allTimeText,
       score: season ? b.currentSeasonScore : b.allTimeScore
-    })).sort((a,b) => b.score-b.score).slice(0,3);
+    })).sort((a,b) => b.score-a.score).slice(0,3);
 
     document.getElementById('overview-top-battle').innerHTML = battleRows.length ? battleRows.map((b,i) => `
       <div class="overview-row-auto">

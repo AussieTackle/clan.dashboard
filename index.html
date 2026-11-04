@@ -1448,6 +1448,9 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     const select = document.getElementById('battleLogMonthSelect');
     if (!select || !activeClan) return;
 
+    // Simpan pilihan bulan saat ini agar tidak tereset saat background sync aktif
+    const previousSelection = select.value;
+
     const clanLogs = globalBattleLogs[activeClan] || {};
     const rawMonths = Object.keys(clanLogs);
 
@@ -1462,6 +1465,13 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       return `<option value="${esc(m)}">${esc(cleanName)}</option>`;
     }).join('');
     
+    // Kembalikan pilihan user jika masih valid, atau pilih yang pertama
+    if (previousSelection && clanLogs[previousSelection]) {
+      select.value = previousSelection;
+    } else {
+      select.selectedIndex = 0;
+    }
+
     renderBattleLogTable();
   }
 

@@ -1372,21 +1372,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     return `<span class="badge ${cls}">${esc(role || 'Member')}</span>`;
   }
 
-  /* Fungsi playerCell khusus untuk halaman Member (bisa diklik) */
-  function playerCellMember(name, idx, score) {
-    let crownOrSlot = '';
-    if (score > 0 && idx < 3) {
-      if (idx === 0) crownOrSlot = '<span class="crown-slot"><i class="fa-solid fa-crown" style="color: #d97706;"></i></span>';
-      else if (idx === 1) crownOrSlot = '<span class="crown-slot"><i class="fa-solid fa-crown" style="color: #64748b;"></i></span>';
-      else if (idx === 2) crownOrSlot = '<span class="crown-slot"><i class="fa-solid fa-crown" style="color: #b45309;"></i></span>';
-    }
-    return `<div class="player-cell-wrapper">
-      ${crownOrSlot}
-      <span class="player-name-text member-clickable" onclick="openPlayerModal('${esc(name)}')">${esc(name)}</span>
-    </div>`;
-  }
-
-  /* Fungsi playerCell standar untuk leaderboard lain (TIDAK BISA DIKLIK) */
   function playerCellPlain(name, idx, score) {
     let crownOrSlot = '';
     if (score > 0 && idx < 3) {
@@ -1448,9 +1433,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     const select = document.getElementById('battleLogMonthSelect');
     if (!select || !activeClan) return;
 
-    // Simpan pilihan bulan saat ini agar tidak tereset saat background sync aktif
     const previousSelection = select.value;
-
     const clanLogs = globalBattleLogs[activeClan] || {};
     const rawMonths = Object.keys(clanLogs);
 
@@ -1465,7 +1448,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       return `<option value="${esc(m)}">${esc(cleanName)}</option>`;
     }).join('');
     
-    // Kembalikan pilihan user jika masih valid, atau pilih yang pertama
     if (previousSelection && clanLogs[previousSelection]) {
       select.value = previousSelection;
     } else {
@@ -1730,8 +1712,8 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     const rowsHtml = members.map((m, idx) => `<tr>
       <td class="text-center">${idx + 1}</td>
       <td>
-        <span class="fw-bold member-clickable" onclick="openPlayerModal('${esc(m.name)}')">
-          ${esc(m.name)} <i class="fa-solid fa-circle-info ms-1 small"></i>
+        <span class="fw-bold">
+          ${esc(m.name)}
         </span>
       </td>
       <td class="text-center">${statusBadge(m.status)}</td>
@@ -1742,61 +1724,6 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 
     body.innerHTML = rowsHtml;
     mobileBody.innerHTML = rowsHtml;
-  }
-
-  function openPlayerModal(playerName) {
-    if (!cachedClanData) return;
-    const nameClean = String(playerName).trim().toLowerCase();
-
-    const memberData = (cachedClanData.members || []).find(m => String(m.name).trim().toLowerCase() === nameClean) || {};
-    const woodData = (cachedClanData.activeWood || []).find(w => String(w.name).trim().toLowerCase() === nameClean) || {};
-    const monsterData = (cachedClanData.activeMonster || []).find(m => String(m.name).trim().toLowerCase() === nameClean) || {};
-    const battleData = (cachedClanData.activeBattle || []).find(b => String(b.name).trim().toLowerCase() === nameClean) || {};
-
-    document.getElementById('modal-player-name').innerText = memberData.name || playerName;
-    document.getElementById('modal-player-badges').innerHTML = `
-      ${roleBadge(memberData.role || 'Member')}
-      ${statusBadge(memberData.status || 'Active')}
-    `;
-
-    document.getElementById('modal-join-date').innerText = memberData.joinDate || '-';
-    document.getElementById('modal-tenure').innerText = woodData.tenure || memberData.tenure || '-';
-    document.getElementById('modal-unlocked-maps').innerText = memberData.unlockedMaps || '-';
-
-    document.getElementById('modal-wood-alltime').innerText = `${fmt(woodData.allTime || 0)} woods`;
-    document.getElementById('modal-wood-season').innerText = woodData.currentSeason > 0 ? `${fmt(woodData.currentSeason)} woods` : 'No data yet';
-
-    document.getElementById('modal-battle-alltime').innerText = scoreText(battleData.allTimeText);
-    document.getElementById('modal-battle-season').innerText = scoreText(battleData.currentSeasonText, 'battle');
-
-    document.getElementById('modal-firstplace-alltime').innerText = `${fmt(battleData.allTimeFirstPlace || 0)} Wins`;
-    document.getElementById('modal-firstplace-season').innerText = `${fmt(battleData.seasonFirstPlace || 0)} Wins`;
-
-    document.getElementById('modal-monster-alltime').innerText = esc(cleanMonsterText(monsterData.allTimeText));
-    document.getElementById('modal-monster-season').innerText = esc(cleanMonsterText(monsterData.currentSeasonText));
-
-    const monsterPills = [];
-    MONSTER_COLUMNS.forEach(col => {
-      const valAllTime = num(monsterData[col.key]);
-      const valSeason = num(monsterData[col.seasonKey]);
-
-      if (valAllTime > 0) {
-        let seasonInfo = valSeason > 0 ? `<span class="text-emerald-700 small ms-1">(+${fmt(valSeason)} season)</span>` : '';
-        monsterPills.push(`
-          <div class="monster-pill">
-            <i class="fa-solid fa-ghost text-cyan-700"></i>
-            <span class="fw-semibold">${col.label}:</span>
-            <span class="monster-pill-val">${fmt(valAllTime)}</span>
-            ${seasonInfo}
-          </div>
-        `);
-      }
-    });
-
-    const breakdownContainer = document.getElementById('modal-monster-breakdown');
-    breakdownContainer.innerHTML = monsterPills.length > 0 ? monsterPills.join('') : '<span class="text-muted small">No contribution data available</span>';
-
-    playerModal.show();
   }
 
   function setTableFilter(type, mode) {
@@ -2061,7 +1988,9 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     const season = currentOverviewFilter === 'season';
 
     const woodProp = season ? 'currentSeason' : 'allTime';
-    const woodRows = sortByScore(cachedClanData.activeWood, woodProp).slice(0,3);
+    const woodRows = sortByScore(cachedClanData.activeWood, woodProp)
+      .filter(w => (Number(w[woodProp]) || 0) > 0)
+      .slice(0, 3);
 
     document.getElementById('overview-top-wood').innerHTML = woodRows.length ? woodRows.map((w,i) => `
       <div class="overview-row-auto">
@@ -2078,7 +2007,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       name: m.name,
       text: cleanMonsterText(season ? m.currentSeasonText : m.allTimeText),
       score: season ? parseMonsterPts(m.currentSeasonText) : parseMonsterPts(m.allTimeText)
-    })).sort((a,b) => b.score-a.score).slice(0,3);
+    })).filter(m => m.score > 0).sort((a,b) => b.score-a.score).slice(0,3);
 
     document.getElementById('overview-top-monster').innerHTML = monsterRows.length ? monsterRows.map((m,i) => `
       <div class="overview-row-auto">
@@ -2095,7 +2024,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       name: b.name,
       text: season ? b.currentSeasonText : b.allTimeText,
       score: season ? b.currentSeasonScore : b.allTimeScore
-    })).sort((a,b) => b.score-a.score).slice(0,3);
+    })).filter(b => b.score > 0).sort((a,b) => b.score-a.score).slice(0,3);
 
     document.getElementById('overview-top-battle').innerHTML = battleRows.length ? battleRows.map((b,i) => `
       <div class="overview-row-auto">

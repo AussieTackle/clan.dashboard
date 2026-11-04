@@ -507,12 +507,18 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   .table-container { padding: 10px; }
   .modal-dialog-large { width: 96%; margin: 10px auto; }
 
+  /* PENYESUAIAN JUDUL TABEL DI HP DISAMAKAN DENGAN UKURAN NAMA PLAYER (.mobile-card-player) */
+  .table-header-title {
+    font-size: 0.95rem !important;
+    font-weight: 700 !important;
+  }
+
   /* PENYESUAIAN TEKS TABEL BATTLE LOG KHUSUS HP */
   .battle-log-table {
-    font-size: 0.72rem !important; /* Ukuran teks lebih kecil agar muat banyak */
+    font-size: 0.72rem !important;
   }
   .battle-log-table th, .battle-log-table td {
-    padding: 6px 7px !important; /* Padding rapat */
+    padding: 6px 7px !important;
   }
   .battle-log-table th:nth-child(1),
   .battle-log-table td:nth-child(1) {
@@ -2109,7 +2115,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       <div class="overview-row-auto">
         <div class="overview-player-info">
           <span class="overview-rank">${i+1}.</span>
-          ${playerCell(b.name, i, Number(b.score)||0)}
+          ${playerCell(m.name, i, Number(m.score)||0)}
         </div>
         <div class="overview-badge-container">
           <span class="text-slate-800 fw-bold">${scoreText(b.text, 'battle')}</span>

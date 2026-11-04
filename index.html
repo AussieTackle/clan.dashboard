@@ -232,7 +232,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 }
 .table-responsive { border-radius: 8px; }
 
-/* STICKY / FREEZE COLUMNS UNTUK BATTLE LOG */
+/* STICKY / FREEZE COLUMNS DENGAN BACKGROUND SOLID UNTUK BATTLE LOG */
 .battle-log-table-wrapper {
   position: relative;
   overflow-x: auto;
@@ -261,19 +261,20 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   position: sticky;
   left: 0;
   z-index: 10;
-  background: #ffffff;
+  background: #ffffff !important;
   border-right: 1px solid var(--border-color);
 }
 .battle-log-table thead th:nth-child(1) { z-index: 30; background: #f8fafc !important; }
 
-/* Kolom Freeze ke-2: Player Name */
+/* Kolom Freeze ke-2: Player Name (Diberi bayangan halus agar tidak menabrak teks lain) */
 .battle-log-table th:nth-child(2),
 .battle-log-table td:nth-child(2) {
   position: sticky;
   left: 45px;
   z-index: 10;
-  background: #ffffff;
+  background: #ffffff !important;
   border-right: 2px solid var(--border-color);
+  box-shadow: 4px 0 6px -2px rgba(0, 0, 0, 0.05);
 }
 .battle-log-table thead th:nth-child(2) { z-index: 30; background: #f8fafc !important; }
 
@@ -602,7 +603,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
               </li>
               <li class="nav-item">
                 <button class="nav-link" data-pane="member-pane">
-                  <i class="fa-solid fa-id-card"></i> Member Directory
+                  <i class="fa-solid fa-id-card"></i> Member
                 </button>
               </li>
               <li class="nav-item">
@@ -697,9 +698,9 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
         <div id="battlelog-pane" class="tab-pane d-none">
           <div class="filter-pills-wrapper">
             <div class="filter-pills shadow-sm" style="padding: 6px 16px; gap: 10px; align-items: center;">
-              <span class="fw-bold text-slate-700 text-sm"><i class="fa-regular fa-calendar me-1"></i> Season / Month:</span>
+              <span class="fw-bold text-slate-700 text-sm"><i class="fa-regular fa-calendar me-1"></i> Season:</span>
               <select id="battleLogMonthSelect" class="form-select form-select-sm fw-bold text-slate-800 border-0 bg-slate-100" style="cursor: pointer;" onchange="renderBattleLogTable()">
-                <option value="">Select month...</option>
+                <option value="">Select season...</option>
               </select>
             </div>
           </div>
@@ -711,7 +712,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
             </div>
             
             <div id="battleLogContainer" class="battle-log-table-wrapper">
-              <div class="text-center text-muted py-4">Please select a month above.</div>
+              <div class="text-center text-muted py-4">Please select a season above.</div>
             </div>
           </div>
         </div>
@@ -1337,20 +1338,40 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   }
 
   /* ================= BATTLE LOG LOGIC ================= */
+  function cleanSeasonName(rawName) {
+    if (!rawName) return '';
+    let cleaned = String(rawName).trim();
+    // Jika format tanggal Google Sheets seperti "Sat Oct 31 2026 ...", ubah menjadi "October 2026"
+    if (cleaned.includes('GMT') || cleaned.includes('00:00:00')) {
+      try {
+        const d = new Date(cleaned);
+        if (!isNaN(d.getTime())) {
+          const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+          return `${months[d.getMonth()]} ${d.getFullYear()}`;
+        }
+      } catch(e) {}
+    }
+    return cleaned;
+  }
+
   function initBattleLogDropdown() {
     const select = document.getElementById('battleLogMonthSelect');
     if (!select || !activeClan) return;
 
     const clanLogs = globalBattleLogs[activeClan] || {};
-    const months = Object.keys(clanLogs);
+    const rawMonths = Object.keys(clanLogs);
 
-    if (!months.length) {
+    if (!rawMonths.length) {
       select.innerHTML = '<option value="">No battle log available</option>';
       document.getElementById('battleLogContainer').innerHTML = '<div class="text-center text-muted py-4">No battle log data recorded yet.</div>';
       return;
     }
 
-    select.innerHTML = months.map(m => `<option value="${esc(m)}">${esc(m)}</option>`).join('');
+    select.innerHTML = rawMonths.map(m => {
+      const cleanName = cleanSeasonName(m);
+      return `<option value="${esc(m)}">${esc(cleanName)}</option>`;
+    }).join('');
+    
     renderBattleLogTable();
   }
 
@@ -1361,13 +1382,13 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 
     const selectedMonth = select.value;
     if (!selectedMonth) {
-      container.innerHTML = '<div class="text-center text-muted py-4">Please select a month.</div>';
+      container.innerHTML = '<div class="text-center text-muted py-4">Please select a season.</div>';
       return;
     }
 
     const monthData = globalBattleLogs[activeClan]?.[selectedMonth];
     if (!monthData || !monthData.players || !monthData.players.length) {
-      container.innerHTML = '<div class="text-center text-muted py-4">No data found for this month.</div>';
+      container.innerHTML = '<div class="text-center text-muted py-4">No data found for this season.</div>';
       return;
     }
 
@@ -2058,7 +2079,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       name: b.name,
       text: season ? b.currentSeasonText : b.allTimeText,
       score: season ? b.currentSeasonScore : b.allTimeScore
-    })).sort((a,b) => b.score-a.score).slice(0,3);
+    })).sort((a,b) => b.score-b.score).slice(0,3);
 
     document.getElementById('overview-top-battle').innerHTML = battleRows.length ? battleRows.map((b,i) => `
       <div class="overview-row-auto">

@@ -232,6 +232,52 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 }
 .table-responsive { border-radius: 8px; }
 
+/* STICKY / FREEZE COLUMNS UNTUK BATTLE LOG */
+.battle-log-table-wrapper {
+  position: relative;
+  overflow-x: auto;
+  max-width: 100%;
+  border-radius: 8px;
+}
+.battle-log-table {
+  width: max-content;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.battle-log-table th, .battle-log-table td {
+  white-space: nowrap;
+  background: #ffffff;
+}
+.battle-log-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: #f8fafc !important;
+}
+
+/* Kolom Freeze ke-1: No */
+.battle-log-table th:nth-child(1),
+.battle-log-table td:nth-child(1) {
+  position: sticky;
+  left: 0;
+  z-index: 10;
+  background: #ffffff;
+  border-right: 1px solid var(--border-color);
+}
+.battle-log-table thead th:nth-child(1) { z-index: 30; background: #f8fafc !important; }
+
+/* Kolom Freeze ke-2: Player Name */
+.battle-log-table th:nth-child(2),
+.battle-log-table td:nth-child(2) {
+  position: sticky;
+  left: 45px; /* Sesuaikan lebar kolom No */
+  z-index: 10;
+  background: #ffffff;
+  border-right: 2px solid var(--border-color);
+}
+.battle-log-table thead th:nth-child(2) { z-index: 30; background: #f8fafc !important; }
+
+
 .badge-active { background: #16a34a; color: white; }
 .badge-leave { background: #dc2626; color: white; }
 .badge-leader { background: #d97706; color: white; }
@@ -560,6 +606,11 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
                   <i class="fa-solid fa-id-card"></i> Member Directory
                 </button>
               </li>
+              <li class="nav-item">
+                <button class="nav-link" data-pane="battlelog-pane">
+                  <i class="fa-solid fa-calendar-days"></i> Battle Log
+                </button>
+              </li>
             </ul>
             <ul class="custom-nav-row">
               <li class="nav-item">
@@ -594,7 +645,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
             </div>
           </div>
           <div class="text-center text-slate-300 small mb-3 fst-italic">
-            <i class="fa-solid fa-circle-info me-1"></i> Note: Only currently active clan members are displayed. Members on leave or who have left are not included.
+            <i class="fa-solid fa-circle-info me-1"></i> Note: Only currently active clan members are displayed (data created since October 2026).
           </div>
 
           <div class="row g-3 justify-content-center">
@@ -643,6 +694,29 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
           </div>
         </div>
 
+        <!-- BATTLE LOG PANE -->
+        <div id="battlelog-pane" class="tab-pane d-none">
+          <div class="filter-pills-wrapper">
+            <div class="filter-pills shadow-sm" style="padding: 6px 16px; gap: 10px; align-items: center;">
+              <span class="fw-bold text-slate-700 text-sm"><i class="fa-regular fa-calendar me-1"></i> Season / Month:</span>
+              <select id="battleLogMonthSelect" class="form-select form-select-sm fw-bold text-slate-800 border-0 bg-slate-100" style="cursor: pointer;" onchange="renderBattleLogTable()">
+                <option value="">Select month...</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="table-container shadow-sm">
+            <div class="table-header-title-box">
+              <div class="table-header-title"><i class="fa-solid fa-calendar-days text-emerald-700"></i> Monthly Battle Log Archive</div>
+              <div class="table-header-note"><i class="fa-solid fa-circle-info"></i> <span>Note: Full battle history and match logs recorded since October 2026. Scroll horizontally to view all battles.</span></div>
+            </div>
+            
+            <div id="battleLogContainer" class="battle-log-table-wrapper">
+              <div class="text-center text-muted py-4">Please select a month above.</div>
+            </div>
+          </div>
+        </div>
+
         <!-- WOOD SCORE PANE -->
         <div id="wood-pane" class="tab-pane d-none">
           <div class="filter-pills-wrapper">
@@ -655,7 +729,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
           <div class="table-container shadow-sm">
             <div class="table-header-title-box">
               <div class="table-header-title" id="wood-table-title"><i class="fa-solid fa-tree text-amber-700"></i> Unity Monument Leaderboard - All-Time</div>
-              <div class="table-header-note"><i class="fa-solid fa-circle-info"></i> <span>Note: Only active clan members are displayed.</span></div>
+              <div class="table-header-note"><i class="fa-solid fa-circle-info"></i> <span>Note: Only active clan members are displayed (data created since October 2026).</span></div>
             </div>
             <div class="table-responsive desktop-view-only">
               <table class="table">
@@ -681,7 +755,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
           <div class="table-container shadow-sm">
             <div class="table-header-title-box">
               <div class="table-header-title" id="monster-table-title"><i class="fa-solid fa-ghost text-cyan-700"></i> Totem Contributions Leaderboard - All-Time</div>
-              <div class="table-header-note"><i class="fa-solid fa-circle-info"></i> <span>Note: Only active clan members are displayed.</span></div>
+              <div class="table-header-note"><i class="fa-solid fa-circle-info"></i> <span>Note: Only active clan members are displayed (data created since October 2026).</span></div>
             </div>
             <div class="table-responsive desktop-view-only">
               <table class="table text-nowrap">
@@ -716,7 +790,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
             </div>
             <div class="table-header-title-box">
               <div class="table-header-title" id="battle-table-title"><i class="fa-solid fa-fish-fins text-emerald-700"></i> Battle Score Leaderboard - All-Time</div>
-              <div class="table-header-note"><i class="fa-solid fa-circle-info"></i> <span>Note: Only active clan members are displayed.</span></div>
+              <div class="table-header-note"><i class="fa-solid fa-circle-info"></i> <span>Note: Only active clan members are displayed (data created since October 2026).</span></div>
             </div>
             <div class="table-responsive desktop-view-only">
               <table class="table">
@@ -736,7 +810,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 
     <!-- FOOTER -->
     <footer class="mt-auto border-top border-slate-700 bg-slate-900 py-3 text-center text-xs text-slate-400">
-      <p class="mb-0">&copy; 2026 Aussie Tackle Clan.</p>
+      <p class="mb-0">&copy; 2026 Aussie Tackle Clan (Data records since October 2026).</p>
     </footer>
 
   </div>
@@ -946,6 +1020,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
   };
 
   let globalClansData = {};
+  let globalBattleLogs = {};
   let activeClan = null;
   let cachedClanData = null;
   let currentOverviewFilter = 'alltime';
@@ -1078,6 +1153,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
         }
 
         globalClansData = data.clans || data;
+        globalBattleLogs = data.battleLog || {};
         
         if (syncStatus) syncStatus.innerText = 'Real-time Sync Active';
         const syncDot = document.getElementById('sync-dot');
@@ -1089,6 +1165,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
         if (activeClan && globalClansData[activeClan]) {
           cachedClanData = globalClansData[activeClan];
           renderDashboard(cachedClanData);
+          initBattleLogDropdown();
         }
       })
       .catch(err => {
@@ -1148,6 +1225,8 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       cachedClanData = globalClansData;
       renderDashboard(cachedClanData);
     }
+
+    initBattleLogDropdown();
 
     if (pushHistory) {
       history.pushState({ view: 'clan', clanCode: clanCode }, '', '');
@@ -1258,6 +1337,97 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     renderOverview();
   }
 
+  /* ================= BATTLE LOG LOGIC ================= */
+  function initBattleLogDropdown() {
+    const select = document.getElementById('battleLogMonthSelect');
+    if (!select || !activeClan) return;
+
+    const clanLogs = globalBattleLogs[activeClan] || {};
+    const months = Object.keys(clanLogs);
+
+    if (!months.length) {
+      select.innerHTML = '<option value="">No battle log available</option>';
+      document.getElementById('battleLogContainer').innerHTML = '<div class="text-center text-muted py-4">No battle log data recorded yet.</div>';
+      return;
+    }
+
+    select.innerHTML = months.map(m => `<option value="${esc(m)}">${esc(m)}</option>`).join('');
+    renderBattleLogTable();
+  }
+
+  function renderBattleLogTable() {
+    const select = document.getElementById('battleLogMonthSelect');
+    const container = document.getElementById('battleLogContainer');
+    if (!select || !container || !activeClan) return;
+
+    const selectedMonth = select.value;
+    if (!selectedMonth) {
+      container.innerHTML = '<div class="text-center text-muted py-4">Please select a month.</div>';
+      return;
+    }
+
+    const monthData = globalBattleLogs[activeClan]?.[selectedMonth];
+    if (!monthData || !monthData.players || !monthData.players.length) {
+      container.innerHTML = '<div class="text-center text-muted py-4">No data found for this month.</div>';
+      return;
+    }
+
+    const battlesMeta = monthData.battlesMeta || [];
+    const players = monthData.players;
+
+    let headersHtml = `
+      <tr>
+        <th class="text-center" style="min-width: 45px;">No</th>
+        <th style="min-width: 160px;">Player Name</th>
+        <th class="text-end" style="min-width: 100px;">Total Score</th>
+        <th class="text-center" style="min-width: 90px;">Total 1st</th>
+        <th class="text-center" style="min-width: 90px;">Not Joined</th>
+    `;
+
+    battlesMeta.forEach((b, idx) => {
+      headersHtml += `<th class="text-center" style="min-width: 130px; font-size: 0.78rem;">
+        <div><b>Battle ${b.battleNo || (idx+1)}</b></div>
+        <div class="text-muted fw-normal">${esc(b.opponent || '-')}</div>
+        <div class="text-cyan-700 fw-normal" style="font-size: 0.72rem;">${esc(b.mapInfo || '-')}</div>
+        <div class="fw-bold ${String(b.result).toLowerCase() === 'win' ? 'text-emerald-600' : 'text-rose-600'}">${esc(b.result || '-')}</div>
+      </th>`;
+    });
+    headersHtml += `</tr>`;
+
+    let rowsHtml = '';
+    players.forEach((p, i) => {
+      let scoresCols = '';
+      (p.scores || []).forEach(scoreVal => {
+        let displayScore = esc(scoreVal);
+        let extraClass = '';
+        if (displayScore.toLowerCase().includes('not joined') || displayScore === '') {
+          displayScore = 'Not Joined Yet';
+          extraClass = 'text-muted fst-italic';
+        }
+        scoresCols += `<td class="text-center ${extraClass}">${displayScore}</td>`;
+      });
+
+      rowsHtml += `
+        <tr>
+          <td class="text-center text-slate-500">${i + 1}</td>
+          <td><span class="fw-bold">${esc(p.name)}</span></td>
+          <td class="text-end fw-bold text-emerald-700">${esc(p.totalScore)}</td>
+          <td class="text-center fw-semibold text-amber-600">${esc(p.totalFirstPlace)}</td>
+          <td class="text-center text-slate-500">${esc(p.notJoined)}</td>
+          ${scoresCols}
+        </tr>
+      `;
+    });
+
+    container.innerHTML = `
+      <table class="table table-bordered battle-log-table">
+        <thead>${headersHtml}</thead>
+        <tbody>${rowsHtml}</tbody>
+      </table>
+    `;
+  }
+  /* ================= END BATTLE LOG LOGIC ================= */
+
   function openIslandProgressModal() {
     if (!cachedClanData) return;
     const island = cachedClanData.islandProgress || {};
@@ -1307,7 +1477,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
 
     let sections = [];
 
-    // 1. Battle Score (Hanya yang memiliki nilai > 0 / tidak blank/-)
+    // 1. Battle Score
     if (selectedCats.includes('battle')) {
       const prop = isSeason ? 'currentSeasonScore' : 'allTimeScore';
       const rows = sortByScore(cachedClanData.activeBattle || [], prop).filter(b => {
@@ -1316,26 +1486,26 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
         return val > 0 && textVal !== '' && textVal !== '-' && textVal !== '#N/A' && textVal !== '0';
       });
       const formatted = buildDiscordTable(rows, 'name', b => `${scoreText(isSeason ? b.currentSeasonText : b.allTimeText, 'battle')}`);
-      sections.push(`**Battle Score Leaderboard**\n-# ${timeLabel}\n\`\`\`\n${formatted}\n\`\`\``);
+      sections.push(`**Battle Score Leaderboard**\n-# ${timeLabel} (Records since Oct 2026)\n\`\`\`\n${formatted}\n\`\`\``);
     }
 
-    // 2. 1st Place Wins (Hanya yang memiliki nilai > 0)
+    // 2. 1st Place Wins
     if (selectedCats.includes('firstplace')) {
       const prop = isSeason ? 'seasonFirstPlace' : 'allTimeFirstPlace';
       const rows = sortByScore(cachedClanData.activeBattle || [], prop).filter(b => (Number(b[prop]) || 0) > 0);
       const formatted = buildDiscordTable(rows, 'name', b => `${Number(b[prop]) || 0} Wins`);
-      sections.push(`**1st Place Wins Leaderboard**\n-# ${timeLabel}\n\`\`\`\n${formatted}\n\`\`\``);
+      sections.push(`**1st Place Wins Leaderboard**\n-# ${timeLabel} (Records since Oct 2026)\n\`\`\`\n${formatted}\n\`\`\``);
     }
 
-    // 3. Unity Monument Contribution (Hanya yang memiliki nilai > 0)
+    // 3. Unity Monument Contribution
     if (selectedCats.includes('wood')) {
       const woodProp = isSeason ? 'currentSeason' : 'allTime';
       const rows = sortByScore(cachedClanData.activeWood || [], woodProp).filter(w => (Number(w[woodProp]) || 0) > 0);
       const formatted = buildDiscordTable(rows, 'name', w => `${fmt(w[woodProp])} woods`);
-      sections.push(`**Unity Monument Contribution**\n-# ${timeLabel}\n\`\`\`\n${formatted}\n\`\`\``);
+      sections.push(`**Unity Monument Contribution**\n-# ${timeLabel} (Records since Oct 2026)\n\`\`\`\n${formatted}\n\`\`\``);
     }
 
-    // 4. Totem Contribution (Hanya yang memiliki nilai/poin > 0)
+    // 4. Totem Contribution
     if (selectedCats.includes('monster')) {
       const rows = [...(cachedClanData.activeMonster || [])].map(m => {
         const scoreVal = parseMonsterPts(isSeason ? m.currentSeasonText : m.allTimeText);
@@ -1343,7 +1513,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       }).filter(m => m.calcScore > 0).sort((a, b) => b.calcScore - a.calcScore);
 
       const formatted = buildDiscordTable(rows, 'name', m => `${cleanMonsterText(isSeason ? m.currentSeasonText : m.allTimeText)}`);
-      sections.push(`**Totem Contribution**\n-# ${timeLabel}\n\`\`\`\n${formatted}\n\`\`\``);
+      sections.push(`**Totem Contribution**\n-# ${timeLabel} (Records since Oct 2026)\n\`\`\`\n${formatted}\n\`\`\``);
     }
 
     // 5. Totem Progress

@@ -1576,6 +1576,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     const selectedTime = document.querySelector('.discord-time:checked').value;
     const isSeason = selectedTime === 'season';
     const timeLabel = isSeason ? 'Current Season' : 'All-Time';
+    const subtextRecord = isSeason ? '' : '\n-# All-Time (Records since Oct 2026)';
 
     let sections = [];
 
@@ -1587,21 +1588,34 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
         return val > 0 && textVal !== '' && textVal !== '-' && textVal !== '#N/A' && textVal !== '0';
       });
       const formatted = buildDiscordTable(rows, 'name', b => `${scoreText(isSeason ? b.currentSeasonText : b.allTimeText, 'battle')}`);
-      sections.push(`**Battle Score Leaderboard**\n-# ${timeLabel} (Records since Oct 2026)\n\`\`\`\n${formatted}\n\`\`\``);
+      sections.push(`**Battle Score Leaderboard**${subtextRecord}\n\`\`\`\n${formatted}\n\`\`\``);
     }
 
     if (selectedCats.includes('firstplace')) {
-      const prop = isSeason ? 'seasonFirstPlace' : 'allTimeFirstPlace';
-      const rows = sortByScore(cachedClanData.activeBattle || [], prop).filter(b => (Number(b[prop]) || 0) > 0);
-      const formatted = buildDiscordTable(rows, 'name', b => `${Number(b[prop]) || 0} Wins`);
-      sections.push(`**1st Place Wins Leaderboard**\n-# ${timeLabel} (Records since Oct 2026)\n\`\`\`\n${formatted}\n\`\`\``);
+      const fpProp = isSeason ? 'seasonFirstPlace' : 'allTimeFirstPlace';
+      const scoreProp = isSeason ? 'currentSeasonScore' : 'allTimeScore';
+      
+      let rows = [...(cachedClanData.activeBattle || [])];
+      rows.sort((a, b) => {
+        const fpA = Number(a[fpProp]) || 0;
+        const fpB = Number(b[fpProp]) || 0;
+        if (fpB !== fpA) return fpB - fpA;
+        const scoreA = Number(a[scoreProp]) || 0;
+        const scoreB = Number(b[scoreProp]) || 0;
+        return scoreB - scoreA;
+      });
+
+      rows = rows.filter(b => (Number(b[fpProp]) || 0) > 0);
+
+      const formatted = buildDiscordTable(rows, 'name', b => `${Number(b[fpProp]) || 0} Wins`);
+      sections.push(`**1st Place Wins Leaderboard**${subtextRecord}\n\`\`\`\n${formatted}\n\`\`\``);
     }
 
     if (selectedCats.includes('wood')) {
       const woodProp = isSeason ? 'currentSeason' : 'allTime';
       const rows = sortByScore(cachedClanData.activeWood || [], woodProp).filter(w => (Number(w[woodProp]) || 0) > 0);
       const formatted = buildDiscordTable(rows, 'name', w => `${fmt(w[woodProp])} woods`);
-      sections.push(`**Unity Monument Contribution**\n-# ${timeLabel} (Records since Oct 2026)\n\`\`\`\n${formatted}\n\`\`\``);
+      sections.push(`**Unity Monument Contribution**${subtextRecord}\n\`\`\`\n${formatted}\n\`\`\``);
     }
 
     if (selectedCats.includes('monster')) {
@@ -1611,7 +1625,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       }).filter(m => m.calcScore > 0).sort((a, b) => b.calcScore - a.calcScore);
 
       const formatted = buildDiscordTable(rows, 'name', m => `${cleanMonsterText(isSeason ? m.currentSeasonText : m.allTimeText)}`);
-      sections.push(`**Totem Contribution**\n-# ${timeLabel} (Records since Oct 2026)\n\`\`\`\n${formatted}\n\`\`\``);
+      sections.push(`**Totem Contribution**${subtextRecord}\n\`\`\`\n${formatted}\n\`\`\``);
     }
 
     if (selectedCats.includes('island')) {
@@ -1627,7 +1641,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
         { name: 'Boiúna', val: island.boiuna }
       ];
       const formattedTotems = buildDiscordTableTotems(totems);
-      sections.push(`**Totem Progress**\n-# All-Time\n\`\`\`\n${formattedTotems}\n\`\`\``);
+      sections.push(`**Totem Progress**\n\`\`\`\n${formattedTotems}\n\`\`\``);
     }
 
     sections.push(`https://aussietackle.github.io/clan.dashboard/\n-# _Better to use a browser with desktop mode._`);

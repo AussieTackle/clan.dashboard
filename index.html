@@ -1576,8 +1576,8 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     const selectedTime = document.querySelector('.discord-time:checked').value;
     const isSeason = selectedTime === 'season';
     
-    // Sesuai ketentuan: Current Season tidak memakai subtext tambahan, All-Time memakai subtext lengkap
-    const subtextRecord = isSeason ? '' : '\n-# All-Time (Records since Oct 2026)';
+    // Sesuai permintaan: Current Season menggunakan "Current Season", All-Time menggunakan "All-Time (Records since Oct 2026)"
+    const subtextRecord = isSeason ? '\n-# Current Season' : '\n-# All-Time (Records since Oct 2026)';
 
     let sections = [];
 
@@ -1642,7 +1642,7 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
         { name: 'Boiúna', val: island.boiuna }
       ];
       const formattedTotems = buildDiscordTableTotems(totems);
-      // Sesuai ketentuan: Totem Progress di semua filter cukup gunakan "All-Time"
+      // Sesuai ketentuan: Totem Progress di semua filter cukup menggunakan "All-Time"
       sections.push(`**Totem Progress**\n-# All-Time\n\`\`\`\n${formattedTotems}\n\`\`\``);
     }
 

@@ -1575,7 +1575,8 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
     const selectedCats = Array.from(document.querySelectorAll('.discord-cat:checked')).map(el => el.value);
     const selectedTime = document.querySelector('.discord-time:checked').value;
     const isSeason = selectedTime === 'season';
-    const timeLabel = isSeason ? 'Current Season' : 'All-Time';
+    
+    // Sesuai ketentuan: Current Season tidak memakai subtext tambahan, All-Time memakai subtext lengkap
     const subtextRecord = isSeason ? '' : '\n-# All-Time (Records since Oct 2026)';
 
     let sections = [];
@@ -1641,7 +1642,8 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
         { name: 'Boiúna', val: island.boiuna }
       ];
       const formattedTotems = buildDiscordTableTotems(totems);
-      sections.push(`**Totem Progress**\n\`\`\`\n${formattedTotems}\n\`\`\``);
+      // Sesuai ketentuan: Totem Progress di semua filter cukup gunakan "All-Time"
+      sections.push(`**Totem Progress**\n-# All-Time\n\`\`\`\n${formattedTotems}\n\`\`\``);
     }
 
     sections.push(`https://aussietackle.github.io/clan.dashboard/\n-# _Better to use a browser with desktop mode._`);

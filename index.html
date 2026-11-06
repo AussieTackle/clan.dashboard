@@ -1546,8 +1546,9 @@ body[data-clan="AT5"] { --clan-accent: #b45309; }
       (p.scores || []).forEach(scoreVal => {
         let displayScore = esc(scoreVal);
         let extraClass = '';
-        if (displayScore.toLowerCase().includes('not joined') || displayScore === '') {
-          displayScore = 'Not Joined Yet';
+        if (displayScore === '' || displayScore === 'undefined' || displayScore === 'null') {
+          displayScore = '-';
+        } else if (displayScore.toLowerCase().includes('not joined')) {
           extraClass = 'text-muted fst-italic';
         }
         scoresCols += `<td class="text-center ${extraClass}">${displayScore}</td>`;
